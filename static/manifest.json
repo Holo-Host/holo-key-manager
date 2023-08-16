@@ -1,0 +1,11 @@
+{
+	"name": "Holo key manager",
+	"description": "A browser extension to manage holo keys",
+	"version": "1.0.0",
+	"manifest_version": 3,
+	"action": {
+		"default_title": "Holo key manager",
+		"default_icon": "favicon.png",
+		"default_popup": "index.html"
+	}
+}
