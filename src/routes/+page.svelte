@@ -1,2 +1,11 @@
-<h1>Welcome to SvelteKit</h1>
-<p>Visit <a href="https://kit.svelte.dev">kit.svelte.dev</a> to read the documentation</p>
+<script>
+	function redirectToSetup() {
+		// Open a new tab and redirect to 'setup.html'
+		window.open('setup.html', '_blank');
+	}
+</script>
+
+<img src="/img/holo_logo.svg" alt="Holo Key Manager Logo" />
+
+<!-- Button that redirects to setup page -->
+<button on:click={redirectToSetup}>Go to Setup</button>
