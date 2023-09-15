@@ -1,8 +1,13 @@
 {
 	"name": "Holo key manager",
 	"description": "A browser extension to manage holo keys",
-	"version": "1.0.0",
+	"version": "0.0.1",
 	"manifest_version": 3,
+	"browser_specific_settings": {
+		"gecko": {
+			"id": "holo-key-manager@holo.host"
+		}
+	},
 	"action": {
 		"default_title": "Holo key manager",
 		"default_icon": "favicon.png",

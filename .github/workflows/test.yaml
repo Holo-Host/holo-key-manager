@@ -1,0 +1,54 @@
+name: 'test'
+on:
+  push:
+    branches: [main]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        browser: ['edge', 'firefox', 'chrome']
+
+    steps:
+    - uses: actions/checkout@v4
+
+      - name: Setup Node.js environment
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+
+      - name: Install pnpm
+        run: npm install -g pnpm
+
+      - name: Install dependencies
+        run: pnpm install
+
+      - name: Build extension
+        run: pnpm run build
+
+      - name: Zip the build
+        run: zip -r build.zip build/
+
+      - name: Upload & release
+        uses: mnao305/chrome-extension-upload@v4.0.1
+        with:
+          file-path: build.zip
+          extension-id: eggfhkdnfdhdpmkfpihjjbnncgmhihce
+          client-id: ${{ secrets.CLIENT_ID }}
+          client-secret: ${{ secrets.CLIENT_SECRET }}
+          refresh-token: ${{ secrets.REFRESH_TOKEN }}
+
+      # - name: Publish the extension for Edge
+      #   uses: inverse/edge-addon@v1.0.9
+      #   with:
+      #     product_id: ${{ secrets.EDGE_PRODUCT_ID }}
+      #     client_id: ${{ secrets.EDGE_CLIENT_ID }}
+      #     client_secret: ${{ secrets.EDGE_CLIENT_SECRET }}
+      #     access_token_url: ${{ secrets.EDGE_ACCESS_TOKEN_URL }}
+      #     zip: build.zip
+      #     notes: 'Version ${{ env.PACKAGE_VERSION }} upload'
+      #     debug: true
+
+          
