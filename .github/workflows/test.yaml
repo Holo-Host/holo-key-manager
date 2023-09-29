@@ -28,7 +28,10 @@ jobs:
         run: pnpm run build
 
       - name: Zip the build
-        run: zip -r build.zip build/
+        run: |
+          cd build
+          zip -r ../build.zip .
+          cd ..
 
       - name: Upload & release
         uses: mnao305/chrome-extension-upload@v4.0.1
