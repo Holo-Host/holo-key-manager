@@ -43,7 +43,7 @@ jobs:
       #     refresh-token: ${{ secrets.CHROME_REFRESH_TOKEN }}
 
       - name: Edge upload & release
-      - uses: wdzeng/edge-addon@v1.2.1
+        uses: wdzeng/edge-addon@v1.2.1
         with:
           product-id: 70d8655d-2c91-4b81-99b1-35afa863ea8c
           zip-path: build.zip
