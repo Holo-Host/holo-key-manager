@@ -33,14 +33,14 @@ jobs:
           zip -r ../build.zip .
           cd ..
 
-      - name: Chrome upload & release
-        uses: mnao305/chrome-extension-upload@v4.0.1
-        with:
-          file-path: build.zip
-          extension-id: eggfhkdnfdhdpmkfpihjjbnncgmhihce
-          client-id: ${{ secrets.CHROME_CLIENT_ID }}
-          client-secret: ${{ secrets.CHROME_CLIENT_SECRET }}
-          refresh-token: ${{ secrets.CHROME_REFRESH_TOKEN }}
+      # - name: Chrome upload & release
+      #   uses: mnao305/chrome-extension-upload@v4.0.1
+      #   with:
+      #     file-path: build.zip
+      #     extension-id: eggfhkdnfdhdpmkfpihjjbnncgmhihce
+      #     client-id: ${{ secrets.CHROME_CLIENT_ID }}
+      #     client-secret: ${{ secrets.CHROME_CLIENT_SECRET }}
+      #     refresh-token: ${{ secrets.CHROME_REFRESH_TOKEN }}
 
       - name: Edge upload & release
         uses: inverse/edge-addon@v1.0.9
