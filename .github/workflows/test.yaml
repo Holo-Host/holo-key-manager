@@ -33,22 +33,20 @@ jobs:
           zip -r ../build.zip .
           cd ..
 
-      - name: Upload & release
+      - name: Chrome upload & release
         uses: mnao305/chrome-extension-upload@v4.0.1
         with:
           file-path: build.zip
           extension-id: eggfhkdnfdhdpmkfpihjjbnncgmhihce
-          client-id: ${{ secrets.CLIENT_ID }}
-          client-secret: ${{ secrets.CLIENT_SECRET }}
-          refresh-token: ${{ secrets.REFRESH_TOKEN }}
+          client-id: ${{ secrets.CHROME_CLIENT_ID }}
+          client-secret: ${{ secrets.CHROME_CLIENT_SECRET }}
+          refresh-token: ${{ secrets.CHROME_REFRESH_TOKEN }}
 
-      # - name: Publish the extension for Edge
-      #   uses: inverse/edge-addon@v1.0.9
-      #   with:
-      #     product_id: ${{ secrets.EDGE_PRODUCT_ID }}
-      #     client_id: ${{ secrets.EDGE_CLIENT_ID }}
-      #     client_secret: ${{ secrets.EDGE_CLIENT_SECRET }}
-      #     access_token_url: ${{ secrets.EDGE_ACCESS_TOKEN_URL }}
-      #     zip: build.zip
-      #     notes: 'Version ${{ env.PACKAGE_VERSION }} upload'
-      #     debug: true
+      - name: Chrome upload & release
+        uses: inverse/edge-addon@v1.0.9
+        with:
+          product-id: 70d8655d-2c91-4b81-99b1-35afa863ea8c
+          zip-path: build.zip
+          client-id: ${{ secrets.EDGE_CLIENT_ID }}
+          client-secret: ${{ secrets.EDGE_CLIENT_SECRET }}
+          access-token-url: ${{ secrets.EDGE_ACCESS_TOKEN_URL }}
