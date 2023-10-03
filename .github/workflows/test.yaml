@@ -43,10 +43,10 @@ jobs:
       #     refresh-token: ${{ secrets.CHROME_REFRESH_TOKEN }}
 
       - name: Edge upload & release
-        uses: inverse/edge-addon@v1.0.9
+      - uses: wdzeng/edge-addon@v1.2.1
         with:
-          product_id: 70d8655d-2c91-4b81-99b1-35afa863ea8c
-          zip: build.zip
-          client_id: ${{ secrets.EDGE_CLIENT_ID }}
-          client_secret: ${{ secrets.EDGE_CLIENT_SECRET }}
-          access_token_url: ${{ secrets.EDGE_ACCESS_TOKEN_URL }}
+          product-id: 70d8655d-2c91-4b81-99b1-35afa863ea8c
+          zip-path: build.zip
+          client-id: ${{ secrets.EDGE_CLIENT_ID }}
+          client-secret: ${{ secrets.EDGE_CLIENT_SECRET }}
+          access-token-url: ${{ secrets.EDGE_ACCESS_TOKEN_URL }}
