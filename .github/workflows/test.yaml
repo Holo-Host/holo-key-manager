@@ -49,4 +49,4 @@ jobs:
           zip: build.zip
           client_id: ${{ secrets.EDGE_CLIENT_ID }}
           client_secret: ${{ secrets.EDGE_CLIENT_SECRET }}
-          access_token_url ${{ secrets.EDGE_ACCESS_TOKEN_URL }}
+          access_token_url: ${{ secrets.EDGE_ACCESS_TOKEN_URL }}
