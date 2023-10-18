@@ -41,6 +41,7 @@ jobs:
           client-id: ${{ secrets.CHROME_CLIENT_ID }}
           client-secret: ${{ secrets.CHROME_CLIENT_SECRET }}
           refresh-token: ${{ secrets.CHROME_REFRESH_TOKEN }}
+        continue-on-error: true
 
       - name: Edge upload & release
         uses: wdzeng/edge-addon@v1.2.1
