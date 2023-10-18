@@ -26,5 +26,5 @@
 past select “Import existing keys”"
 	/>
 	<Button arrow label="First time setup" onClick={() => null} />
-	<Button label="Import excising keys" onClick={() => null} color="secondary" />
+	<Button label="Import excising keys" onClick={() => {}} color="secondary" />
 </div>
