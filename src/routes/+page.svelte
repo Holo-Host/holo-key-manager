@@ -10,8 +10,7 @@
 	}
 </script>
 
-<div 
-class="m-8">
+<div class="m-8">
 	<div class="flex justify-between items-center mb-4">
 		<img src="/img/holo_logo.svg" alt="Holo Key Manager Logo" />
 		<button on:click={dismissExtensionWindow} style="background: none; border: none;">
