@@ -25,6 +25,6 @@
 		text="First time user? Select “first time setup” below and if you already setup key manager in the
 past select “Import existing keys”"
 	/>
-	<Button arrow label="First time setup" onClick={() => {}} />
-	<Button label="Import excising keys" onClick={() => {}} color="secondary" />
+	<Button arrow label="First time setup" onClick={() => null} />
+	<Button label="Import excising keys" onClick={() => null} color="secondary" />
 </div>
