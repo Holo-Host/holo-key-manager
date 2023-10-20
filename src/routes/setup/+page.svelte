@@ -17,14 +17,12 @@
 	</div>
 	<AppParagraph
 		extraProps="my-4"
-		text="Holo Key Manager is a safe key manager to setup and manage your keys for hApps. Get easy access
-    to all your keys. You can set up and manager one or more keys for each hApp."
+		text="Holo Key Manager is a secure key manager for creating and managing Holochain keys. Get easy access to all your keys. You can set up and manager one or more keys for each application"
 	/>
 	<AppParagraph
 		extraProps="my-4"
-		text="First time user? Select “first time setup” below and if you already setup key manager in the
-past select “Import existing keys”"
+		text="First time user? Select “first time setup” below. If you have already setup the key manager in the past you can select “Import existing keys"
 	/>
 	<Button arrow label="First time setup" onClick={() => null} />
-	<Button label="Import excising keys" onClick={() => null} color="secondary" />
+	<Button label="Import existing keys" onClick={() => null} color="secondary" />
 </div>

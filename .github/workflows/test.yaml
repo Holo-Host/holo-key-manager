@@ -43,6 +43,16 @@ jobs:
           refresh-token: ${{ secrets.CHROME_REFRESH_TOKEN }}
         continue-on-error: true
 
+      # - name: Chrome upload & release
+      #   uses: Klemensas/chrome-extension-upload-action@$VERSION
+      #   with:
+      #     refresh-token: 'xxxxxxxxxxxxxxxxxxxxxx'
+      #     client-id: 'xxxxxxxxxxxxx'
+      #     client-secret: 'xxxxxxxxxxxx'
+      #     file-name: './extension.zip'
+      #     app-id: 'xzc12xzc21cx23'
+      #     publish: true
+
       - name: Edge upload & release
         uses: wdzeng/edge-addon@v1.2.1
         with:
