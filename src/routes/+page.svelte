@@ -1,12 +1,9 @@
 <script>
 	import Button from '$components/Button.svelte';
 	import AppParagraph from '$components/AppParagraph.svelte';
+	import { dismissExtensionWindow } from '$lib/helpers';
 	function redirectToSetup() {
-		window.open('setup.html', '_blank');
-	}
-
-	function dismissExtensionWindow() {
-		return window.close();
+		window.open('setup/start.html', '_blank');
 	}
 </script>
 
@@ -22,11 +19,11 @@
 		<img src="/img/setup.svg" alt="Close" class="max-w-[48px]" />
 		<p class="font-bold text-2xl mt-4">Setup Required</p>
 		<AppParagraph
-			extraProps="my-4 text-center"
+			extraProps="my-4 text-center max-w-xs"
 			text="You are yet to setup Holo Key Manager. Click “start setup” to begin."
 		/>
 	</div>
 
-	<Button label="Start setup" onClick={redirectToSetup} />
+	<Button label="Start setup" onClick={redirectToSetup} extraBottomMargin />
 	<Button label="Cancel" onClick={dismissExtensionWindow} color="secondary" />
 </div>

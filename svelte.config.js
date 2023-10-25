@@ -11,7 +11,10 @@ const config = {
 		adapter: adapter(),
 		appDir: 'app',
 		alias: {
-			$components: path.resolve('./src/lib/components')
+			$components: path.resolve('./src/lib/components'),
+			$helpers: path.resolve('./src/lib/helpers'),
+			$stores: path.resolve('./src/lib/stores'),
+			$types: path.resolve('./src/lib/types')
 		}
 	}
 };
