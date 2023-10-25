@@ -5,6 +5,7 @@
 	import EnterPassphraseComponent from './EnterPassphraseComponent.svelte';
 	import type { SetPassphrase } from '$lib/types';
 	import type { Writable } from 'svelte/store';
+	import { goto } from '$app/navigation';
 
 	const passphraseStore = getContext<Writable<string>>(passphrase);
 
@@ -40,6 +41,6 @@
 		description="Tying loose ends, please enter your passphrase again."
 		nextLabel="Next"
 		inputState={confirmPassphrase !== $passphraseStore ? 'Passphrases do not match' : ``}
-		next={() => null}
+		next={() => goto('/setup/generate-keys')}
 	/>
 {/if}
