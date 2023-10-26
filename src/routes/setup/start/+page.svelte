@@ -1,12 +1,13 @@
 <script>
 	import Button from '$components/Button.svelte';
 	import AppParagraph from '$components/AppParagraph.svelte';
+	import Title from '$components/Title.svelte';
 	import { goto } from '$app/navigation';
 </script>
 
 <img src="/img/holo_logo.svg" alt="Holo Key Manager Logo" class="w-12 my-4" />
-<h1 class="text-4xl font-bold text-center">Holo Key Manager</h1>
-<div class="border-b-[0.5px] my-4 border-light-gray w-full">
+<Title>Holo Key Manager</Title>
+<div class="border-b-[0.5px] mb-4 border-light-gray w-full">
 	<AppParagraph extraProps="mx-auto text-center max-w-xs" text="Welcome to Holo Key Manager." />
 	<AppParagraph
 		extraProps="mx-auto text-center max-w-xs mb-4"

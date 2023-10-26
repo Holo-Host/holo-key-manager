@@ -4,6 +4,7 @@
 	import { dismissExtensionWindow } from '$lib/helpers';
 	function redirectToSetup() {
 		window.open('setup/start.html', '_blank');
+		// window.open('setup/generate-keys.html', '_blank');
 	}
 </script>
 
@@ -16,8 +17,8 @@
 	</div>
 
 	<div class="flex flex-col justify-center items-center">
-		<img src="/img/setup.svg" alt="Close" class="max-w-[48px]" />
-		<p class="font-bold text-2xl mt-4">Setup Required</p>
+		<img src="/img/setup.svg" alt="Setup" class="max-w-[48px]" />
+		<h1 class="font-bold text-2xl mt-4">Setup Required</h1>
 		<AppParagraph
 			extraProps="my-4 text-center max-w-xs"
 			text="You are yet to setup Holo Key Manager. Click “start setup” to begin."

@@ -8,6 +8,9 @@ dependencies:
   clsx:
     specifier: ^2.0.0
     version: 2.0.0
+  hcSeedBundle:
+    specifier: git+https://github.com/holochain/hcSeedBundle#semver:^0.0.3
+    version: github.com/holochain/hcSeedBundle/e588283b88fb29272f90a449f033944f2e4d7655
   svelte:
     specifier: ^4.0.5
     version: 4.2.0
@@ -1443,6 +1446,16 @@ packages:
       type-check: 0.4.0
     dev: true
 
+  /libsodium-wrappers@0.7.13:
+    resolution: {integrity: sha512-kasvDsEi/r1fMzKouIDv7B8I6vNmknXwGiYodErGuESoFTohGSKZplFtVxZqHaoQ217AynyIFgnOVRitpHs0Qw==}
+    dependencies:
+      libsodium: 0.7.13
+    dev: false
+
+  /libsodium@0.7.13:
+    resolution: {integrity: sha512-mK8ju0fnrKXXfleL53vtp9xiPq5hKM0zbDQtcxQIsSmxNgSxqCj6R7Hl9PkrNe2j29T4yoDaF7DJLK9/i5iWUw==}
+    dev: false
+
   /lilconfig@2.1.0:
     resolution: {integrity: sha512-utWOt/GHzuUxnLKxB6dk81RoOeoNeHgbrXiuGk4yyF5qlRz+iIVWu56E2fqGHFrXz0QNUhLB/8nKqvRH66JKGQ==}
     engines: {node: '>=10'}
@@ -2292,6 +2305,10 @@ packages:
       globrex: 0.1.2
     dev: false
 
+  /tiny-msgpack@1.0.3:
+    resolution: {integrity: sha512-Wzzs9gtsPzmHzuIzIyQvY+py5vEZQvcckIO6D5HP4JmaPBhRoVRIKNOmtO1n1MWv7dUHEeVjhMbOtjgXsoGdIw==}
+    dev: false
+
   /to-regex-range@5.0.1:
     resolution: {integrity: sha512-65P7iz6X5yEr1cwcgvQxbbIw7Uk3gOy5dIdtZ4rDveLqhrdJP+Li/Hx6tyK0NEb+2GCyneCMJiGqrADCSNk8sQ==}
     engines: {node: '>=8.0'}
@@ -2458,3 +2475,12 @@ packages:
     resolution: {integrity: sha512-rVksvsnNCdJ/ohGc6xgPwyN8eheCxsiLM8mxuE/t/mOVqJewPuO1miLpTHQiRgTKCLexL4MeAFVagts7HmNZ2Q==}
     engines: {node: '>=10'}
     dev: true
+
+  github.com/holochain/hcSeedBundle/e588283b88fb29272f90a449f033944f2e4d7655:
+    resolution: {tarball: https://codeload.github.com/holochain/hcSeedBundle/tar.gz/e588283b88fb29272f90a449f033944f2e4d7655}
+    name: '@holochain/hc-seed-bundle'
+    version: 0.0.3
+    dependencies:
+      libsodium-wrappers: 0.7.13
+      tiny-msgpack: 1.0.3
+    dev: false

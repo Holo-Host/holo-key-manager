@@ -4,6 +4,6 @@
 	export let extraProps = '';
 </script>
 
-<p class="{textColor} text-base font-normal {extraProps}">
+<p class="{textColor} text-base font-light {extraProps}">
 	{text}
 </p>

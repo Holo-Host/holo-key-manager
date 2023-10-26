@@ -2,6 +2,7 @@
 	import AppParagraph from '$components/AppParagraph.svelte';
 	import Button from '$components/Button.svelte';
 	import Tooltip from '$components/Tooltip.svelte';
+	import Title from '$components/Title.svelte';
 	import { dismissExtensionWindow } from '$lib/helpers';
 	import clsx from 'clsx';
 
@@ -14,7 +15,7 @@
 	export let next: () => void;
 </script>
 
-<h1 class="text-4xl font-bold text-center mb-2">{title}</h1>
+<Title>{title}</Title>
 <AppParagraph extraProps="mx-auto text-center" text={description} />
 <div class="p-6 w-full">
 	<textarea
