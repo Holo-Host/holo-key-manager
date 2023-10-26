@@ -1,38 +1,11 @@
-# create-svelte
+# Holo Key Manager
 
-Everything you need to build a Svelte project, powered by [`create-svelte`](https://github.com/sveltejs/kit/tree/master/packages/create-svelte).
+Holo Key Manager is a secure key manager for creating and managing Holochain keys. Get easy access to all your keys. You can set up and manager one or more keys for each application.
 
-## Creating a project
+# How to Test Locally
 
-If you're seeing this, you've probably already done this step. Congrats!
-
-```bash
-# create a new project in the current directory
-npm create svelte@latest
-
-# create a new project in my-app
-npm create svelte@latest my-app
-```
-
-## Developing
-
-Once you've created a project and installed dependencies with `npm install` (or `pnpm install` or `yarn`), start a development server:
-
-```bash
-npm run dev
-
-# or start the server and open the app in a new browser tab
-npm run dev -- --open
-```
-
-## Building
-
-To create a production version of your app:
-
-```bash
-npm run build
-```
-
-You can preview the production build with `npm run preview`.
-
-> To deploy your app, you may need to install an [adapter](https://kit.svelte.dev/docs/adapters) for your target environment.
+1. Be sure that you have `pnpm` installed on your machine. If not, you can get it from [here](https://pnpm.io/).
+2. Run `pnpm install` in the project directory.
+3. Run `pnpm build` in the project directory.
+4. Open the Chrome browser, navigate to `Manage Extensions`, click `Load Unpacked`, and select the `build` folder from this project.
+5. The extension should be listed in the extension list.
