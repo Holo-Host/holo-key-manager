@@ -4,8 +4,6 @@ import * as hcSeedBundle from 'hcSeedBundle';
 export async function generateKeys(passphrase: string) {
 	await hcSeedBundle.seedBundleReady;
 
-	const pw = new TextEncoder().encode(passphrase);
-
 	const master = hcSeedBundle.UnlockedSeedBundle.newRandom({
 		bundle_type: 'master'
 	});
@@ -13,14 +11,21 @@ export async function generateKeys(passphrase: string) {
 		generate_by: 'keymanager-v1.0'
 	});
 	const encodedMasterBytes = master.lock([
-		new hcSeedBundle.SeedCipherPwHash(hcSeedBundle.parseSecret(pw), 'minimum')
+		new hcSeedBundle.SeedCipherPwHash(
+			hcSeedBundle.parseSecret(new TextEncoder().encode(passphrase)),
+			'minimum'
+		)
 	]);
 
 	const revocationDerivationPath = 0;
-	const encodedRevocationBytes = await derive(revocationDerivationPath, 'revocationRoot', pw);
+	const encodedRevocationBytes = await derive(
+		revocationDerivationPath,
+		'revocationRoot',
+		passphrase
+	);
 
 	const deviceNumber = 1;
-	const encodedDeviceBytes = await derive(deviceNumber, 'deviceRoot', pw);
+	const encodedDeviceBytes = await derive(deviceNumber, 'deviceRoot', passphrase);
 
 	master.zero();
 
@@ -39,7 +44,10 @@ export async function generateKeys(passphrase: string) {
 			generate_by: 'keymanager-v1.0'
 		});
 		const encodedBytes = root.lock([
-			new hcSeedBundle.SeedCipherPwHash(hcSeedBundle.parseSecret(passphrase), 'minimum')
+			new hcSeedBundle.SeedCipherPwHash(
+				hcSeedBundle.parseSecret(new TextEncoder().encode(passphrase)),
+				'minimum'
+			)
 		]);
 		return encodedBytes;
 	}

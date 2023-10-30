@@ -33,7 +33,7 @@
 	},
 	"type": "module",
 	"dependencies": {
-		"hcSeedBundle": "git+https://github.com/holochain/hcSeedBundle#semver:^0.0.3",
+		"hcSeedBundle": "file:///home/zo-el/Documents/git_repo/holo/hcSeedBundle",
 		"clsx": "^2.0.0",
 		"svelte": "^4.0.5",
 		"tailwindcss": "^3.3.3",
