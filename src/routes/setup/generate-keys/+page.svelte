@@ -17,6 +17,7 @@
 	});
 
 	async function download(): Promise<void> {
+		console.log($passphraseStore);
 		console.log(await generateKeys($passphraseStore));
 		// throw new Error('Function not implemented.');
 	}

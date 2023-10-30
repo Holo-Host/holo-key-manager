@@ -9,8 +9,8 @@ dependencies:
     specifier: ^2.0.0
     version: 2.0.0
   hcSeedBundle:
-    specifier: git+https://github.com/holochain/hcSeedBundle#semver:^0.0.3
-    version: github.com/holochain/hcSeedBundle/e588283b88fb29272f90a449f033944f2e4d7655
+    specifier: git+https://github.com/mrruby/hcSeedBundle
+    version: github.com/mrruby/hcSeedBundle/1da3964a5d6af048b67594a15c2f0f43aad82b77
   svelte:
     specifier: ^4.0.5
     version: 4.2.0
@@ -1446,14 +1446,14 @@ packages:
       type-check: 0.4.0
     dev: true
 
-  /libsodium-wrappers@0.7.13:
-    resolution: {integrity: sha512-kasvDsEi/r1fMzKouIDv7B8I6vNmknXwGiYodErGuESoFTohGSKZplFtVxZqHaoQ217AynyIFgnOVRitpHs0Qw==}
-    dependencies:
-      libsodium: 0.7.13
+  /libsodium-sumo@0.7.13:
+    resolution: {integrity: sha512-zTGdLu4b9zSNLfovImpBCbdAA4xkpkZbMnSQjP8HShyOutnGjRHmSOKlsylh1okao6QhLiz7nG98EGn+04cZjQ==}
     dev: false
 
-  /libsodium@0.7.13:
-    resolution: {integrity: sha512-mK8ju0fnrKXXfleL53vtp9xiPq5hKM0zbDQtcxQIsSmxNgSxqCj6R7Hl9PkrNe2j29T4yoDaF7DJLK9/i5iWUw==}
+  /libsodium-wrappers-sumo@0.7.13:
+    resolution: {integrity: sha512-lz4YdplzDRh6AhnLGF2Dj2IUj94xRN6Bh8T0HLNwzYGwPehQJX6c7iYVrFUPZ3QqxE0bqC+K0IIqqZJYWumwSQ==}
+    dependencies:
+      libsodium-sumo: 0.7.13
     dev: false
 
   /lilconfig@2.1.0:
@@ -2476,11 +2476,11 @@ packages:
     engines: {node: '>=10'}
     dev: true
 
-  github.com/holochain/hcSeedBundle/e588283b88fb29272f90a449f033944f2e4d7655:
-    resolution: {tarball: https://codeload.github.com/holochain/hcSeedBundle/tar.gz/e588283b88fb29272f90a449f033944f2e4d7655}
+  github.com/mrruby/hcSeedBundle/1da3964a5d6af048b67594a15c2f0f43aad82b77:
+    resolution: {tarball: https://codeload.github.com/mrruby/hcSeedBundle/tar.gz/1da3964a5d6af048b67594a15c2f0f43aad82b77}
     name: '@holochain/hc-seed-bundle'
     version: 0.0.3
     dependencies:
-      libsodium-wrappers: 0.7.13
+      libsodium-wrappers-sumo: 0.7.13
       tiny-msgpack: 1.0.3
     dev: false
