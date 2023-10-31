@@ -18,14 +18,10 @@ export async function generateKeys(passphrase: string) {
 	]);
 
 	const revocationDerivationPath = 0;
-	const encodedRevocationBytes = await derive(
-		revocationDerivationPath,
-		'revocationRoot',
-		passphrase
-	);
+	const encodedRevocationBytes = await derive(revocationDerivationPath, 'revocationRoot');
 
 	const deviceNumber = 1;
-	const encodedDeviceBytes = await derive(deviceNumber, 'deviceRoot', passphrase);
+	const encodedDeviceBytes = await derive(deviceNumber, 'deviceRoot');
 
 	master.zero();
 
@@ -35,7 +31,7 @@ export async function generateKeys(passphrase: string) {
 		revocation: encodedRevocationBytes
 	};
 
-	async function derive(derivationPath, bundleType, passphrase) {
+	async function derive(derivationPath, bundleType) {
 		const root = master.derive(derivationPath, {
 			bundle_type: bundleType
 		});
