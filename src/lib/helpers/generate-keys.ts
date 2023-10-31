@@ -10,7 +10,7 @@ export async function generateKeys(passphrase: string) {
 	master.setAppData({
 		generate_by: 'keymanager-v1.0'
 	});
-	const encodedMasterBytes = master.lock([
+	const encodedMasterBytes: Uint8Array = master.lock([
 		new hcSeedBundle.SeedCipherPwHash(
 			hcSeedBundle.parseSecret(new TextEncoder().encode(passphrase)),
 			'minimum'
@@ -18,10 +18,13 @@ export async function generateKeys(passphrase: string) {
 	]);
 
 	const revocationDerivationPath = 0;
-	const encodedRevocationBytes = await derive(revocationDerivationPath, 'revocationRoot');
+	const encodedRevocationBytes: Uint8Array = await derive(
+		revocationDerivationPath,
+		'revocationRoot'
+	);
 
 	const deviceNumber = 1;
-	const encodedDeviceBytes = await derive(deviceNumber, 'deviceRoot');
+	const encodedDeviceBytes: Uint8Array = await derive(deviceNumber, 'deviceRoot');
 
 	master.zero();
 

@@ -1,6 +1,8 @@
 <script lang="ts">
 	import { getContext, onMount } from 'svelte';
 	import { passphrase } from '$stores';
+	import JSZip from 'jszip';
+	import fileSaver from 'file-saver';
 	import type { Writable } from 'svelte/store';
 	import { goto } from '$app/navigation';
 	import AppParagraph from '$components/AppParagraph.svelte';
@@ -17,9 +19,18 @@
 	});
 
 	async function download(): Promise<void> {
-		console.log($passphraseStore);
-		console.log(await generateKeys($passphraseStore));
-		// throw new Error('Function not implemented.');
+		const { saveAs } = fileSaver;
+		const { master, device, revocation } = await generateKeys($passphraseStore);
+		const files = [
+			{ name: 'master.txt', data: new TextDecoder().decode(master) },
+			{ name: 'device.txt', data: new TextDecoder().decode(device) },
+			{ name: 'revocation.txt', data: new TextDecoder().decode(revocation) }
+		];
+		const zip = new JSZip();
+		files.forEach((file) => zip.file(file.name, file.data));
+		const content = await zip.generateAsync({ type: 'blob' });
+
+		saveAs(content, 'keys.zip');
 	}
 </script>
 
