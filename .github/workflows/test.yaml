@@ -42,6 +42,14 @@ jobs:
           client-secret: ${{ secrets.CHROME_CLIENT_SECRET }}
           refresh-token: ${{ secrets.CHROME_REFRESH_TOKEN }}
 
+      - name: Firefox upload & release
+        uses: cardinalby/webext-buildtools-firefox-addons-action@1.0.9
+        with:
+          zipFilePath: build.zip
+          extensionId: holo-key-manager@holo.host
+          jwtIssuer: ${{ secrets.FF_JWT_ISSUER }}
+          jwtSecret: ${{ secrets.FF_JWT_SECRET }}
+
       - name: Edge upload & release
         uses: wdzeng/edge-addon@v1.2.1
         with:
@@ -50,11 +58,3 @@ jobs:
           client-id: ${{ secrets.EDGE_CLIENT_ID }}
           client-secret: ${{ secrets.EDGE_CLIENT_SECRET }}
           access-token-url: ${{ secrets.EDGE_ACCESS_TOKEN_URL }}
-
-      - name: Firefox upload & release
-        uses: cardinalby/webext-buildtools-firefox-addons-action@1.0.9
-        with:
-          zipFilePath: build.zip
-          extensionId: holo-key-manager@holo.host
-          jwtIssuer: ${{ secrets.FF_JWT_ISSUER }}
-          jwtSecret: ${{ secrets.FF_JWT_SECRET }}
