@@ -33,23 +33,23 @@ jobs:
           zip -r ../build.zip .
           cd ..
 
-      - name: Chrome upload & release
-        uses: mnao305/chrome-extension-upload@v4.0.1
-        with:
-          file-path: build.zip
-          extension-id: eggfhkdnfdhdpmkfpihjjbnncgmhihce
-          client-id: ${{ secrets.CHROME_CLIENT_ID }}
-          client-secret: ${{ secrets.CHROME_CLIENT_SECRET }}
-          refresh-token: ${{ secrets.CHROME_REFRESH_TOKEN }}
+      # - name: Chrome upload & release
+      #   uses: mnao305/chrome-extension-upload@v4.0.1
+      #   with:
+      #     file-path: build.zip
+      #     extension-id: eggfhkdnfdhdpmkfpihjjbnncgmhihce
+      #     client-id: ${{ secrets.CHROME_CLIENT_ID }}
+      #     client-secret: ${{ secrets.CHROME_CLIENT_SECRET }}
+      #     refresh-token: ${{ secrets.CHROME_REFRESH_TOKEN }}
 
-      - name: Edge upload & release
-        uses: wdzeng/edge-addon@v1.2.1
-        with:
-          product-id: 70d8655d-2c91-4b81-99b1-35afa863ea8c
-          zip-path: build.zip
-          client-id: ${{ secrets.EDGE_CLIENT_ID }}
-          client-secret: ${{ secrets.EDGE_CLIENT_SECRET }}
-          access-token-url: ${{ secrets.EDGE_ACCESS_TOKEN_URL }}
+      # - name: Edge upload & release
+      #   uses: wdzeng/edge-addon@v1.2.1
+      #   with:
+      #     product-id: 70d8655d-2c91-4b81-99b1-35afa863ea8c
+      #     zip-path: build.zip
+      #     client-id: ${{ secrets.EDGE_CLIENT_ID }}
+      #     client-secret: ${{ secrets.EDGE_CLIENT_SECRET }}
+      #     access-token-url: ${{ secrets.EDGE_ACCESS_TOKEN_URL }}
 
       - name: Firefox upload & release
         uses: cardinalby/webext-buildtools-firefox-addons-action@1.0.9
@@ -58,4 +58,3 @@ jobs:
           extensionId: holo-key-manager@holo.host
           jwtIssuer: ${{ secrets.FF_JWT_ISSUER }}
           jwtSecret: ${{ secrets.FF_JWT_SECRET }}
-          channel: unlisted
