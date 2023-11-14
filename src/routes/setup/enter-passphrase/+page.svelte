@@ -1,15 +1,11 @@
 <script lang="ts">
 	import PopupDialog from './PopupDialog.svelte';
-	import { getContext } from 'svelte';
-	import { passphrase } from '$stores';
-	import EnterPassphraseComponent from './EnterPassphraseComponent.svelte';
-	import type { SetPassphrase } from '$lib/types';
-	import type { Writable } from 'svelte/store';
+	import { passphraseStore } from '$stores';
+	import { EnterSecretComponent } from '$components';
+	import type { SetSecret } from '$lib/types';
 	import { goto } from '$app/navigation';
 
-	const passphraseStore = getContext<Writable<string>>(passphrase);
-
-	let passphraseState: SetPassphrase = 'set';
+	let passphraseState: SetSecret = 'set';
 	let confirmPassphrase = '';
 	let showDialog = false;
 
@@ -17,9 +13,9 @@
 </script>
 
 {#if passphraseState === 'set'}
-	<EnterPassphraseComponent
+	<EnterSecretComponent
+		isDisabled={charCount < 20}
 		bind:inputValue={$passphraseStore}
-		isRed={charCount < 20}
 		title="Enter Passphrase"
 		description="Enter your desired passphrase and remind to keep it safe."
 		nextLabel="Set Passphrase"
@@ -34,9 +30,9 @@
 {/if}
 
 {#if passphraseState === 'confirm'}
-	<EnterPassphraseComponent
+	<EnterSecretComponent
 		bind:inputValue={confirmPassphrase}
-		isRed={confirmPassphrase !== $passphraseStore}
+		isDisabled={confirmPassphrase !== $passphraseStore}
 		title="Confirm Passphrase"
 		description="Tying loose ends, please enter your passphrase again."
 		nextLabel="Next"

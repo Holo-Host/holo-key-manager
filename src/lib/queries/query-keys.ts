@@ -1,1 +1,1 @@
-export const queryKey = 'generatedKeys';
+export const generatedKeys = 'generatedKeys';

@@ -1,40 +1,50 @@
 <script lang="ts">
-	import { getContext, onMount } from 'svelte';
-	import { passphrase } from '$stores';
+	import { onMount } from 'svelte';
+	import { keysStore, passphraseStore } from '$stores';
 	import JSZip from 'jszip';
 	import fileSaver from 'file-saver';
-	import type { Writable } from 'svelte/store';
+	import { Button, Title, AppParagraph } from '$components';
 	import { goto } from '$app/navigation';
-	import Button from '$components/Button.svelte';
-	import { useGeneratedKeys } from '$queries';
-	import Title from '$components/Title.svelte';
-	import AppParagraph from '$components/AppParagraph.svelte';
-
-	const passphraseStore = getContext<Writable<string>>(passphrase);
-
-	const { generatedKeysQuery } = useGeneratedKeys();
 
 	onMount(() => {
-		if ($passphraseStore === '') {
+		if (
+			$passphraseStore === '' ||
+			$keysStore.keys.master === null ||
+			$keysStore.keys.revocation === null ||
+			$keysStore.keys.device === null
+		) {
 			goto('/setup/start');
 		}
 	});
 
 	async function download(): Promise<void> {
 		const { saveAs } = fileSaver;
-		const files = [
-			{ name: 'master.txt', data: new TextDecoder().decode($generatedKeysQuery.data?.master) },
-			{ name: 'device.txt', data: new TextDecoder().decode($generatedKeysQuery.data?.device) },
-			{
-				name: 'revocation.txt',
-				data: new TextDecoder().decode($generatedKeysQuery.data?.revocation)
-			}
-		];
-		const zip = new JSZip();
-		files.forEach((file) => zip.file(file.name, file.data));
-		const content = await zip.generateAsync({ type: 'blob' });
+		const keys = $keysStore?.keys;
+		if (keys?.master && keys?.device && keys?.revocation) {
+			const files = [
+				{
+					name: 'master.txt',
+					data: new TextDecoder().decode(keys.master)
+				},
+				{
+					name: 'device.txt',
+					data: new TextDecoder().decode(keys.device)
+				},
+				{
+					name: 'revocation.txt',
+					data: new TextDecoder().decode(keys.revocation)
+				}
+			];
+			const zip = new JSZip();
+			files.forEach((file) => zip.file(file.name, file.data));
+			const content = await zip.generateAsync({ type: 'blob' });
 
-		saveAs(content, 'keys.zip');
+			saveAs(content, 'keys.zip');
+
+			keysStore.resetExceptDevice();
+
+			goto('/setup/app-password');
+		}
 	}
 </script>
 

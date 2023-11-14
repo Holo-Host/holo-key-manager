@@ -1,7 +1,5 @@
 <script>
-	import Button from '$components/Button.svelte';
-	import AppParagraph from '$components/AppParagraph.svelte';
-	import Title from '$components/Title.svelte';
+	import { Button, Title, AppParagraph } from '$components';
 	import { goto } from '$app/navigation';
 </script>
 

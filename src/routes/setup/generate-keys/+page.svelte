@@ -1,16 +1,8 @@
 <script lang="ts">
-	import { getContext, onMount } from 'svelte';
-	import { passphrase } from '$stores';
-	import type { Writable } from 'svelte/store';
+	import { onMount } from 'svelte';
+	import { keysStore, passphraseStore, sessionStore } from '$stores';
 	import { goto } from '$app/navigation';
-	import AppParagraph from '$components/AppParagraph.svelte';
-	import Title from '$components/Title.svelte';
-	import Button from '$components/Button.svelte';
-	import { useGeneratedKeys } from '$queries';
-
-	const passphraseStore = getContext<Writable<string>>(passphrase);
-
-	const { generateKeysMutation } = useGeneratedKeys();
+	import { Button, Title, AppParagraph } from '$components';
 
 	onMount(() => {
 		if ($passphraseStore === '') {
@@ -18,14 +10,17 @@
 		}
 	});
 
-	function generate() {
-		$generateKeysMutation.mutate($passphraseStore, {
-			onSuccess: () => goto('/setup/download')
-		});
+	async function generate() {
+		await keysStore.generate($passphraseStore);
+		$sessionStore = { session: true };
+		$passphraseStore = '';
+		if ($keysStore.keys) {
+			goto('/setup/download');
+		}
 	}
 </script>
 
-{#if $generateKeysMutation.isPending}
+{#if $keysStore.loading}
 	<span>Loading</span>
 {:else}
 	<img src="/img/download.svg" alt="Download" class="w-12 my-4" />

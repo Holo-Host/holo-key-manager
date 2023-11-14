@@ -1,14 +1,17 @@
 <script>
-	import Button from '$components/Button.svelte';
-	import AppParagraph from '$components/AppParagraph.svelte';
+	import { Button, AppParagraph } from '$components';
+	import { sessionStore } from '$stores';
 	import { dismissExtensionWindow } from '$lib/helpers';
+
 	function redirectToSetup() {
 		window.open('setup/start.html', '_blank');
-		// window.open('setup/generate-keys.html', '_blank');
 	}
 </script>
 
 <div class="m-8">
+	{#if $sessionStore.session}
+		<span>session</span>
+	{/if}
 	<div class="flex justify-between items-center mb-4">
 		<img src="/img/holo_logo.svg" alt="Holo Key Manager Logo" />
 		<button on:click={dismissExtensionWindow} class="bg-transparent border-none">

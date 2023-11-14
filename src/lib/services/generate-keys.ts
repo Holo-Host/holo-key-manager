@@ -1,5 +1,6 @@
 // @ts-nocheck
 import * as hcSeedBundle from 'hcSeedBundle';
+import type { GeneratedKeys } from '$types';
 
 export async function generateKeys(passphrase: string): Promise<GeneratedKeys> {
 	await hcSeedBundle.seedBundleReady;
