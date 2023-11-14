@@ -6,7 +6,7 @@ const createSessionStore = () => {
 	const { subscribe, set, update } = writable<SessionState>({ session: false }, () => {
 		const listener = (changes: ChangesType, namespace: string) => {
 			if (namespace === 'session' && changes[STORAGE_KEY]?.newValue) {
-				update(() => changes[STORAGE_KEY]?.newValue);
+				update(() => changes[STORAGE_KEY]?.newValue ?? { session: false });
 			}
 		};
 
