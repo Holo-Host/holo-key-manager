@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
-	import { keysStore, passphraseStore } from '$stores';
+	import { keysStore } from '$stores';
 	import JSZip from 'jszip';
 	import fileSaver from 'file-saver';
 	import { Button, Title, AppParagraph } from '$components';
@@ -8,7 +8,6 @@
 
 	onMount(() => {
 		if (
-			$passphraseStore === '' ||
 			$keysStore.keys.master === null ||
 			$keysStore.keys.revocation === null ||
 			$keysStore.keys.device === null

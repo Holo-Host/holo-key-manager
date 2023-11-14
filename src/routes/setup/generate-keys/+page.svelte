@@ -13,8 +13,8 @@
 	async function generate() {
 		await keysStore.generate($passphraseStore);
 		$sessionStore = { session: true };
-		$passphraseStore = '';
 		if ($keysStore.keys) {
+			$passphraseStore = '';
 			goto('/setup/download');
 		}
 	}

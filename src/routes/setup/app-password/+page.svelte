@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { keysStore, passwordStore, passphraseStore } from '$stores';
+	import { keysStore, passwordStore } from '$stores';
 
 	import type { SetSecret } from '$types';
 	import { goto } from '$app/navigation';
@@ -7,7 +7,7 @@
 	import { onMount } from 'svelte';
 
 	onMount(() => {
-		if ($passphraseStore === '' || $keysStore.keys.device === null) {
+		if ($keysStore.keys.device === null) {
 			goto('/setup/start');
 		}
 	});
