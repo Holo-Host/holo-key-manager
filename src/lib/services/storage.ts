@@ -1,21 +1,31 @@
 import { isChromeStorageSafe } from '$helpers';
-import type { AreaName, ChangesType, StorageKey } from '$types';
+import type { AreaName, ChangesType, SecureData } from '$types';
+
+type StorageItem =
+	| { key: 'sessionData'; value: boolean; area: 'session' }
+	| { key: 'password'; value: string; area: 'local' }
+	| { key: 'encryptedDeviceKey'; value: SecureData; area: 'local' };
+
+type GetStorageItem =
+	| { key: 'sessionData'; area: 'session' }
+	| { key: 'password'; area: 'local' }
+	| { key: 'encryptedDeviceKey'; area: 'local' };
 
 type StorageService = {
-	set(key: StorageKey, value: unknown, area: 'local' | 'session'): void;
-	get(key: StorageKey, callback: (value: unknown) => void, area: 'local' | 'session'): void;
-	getWithoutCallback: (key: StorageKey, area: 'local' | 'session') => Promise<unknown>;
-	addListener(listener: (changes: ChangesType, namespace: AreaName) => void): void;
-	removeListener(listener: (changes: ChangesType, namespace: AreaName) => void): void;
+	set: (item: StorageItem) => void;
+	get: (item: GetStorageItem, callback: (value: unknown) => void) => void;
+	getWithoutCallback: (item: GetStorageItem) => Promise<unknown>;
+	addListener: (listener: (changes: ChangesType, namespace: AreaName) => void) => void;
+	removeListener: (listener: (changes: ChangesType, namespace: AreaName) => void) => void;
 };
 
 export const storageService: StorageService = {
-	set: (key: StorageKey, value: unknown, area: 'local' | 'session') => {
+	set: ({ key, value, area }) => {
 		if (isChromeStorageSafe()) {
 			chrome.storage[area].set({ [key]: value });
 		}
 	},
-	get: (key: StorageKey, callback: (value: unknown) => void, area: 'local' | 'session') => {
+	get: ({ key, area }, callback) => {
 		if (isChromeStorageSafe()) {
 			chrome.storage[area].get([key], (result: ChangesType) => {
 				callback(result[key]);
@@ -24,7 +34,7 @@ export const storageService: StorageService = {
 			callback(null);
 		}
 	},
-	getWithoutCallback: (key: StorageKey, area: 'local' | 'session') => {
+	getWithoutCallback: ({ key, area }) => {
 		if (isChromeStorageSafe()) {
 			return new Promise((resolve) => {
 				chrome.storage[area].get([key], (result: ChangesType) => {

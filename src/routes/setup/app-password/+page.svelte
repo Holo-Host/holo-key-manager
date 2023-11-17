@@ -5,7 +5,7 @@
 	import { goto } from '$app/navigation';
 	import { EnterSecretComponent } from '$components';
 	import { onMount } from 'svelte';
-	import { hashPassword } from '$helpers';
+	import { encryptData, hashPassword } from '$helpers';
 	import { storageService } from '$services';
 
 	onMount(() => {
@@ -14,9 +14,19 @@
 		}
 	});
 
-	async function setPassword(password: string): Promise<void> {
-		storageService.set('password', await hashPassword(password), 'local');
-	}
+	const setPassword = async (password: string): Promise<void> => {
+		if ($keysStore.keys.device !== null) {
+			const hash = await hashPassword(password);
+			storageService.set({ key: 'password', value: hash, area: 'local' });
+			storageService.set({
+				key: 'encryptedDeviceKey',
+				value: await encryptData($keysStore.keys.device, password),
+				area: 'local'
+			});
+
+			window.close();
+		}
+	};
 
 	let appPasswordState: SetSecret = 'set';
 	let confirmPassword = '';

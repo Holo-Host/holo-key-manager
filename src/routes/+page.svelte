@@ -10,7 +10,7 @@
 		const storeValue = derived(
 			[sessionStore, passwordExistStore],
 			([$sessionStore, $passwordExistStore]) =>
-				$sessionStore.session === null || $passwordExistStore === null
+				$sessionStore === null || $passwordExistStore === null
 		);
 		storeValue.subscribe(($loading) => {
 			loading = $loading;
@@ -20,7 +20,7 @@
 
 {#if loading}
 	<span>Loading</span>
-{:else if $sessionStore.session}
+{:else if $sessionStore}
 	<span>Session</span>
 {:else if $passwordExistStore}
 	<Login />

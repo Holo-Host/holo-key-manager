@@ -3,25 +3,27 @@ import { type SessionState, SessionStateSchema, type AreaName, type ChangesType 
 import { storageService } from '$services';
 
 const createSessionStore = () => {
-	const { subscribe, set, update } = writable<SessionState>({ session: null }, () => {
+	const { subscribe, set, update } = writable<SessionState>(null, () => {
 		const listener = (changes: ChangesType, namespace: AreaName) => {
 			if (namespace === 'session') {
 				const newValue = SessionStateSchema.safeParse(changes['sessionData']);
-				update(() => (newValue.success ? newValue.data : { session: false }));
+				update(() => (newValue.success ? newValue.data : false));
 			}
 		};
 
 		storageService.get(
-			'sessionData',
-			(result) => {
+			{
+				key: 'sessionData',
+				area: 'session'
+			},
+			(result: unknown) => {
 				const validatedResult = SessionStateSchema.safeParse(result);
 				if (validatedResult.success) {
 					set(validatedResult.data);
 				} else {
-					set({ session: false });
+					set(false);
 				}
-			},
-			'session'
+			}
 		);
 
 		storageService.addListener(listener);
@@ -35,7 +37,11 @@ const createSessionStore = () => {
 		subscribe,
 		set: (value: SessionState) => {
 			set(value);
-			storageService.set('sessionData', value, 'session');
+			storageService.set({
+				key: 'sessionData',
+				value: value ?? false,
+				area: 'session'
+			});
 		}
 	};
 };

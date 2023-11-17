@@ -1,2 +1,4 @@
+export const isChromeDefined = () => typeof chrome !== 'undefined';
+
 export const isChromeStorageSafe = () =>
-	typeof chrome !== 'undefined' && chrome.storage && chrome.storage.session;
+	isChromeDefined() && chrome.storage && chrome.storage.session;

@@ -12,7 +12,13 @@ const createPasswordExistStore = () => {
 			}
 		};
 
-		storageService.get('password', (result) => set(!!result), 'local');
+		storageService.get(
+			{
+				key: 'password',
+				area: 'local'
+			},
+			(result) => set(!!result)
+		);
 
 		storageService.addListener(listener);
 
@@ -23,12 +29,11 @@ const createPasswordExistStore = () => {
 
 	return {
 		subscribe,
-		set: (value: boolean) => {
-			set(value);
-			storageService.set('password', value, 'local');
-		},
 		validate: async (password: string) => {
-			const result = await storageService.getWithoutCallback('password', 'local');
+			const result = await storageService.getWithoutCallback({
+				key: 'password',
+				area: 'local'
+			});
 			const validatedResult = z.string().safeParse(result);
 
 			return validatedResult.success && (await hashPassword(password)) === validatedResult.data;
