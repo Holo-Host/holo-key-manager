@@ -9,7 +9,7 @@
 
 		if (isValid) {
 			sessionStore.set({ session: true });
-			dismissWindow();
+			location.reload();
 		} else {
 			alert('Invalid password');
 		}
