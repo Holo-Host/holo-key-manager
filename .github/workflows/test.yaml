@@ -35,6 +35,7 @@ jobs:
 
       - name: Chrome upload & release
         uses: mnao305/chrome-extension-upload@v4.0.1
+        continue-on-error: true
         with:
           file-path: build.zip
           extension-id: eggfhkdnfdhdpmkfpihjjbnncgmhihce
