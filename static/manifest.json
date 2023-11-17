@@ -1,7 +1,7 @@
 {
 	"name": "Holo key manager",
 	"description": "A browser extension to manage holo keys",
-	"version": "0.0.16",
+	"version": "0.0.17",
 	"manifest_version": 3,
 	"browser_specific_settings": {
 		"gecko": {
@@ -16,8 +16,5 @@
 	"content_security_policy": {
 		"extension_pages": "default-src 'self' 'wasm-unsafe-eval'"
 	},
-	"background": {
-		"service_worker": "background.js"
-	},
-	"permissions": ["storage", "nativeMessaging"]
+	"permissions": ["storage"]
 }

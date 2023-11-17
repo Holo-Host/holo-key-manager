@@ -5,6 +5,8 @@
 	import { goto } from '$app/navigation';
 	import { EnterSecretComponent } from '$components';
 	import { onMount } from 'svelte';
+	import { hashPassword } from '$helpers';
+	import { storageService } from '$services';
 
 	onMount(() => {
 		if ($keysStore.keys.device === null) {
@@ -12,16 +14,8 @@
 		}
 	});
 
-	function sendPasswordSetupRequest(password: string): void {
-		chrome.runtime.sendMessage(
-			{
-				type: 'SETUP_PASSWORD',
-				password
-			},
-			(response) => {
-				console.log('received user data', response);
-			}
-		);
+	async function setPassword(password: string): Promise<void> {
+		storageService.set('password', await hashPassword(password), 'local');
 	}
 
 	let appPasswordState: SetSecret = 'set';
@@ -55,6 +49,6 @@
 		description="Tying loose ends, please enter your passphrase again."
 		nextLabel="Next"
 		inputState={confirmPassword !== $passwordStore ? 'Passwords do not match' : ``}
-		next={() => sendPasswordSetupRequest($passwordStore)}
+		next={() => setPassword($passwordStore)}
 	/>
 {/if}

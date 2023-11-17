@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
-	import { keysStore, passphraseStore, sessionStore } from '$stores';
+	import { keysStore, passphraseStore } from '$stores';
 	import { goto } from '$app/navigation';
 	import { Button, Title, AppParagraph } from '$components';
 
@@ -12,7 +12,6 @@
 
 	async function generate() {
 		await keysStore.generate($passphraseStore);
-		$sessionStore = { session: true };
 		if ($keysStore.keys) {
 			$passphraseStore = '';
 			goto('/setup/download');

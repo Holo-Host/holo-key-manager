@@ -1,1 +1,2 @@
-export * from './password';
+export * from './keys';
+export * from './storage-service';

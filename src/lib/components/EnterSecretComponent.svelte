@@ -3,7 +3,7 @@
 	import Button from '$components/Button.svelte';
 	import Tooltip from './Tooltip.svelte';
 	import Title from '$components/Title.svelte';
-	import { dismissExtensionWindow } from '$lib/helpers';
+	import { dismissWindow } from '$lib/helpers';
 	import clsx from 'clsx';
 
 	export let inputValue: string;
@@ -43,6 +43,6 @@
 </div>
 
 <div class="grid grid-cols-2 gap-5 w-full p-6">
-	<Button label="Cancel" onClick={dismissExtensionWindow} color="secondary" />
+	<Button label="Cancel" onClick={dismissWindow} color="secondary" />
 	<Button disabled={isDisabled} label={nextLabel} onClick={next} />
 </div>

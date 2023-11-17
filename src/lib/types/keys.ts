@@ -10,15 +10,3 @@ export type KeysState = {
 	keys: GeneratedKeys;
 	loading: boolean;
 };
-
-export type SessionState = {
-	session: boolean;
-};
-
-export const STORAGE_KEY = 'sessionData';
-
-export type ChangesType = {
-	[STORAGE_KEY]?: {
-		newValue: SessionState;
-	};
-};
