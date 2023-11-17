@@ -34,14 +34,15 @@ jobs:
           cd ..
 
       - name: Chrome upload & release
-        uses: mnao305/chrome-extension-upload@v4.0.1
+        uses: mobilefirstllc/cws-publish@latest
         continue-on-error: true
         with:
-          file-path: build.zip
-          extension-id: eggfhkdnfdhdpmkfpihjjbnncgmhihce
-          client-id: ${{ secrets.CHROME_CLIENT_ID }}
-          client-secret: ${{ secrets.CHROME_CLIENT_SECRET }}
-          refresh-token: ${{ secrets.CHROME_REFRESH_TOKEN }}
+          action: publish
+          client_id: ${{ secrets.CHROME_CLIENT_ID }}
+          client_secret: ${{ secrets.CHROME_CLIENT_SECRET }}
+          refresh_token: ${{ secrets.CHROME_REFRESH_TOKEN }}
+          extension_id: eggfhkdnfdhdpmkfpihjjbnncgmhihce
+          zip_file: build.zip
 
       - name: Firefox upload & release
         uses: cardinalby/webext-buildtools-firefox-addons-action@1.0.9
