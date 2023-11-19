@@ -1,12 +1,9 @@
 <script>
 	import { page } from '$app/stores';
-	import { onMount, setContext } from 'svelte';
-	import { passphrase, passphraseStore } from '$stores';
+	import { onMount } from 'svelte';
 	import { createIsAuthenticated, dismissWindow } from '$helpers';
 
 	const goBack = () => window.history.back();
-
-	setContext(passphrase, passphraseStore);
 
 	$: allowGoBack = !(
 		$page.url.pathname.includes('start') || $page.url.pathname.includes('download')

@@ -1,4 +1,4 @@
-<script>
+<script lang="ts">
 	import { Button, Title, AppParagraph } from '$components';
 	import { goto } from '$app/navigation';
 </script>

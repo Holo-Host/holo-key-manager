@@ -1,15 +1,14 @@
 import { isChromeStorageSafe } from '$helpers';
-import type { AreaName, ChangesType, SecureData } from '$types';
+import type { AreaName, ChangesType, PasswordAndSecureData } from '$types';
+import type { LOCAL, SESSION, SESSION_DATA, PASSWORD_WITH_DEVICE_KEY } from '$const';
 
 type StorageItem =
-	| { key: 'sessionData'; value: boolean; area: 'session' }
-	| { key: 'password'; value: string; area: 'local' }
-	| { key: 'encryptedDeviceKey'; value: SecureData; area: 'local' };
+	| { key: typeof SESSION_DATA; value: boolean; area: typeof SESSION }
+	| { key: typeof PASSWORD_WITH_DEVICE_KEY; value: PasswordAndSecureData; area: typeof LOCAL };
 
 type GetStorageItem =
-	| { key: 'sessionData'; area: 'session' }
-	| { key: 'password'; area: 'local' }
-	| { key: 'encryptedDeviceKey'; area: 'local' };
+	| { key: typeof SESSION_DATA; area: typeof SESSION }
+	| { key: typeof PASSWORD_WITH_DEVICE_KEY; area: typeof LOCAL };
 
 type StorageService = {
 	set: (item: StorageItem) => void;

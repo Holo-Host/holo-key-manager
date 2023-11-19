@@ -8,7 +8,7 @@
 		const isValid = await passwordExistStore.validate(password);
 
 		if (isValid) {
-			sessionStore.set({ session: true });
+			sessionStore.set(true);
 			location.reload();
 		} else {
 			alert('Invalid password');

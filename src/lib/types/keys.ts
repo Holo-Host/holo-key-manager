@@ -13,9 +13,18 @@ export type KeysState = {
 	loading: boolean;
 };
 
+export const Password = z.string();
+
 export const SecureDataSchema = z.object({
-	encryptedData: z.instanceof(Uint8Array),
-	iv: z.instanceof(Uint8Array)
+	encryptedData: z.string(),
+	iv: z.string()
 });
 
 export type SecureData = z.infer<typeof SecureDataSchema>;
+
+export const PasswordAndSecureDataSchema = z.object({
+	password: Password,
+	secureData: SecureDataSchema
+});
+
+export type PasswordAndSecureData = z.infer<typeof PasswordAndSecureDataSchema>;

@@ -12,6 +12,7 @@ const config = {
 		appDir: 'app',
 		alias: {
 			$components: path.resolve('./src/lib/components'),
+			$const: path.resolve('./src/lib/const'),
 			$helpers: path.resolve('./src/lib/helpers'),
 			$stores: path.resolve('./src/lib/stores'),
 			$types: path.resolve('./src/lib/types'),

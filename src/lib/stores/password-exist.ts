@@ -1,23 +1,28 @@
-import { z } from 'zod';
 import { writable } from 'svelte/store';
 import { storageService } from '$services';
-import type { AreaName, ChangesType } from '$types';
+import { PasswordAndSecureDataSchema, type AreaName, type ChangesType } from '$types';
 import { hashPassword } from '$helpers';
+import { LOCAL, PASSWORD_WITH_DEVICE_KEY } from '$const';
 
 const createPasswordExistStore = () => {
-	const { subscribe, set, update } = writable<boolean | null>(null, () => {
+	const { subscribe, update } = writable<boolean | null>(null, () => {
+		const validateAndUpdate = (result: unknown) => {
+			const validatedResult = PasswordAndSecureDataSchema.safeParse(result);
+			update(() => validatedResult.success);
+		};
+
 		const listener = (changes: ChangesType, namespace: AreaName) => {
-			if (namespace === 'local' && 'password' in changes) {
-				update(() => true);
+			if (namespace === LOCAL) {
+				validateAndUpdate(changes[PASSWORD_WITH_DEVICE_KEY]);
 			}
 		};
 
 		storageService.get(
 			{
-				key: 'password',
-				area: 'local'
+				key: PASSWORD_WITH_DEVICE_KEY,
+				area: LOCAL
 			},
-			(result) => set(!!result)
+			(result: unknown) => validateAndUpdate(result)
 		);
 
 		storageService.addListener(listener);
@@ -31,12 +36,14 @@ const createPasswordExistStore = () => {
 		subscribe,
 		validate: async (password: string) => {
 			const result = await storageService.getWithoutCallback({
-				key: 'password',
-				area: 'local'
+				key: PASSWORD_WITH_DEVICE_KEY,
+				area: LOCAL
 			});
-			const validatedResult = z.string().safeParse(result);
+			const validatedResult = PasswordAndSecureDataSchema.safeParse(result);
 
-			return validatedResult.success && (await hashPassword(password)) === validatedResult.data;
+			return (
+				validatedResult.success && (await hashPassword(password)) === validatedResult.data.password
+			);
 		}
 	};
 };

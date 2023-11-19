@@ -1,29 +1,27 @@
 import { writable } from 'svelte/store';
 import { type SessionState, SessionStateSchema, type AreaName, type ChangesType } from '$types';
 import { storageService } from '$services';
+import { SESSION, SESSION_DATA } from '$const';
 
 const createSessionStore = () => {
 	const { subscribe, set, update } = writable<SessionState>(null, () => {
+		const validateAndUpdate = (result: unknown) => {
+			const validatedResult = SessionStateSchema.safeParse(result);
+			update(() => (validatedResult.success ? validatedResult.data : false));
+		};
+
 		const listener = (changes: ChangesType, namespace: AreaName) => {
-			if (namespace === 'session') {
-				const newValue = SessionStateSchema.safeParse(changes['sessionData']);
-				update(() => (newValue.success ? newValue.data : false));
+			if (namespace === SESSION) {
+				validateAndUpdate(changes[SESSION_DATA]);
 			}
 		};
 
 		storageService.get(
 			{
-				key: 'sessionData',
-				area: 'session'
+				key: SESSION_DATA,
+				area: SESSION
 			},
-			(result: unknown) => {
-				const validatedResult = SessionStateSchema.safeParse(result);
-				if (validatedResult.success) {
-					set(validatedResult.data);
-				} else {
-					set(false);
-				}
-			}
+			(result: unknown) => validateAndUpdate(result)
 		);
 
 		storageService.addListener(listener);
@@ -38,9 +36,9 @@ const createSessionStore = () => {
 		set: (value: SessionState) => {
 			set(value);
 			storageService.set({
-				key: 'sessionData',
+				key: SESSION_DATA,
 				value: value ?? false,
-				area: 'session'
+				area: SESSION
 			});
 		}
 	};
