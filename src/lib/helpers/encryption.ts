@@ -1,55 +1,46 @@
 import type { SecureData } from '$types';
 
-function hexStringToArrayBuffer(hexString: string) {
+const hexStringToArrayBuffer = (hexString: string) => {
 	if (hexString.length % 2 !== 0) {
 		throw new Error('Invalid hexString length. It must be even.');
 	}
-	const bytes = new Uint8Array(hexString.length / 2);
-	for (let i = 0; i < bytes.length; i++) {
-		bytes[i] = parseInt(hexString.slice(i * 2, i * 2 + 2), 16);
+	const hexBytes = hexString.match(/.{1,2}/g);
+	if (hexBytes === null) {
+		throw new Error('Invalid hexString format. It must contain only hexadecimal characters.');
 	}
-	return bytes.buffer;
-}
+	return new Uint8Array(hexBytes.map((byte) => parseInt(byte, 16))).buffer;
+};
 
-function arrayBufferToBase64(buffer: ArrayBuffer): string {
-	return btoa(String.fromCharCode(...new Uint8Array(buffer)));
-}
+const arrayBufferToBase64 = (buffer: ArrayBuffer): string =>
+	btoa(String.fromCharCode(...new Uint8Array(buffer)));
 
-function base64ToArrayBuffer(base64: string): ArrayBuffer {
-	const binary_string = atob(base64);
-	const len = binary_string.length;
-	const bytes = new Uint8Array(len);
-	for (let i = 0; i < len; i++) {
-		bytes[i] = binary_string.charCodeAt(i);
-	}
-	return bytes.buffer;
-}
+const base64ToArrayBuffer = (base64: string): ArrayBuffer =>
+	new Uint8Array(
+		atob(base64)
+			.split('')
+			.map((char) => char.charCodeAt(0))
+	).buffer;
 
-function arrayBufferToHexString(buffer: ArrayBuffer) {
-	const byteArray = new Uint8Array(buffer);
-	let hexString = '';
-	byteArray.forEach(function (byte) {
-		hexString += ('0' + byte.toString(16)).slice(-2);
-	});
-	return hexString;
-}
+const arrayBufferToHexString = (buffer: ArrayBuffer) =>
+	Array.prototype.map
+		.call(new Uint8Array(buffer), (x) => ('00' + x.toString(16)).slice(-2))
+		.join('');
 
-export async function hashPassword(password: string): Promise<string> {
+export const hashPassword = async (password: string): Promise<string> => {
 	const encoder = new TextEncoder();
 	const data = encoder.encode(password);
 	const algo = { name: 'SHA-256' };
 	const hashBuffer = await crypto.subtle.digest(algo, data);
 	return arrayBufferToHexString(hashBuffer); // Convert ArrayBuffer to hex string
-}
+};
 
-export async function encryptData(
+export const encryptData = async (
 	secretData: Uint8Array,
-	passwordHashHex: string // Accept hex string
-): Promise<SecureData> {
+	passwordHashHex: string
+): Promise<SecureData> => {
 	const iv = crypto.getRandomValues(new Uint8Array(12));
 	const algo: AesGcmParams = { name: 'AES-GCM', iv };
 	const passwordHash = hexStringToArrayBuffer(passwordHashHex);
-	console.log('Imported key length (bytes):', passwordHash.byteLength);
 	const key = await crypto.subtle.importKey('raw', passwordHash, algo, false, ['encrypt']);
 
 	const encrypted = await crypto.subtle.encrypt(algo, key, secretData);
@@ -57,12 +48,12 @@ export async function encryptData(
 		encryptedData: arrayBufferToBase64(encrypted),
 		iv: arrayBufferToBase64(iv)
 	};
-}
+};
 
-export async function decryptData(
+export const decryptData = async (
 	encryptedData: SecureData,
 	passwordHashHex: string // Accept hex string
-): Promise<Uint8Array> {
+): Promise<Uint8Array> => {
 	const iv = base64ToArrayBuffer(encryptedData.iv);
 	const algo = { name: 'AES-GCM', iv };
 	const passwordHash = hexStringToArrayBuffer(passwordHashHex); // Convert hex string to ArrayBuffer
@@ -74,4 +65,4 @@ export async function decryptData(
 		base64ToArrayBuffer(encryptedData.encryptedData)
 	);
 	return new Uint8Array(decrypted);
-}
+};

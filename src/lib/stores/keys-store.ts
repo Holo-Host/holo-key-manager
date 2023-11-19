@@ -35,7 +35,8 @@ const initKeysStore = () => {
 					master: null,
 					revocation: null
 				}
-			}))
+			})),
+		resetAll: () => update(() => initialState)
 	};
 };
 

@@ -1,27 +1,18 @@
 <script>
 	import { page } from '$app/stores';
-	import { onMount } from 'svelte';
-	import { createIsAuthenticated, dismissWindow } from '$helpers';
+	import { dismissWindow } from '$helpers';
+	import { sessionStorageQueries } from '$queries';
 
 	const goBack = () => window.history.back();
 
-	$: allowGoBack = !(
-		$page.url.pathname.includes('start') || $page.url.pathname.includes('download')
-	);
+	const restrictedPaths = ['start', 'download', 'done'];
+	$: allowGoBack = !restrictedPaths.some((path) => $page.url.pathname.includes(path));
 
-	const isAuthenticated = createIsAuthenticated();
+	const { setupQuery } = sessionStorageQueries();
 
-	onMount(() => {
-		const unsubscribe = isAuthenticated.subscribe(($isAuthenticated) => {
-			if ($isAuthenticated) {
-				dismissWindow();
-			}
-		});
-
-		return () => {
-			unsubscribe();
-		};
-	});
+	$: if ($setupQuery.data && !$page.url.pathname.includes('app-password')) {
+		dismissWindow();
+	}
 </script>
 
 <div

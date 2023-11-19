@@ -3,10 +3,10 @@
 	import { goto } from '$app/navigation';
 	import { EnterSecretComponent } from '$components';
 	import { onMount } from 'svelte';
-	import { encryptData, hashPassword } from '$helpers';
-	import { storageService } from '$services';
-	import { LOCAL, PASSWORD_WITH_DEVICE_KEY } from '$const';
 	import type { SetSecret } from '$types';
+	import { sessionStorageQueries } from '$queries';
+
+	const { passwordWithDeviceKeyMutation } = sessionStorageQueries();
 
 	onMount(() => {
 		if ($keysStore.keys.device === null) {
@@ -16,16 +16,18 @@
 
 	const setPassword = async (password: string): Promise<void> => {
 		if ($keysStore.keys.device !== null) {
-			const hash = await hashPassword(password);
-			storageService.set({
-				key: PASSWORD_WITH_DEVICE_KEY,
-				value: {
-					password: hash,
-					secureData: await encryptData($keysStore.keys.device, hash)
+			$passwordWithDeviceKeyMutation.mutate(
+				{
+					password,
+					secretData: $keysStore.keys.device
 				},
-				area: LOCAL
-			});
-			goto('/setup/done');
+				{
+					onSuccess: () => {
+						keysStore.resetAll();
+						goto('/done');
+					}
+				}
+			);
 		}
 	};
 

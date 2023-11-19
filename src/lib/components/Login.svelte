@@ -1,18 +1,15 @@
 <script>
 	import { Button, AppParagraph } from '$components';
-	import { passwordExistStore, sessionStore } from '$stores';
 	import { dismissWindow } from '$lib/helpers';
+	import { sessionStorageQueries } from '$queries';
 	let password = '';
 
-	async function login() {
-		const isValid = await passwordExistStore.validate(password);
+	const { signInMutation } = sessionStorageQueries();
 
-		if (isValid) {
-			sessionStore.set(true);
-			location.reload();
-		} else {
-			alert('Invalid password');
-		}
+	async function login() {
+		$signInMutation.mutate(password, {
+			onError: () => alert('Invalid password')
+		});
 	}
 </script>
 
