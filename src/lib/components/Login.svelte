@@ -1,7 +1,8 @@
-<script>
+<script lang="ts">
 	import { Button, AppParagraph } from '$components';
 	import { dismissWindow } from '$lib/helpers';
 	import { sessionStorageQueries } from '$queries';
+	import InputPassword from './InputPassword.svelte';
 	let password = '';
 
 	const { signInMutation } = sessionStorageQueries();
@@ -14,23 +15,19 @@
 </script>
 
 <div class="m-8">
-	<div class="flex justify-between items-center mb-4">
-		<img src="/img/holo_logo.svg" alt="Holo Key Manager Logo" />
+	<div class="flex justify-end items-center mb-4">
 		<button on:click={dismissWindow} class="bg-transparent border-none">
 			<img src="/img/close.svg" alt="Close" />
 		</button>
 	</div>
-
 	<div class="flex flex-col justify-center items-center">
-		<img src="/img/logo.svg" alt="Login" class="max-w-[48px]" />
-		<h1 class="font-bold text-2xl mt-4">Login Required</h1>
+		<img src="/img/holo_logo.svg" alt="Login" class="w-18 h-18" />
+		<h1 class="font-bold text-2xl mt-4">Welcome Back</h1>
 		<AppParagraph
 			extraProps="my-4 text-center max-w-xs"
-			text="Please enter your password to login."
+			text="Please enter your password to login into Holo Key Manager"
 		/>
-		<input bind:value={password} type="password" class="my-4" placeholder="Enter password" />
+		<InputPassword bind:value={password} label="Enter password" />
 	</div>
-
 	<Button label="Login" onClick={login} extraBottomMargin />
-	<Button label="Cancel" onClick={dismissWindow} color="secondary" />
 </div>

@@ -1,4 +1,4 @@
-<script>
+<script lang="ts">
 	import { Button, AppParagraph } from '$components';
 	import { dismissWindow } from '$lib/helpers';
 

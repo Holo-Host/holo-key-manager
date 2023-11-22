@@ -1,10 +1,11 @@
 <script lang="ts">
 	import { keysStore } from '$stores';
 	import { goto } from '$app/navigation';
-	import { EnterSecretComponent } from '$components';
+	import { AppParagraph, Button, Title } from '$components';
 	import { onMount } from 'svelte';
-	import type { SetSecret } from '$types';
 	import { sessionStorageQueries } from '$queries';
+	import { dismissWindow } from '$helpers';
+	import InputPassword from '$components/InputPassword.svelte';
 
 	const { passwordWithDeviceKeyMutation } = sessionStorageQueries();
 
@@ -14,7 +15,7 @@
 		}
 	});
 
-	const setPassword = async (password: string): Promise<void> => {
+	const setPassword = async (): Promise<void> => {
 		if ($keysStore.keys.device !== null) {
 			$passwordWithDeviceKeyMutation.mutate(
 				{
@@ -31,38 +32,34 @@
 		}
 	};
 
-	let appPasswordState: SetSecret = 'set';
 	let confirmPassword = '';
 	let password = '';
 
 	$: charCount = password.length;
+	$: isDisabled = charCount < 8 && confirmPassword !== password;
 </script>
 
-{#if appPasswordState === 'set'}
-	<EnterSecretComponent
-		bind:inputValue={password}
-		showTooltip={false}
-		isPassword
-		isDisabled={charCount < 8}
-		title="Enter password"
-		description="Enter your desired password. This will be required every time you start a new browser session."
-		nextLabel="Set password"
-		inputState={charCount < 8
-			? 'Please enter a minimum of 8 Characters'
-			: `${charCount} characters`}
-		next={() => (appPasswordState = 'confirm')}
+<Title>Set Key Manager Password</Title>
+<AppParagraph
+	extraProps="mx-auto text-center max-w-sm"
+	text="This password secures your Key Manager extension, it would be requested each time you launch it."
+/>
+<div class="p-6 w-full">
+	<InputPassword
+		bind:value={password}
+		label="New Password (8 Characters min)"
+		extraProps="mb-6"
+		error={charCount < 8 ? 'Please enter a minimum of 8 Characters' : ''}
 	/>
-{/if}
-{#if appPasswordState === 'confirm'}
-	<EnterSecretComponent
-		bind:inputValue={confirmPassword}
-		showTooltip={false}
-		isPassword
-		isDisabled={confirmPassword !== password}
-		title="Confirm Passphrase"
-		description="Tying loose ends, please enter your passphrase again."
-		nextLabel="Next"
-		inputState={confirmPassword !== password ? 'Passwords do not match' : ``}
-		next={() => setPassword(password)}
+	<InputPassword
+		bind:value={confirmPassword}
+		label="Confirm New Password"
+		extraProps="mb-4"
+		error={confirmPassword !== password ? "Password doesn't Match" : ''}
 	/>
-{/if}
+</div>
+
+<div class="grid grid-cols-2 gap-5 w-full p-6">
+	<Button label="Cancel" onClick={dismissWindow} color="secondary" />
+	<Button disabled={isDisabled} label="Set password" onClick={setPassword} />
+</div>
