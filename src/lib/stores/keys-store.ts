@@ -27,15 +27,6 @@ const initKeysStore = () => {
 				set(initialState);
 			}
 		},
-		resetExceptDevice: () =>
-			update((state) => ({
-				...initialState,
-				keys: {
-					...state.keys,
-					master: null,
-					revocation: null
-				}
-			})),
 		resetAll: () => update(() => initialState)
 	};
 };

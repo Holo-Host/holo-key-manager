@@ -3,10 +3,14 @@
 	import { dismissWindow } from '$helpers';
 	import { sessionStorageQueries } from '$queries';
 
-	const { sessionQuery, setupQuery } = sessionStorageQueries();
+	const { sessionQuery, setupDeviceKeyQuery } = sessionStorageQueries();
+
+	function redirectToChangePassword() {
+		window.open('change-password.html', '_blank');
+	}
 </script>
 
-{#if $sessionQuery.isFetching || $setupQuery.isFetching}
+{#if $sessionQuery.isFetching || $setupDeviceKeyQuery.isFetching}
 	<span>Loading</span>
 {:else if $sessionQuery.data}
 	<div class="m-8">
@@ -17,8 +21,11 @@
 			</button>
 		</div>
 		<h1 class="font-bold text-2xl mt-4">Holo Key Manager</h1>
+		<button on:click={redirectToChangePassword} class="text-blue-500 hover:text-blue-800"
+			>Change Password</button
+		>
 	</div>
-{:else if $setupQuery.data}
+{:else if $setupDeviceKeyQuery.data}
 	<Login />
 {:else}
 	<Init />

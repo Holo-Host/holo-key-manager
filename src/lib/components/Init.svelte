@@ -3,7 +3,7 @@
 	import { dismissWindow } from '$lib/helpers';
 
 	function redirectToSetup() {
-		window.open('setup/start.html', '_blank');
+		window.open('setup-pass/start.html', '_blank');
 	}
 </script>
 

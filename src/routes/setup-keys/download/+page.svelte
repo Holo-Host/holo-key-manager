@@ -12,7 +12,7 @@
 			$keysStore.keys.revocation === null ||
 			$keysStore.keys.device === null
 		) {
-			goto('/setup/start');
+			goto('/setup-pass/start');
 		}
 	});
 
@@ -40,9 +40,9 @@
 
 			saveAs(content, 'keys.zip');
 
-			keysStore.resetExceptDevice();
+			keysStore.resetAll();
 
-			goto('/setup/app-password');
+			goto('done');
 		}
 	}
 </script>

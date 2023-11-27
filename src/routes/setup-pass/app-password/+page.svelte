@@ -1,36 +1,11 @@
 <script lang="ts">
-	import { keysStore } from '$stores';
 	import { goto } from '$app/navigation';
 	import { AppParagraph, Button, Title } from '$components';
-	import { onMount } from 'svelte';
 	import { sessionStorageQueries } from '$queries';
 	import { dismissWindow } from '$helpers';
 	import InputPassword from '$components/InputPassword.svelte';
 
-	const { passwordWithDeviceKeyMutation } = sessionStorageQueries();
-
-	onMount(() => {
-		if ($keysStore.keys.device === null) {
-			goto('/setup/start');
-		}
-	});
-
-	const setPassword = async (): Promise<void> => {
-		if ($keysStore.keys.device !== null) {
-			$passwordWithDeviceKeyMutation.mutate(
-				{
-					password,
-					secretData: $keysStore.keys.device
-				},
-				{
-					onSuccess: () => {
-						keysStore.resetAll();
-						goto('/done');
-					}
-				}
-			);
-		}
-	};
+	const { createPassword } = sessionStorageQueries();
 
 	let confirmPassword = '';
 	let password = '';
@@ -61,5 +36,14 @@
 
 <div class="grid grid-cols-2 gap-5 w-full p-6">
 	<Button label="Cancel" onClick={dismissWindow} color="secondary" />
-	<Button disabled={isDisabled} label="Set password" onClick={setPassword} />
+	<Button
+		disabled={isDisabled}
+		label="Set password"
+		onClick={() =>
+			$createPassword.mutate(password, {
+				onSuccess: () => {
+					goto('enter-passphrase');
+				}
+			})}
+	/>
 </div>

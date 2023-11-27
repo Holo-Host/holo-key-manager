@@ -20,5 +20,5 @@
 	extraProps="my-4 max-w-xs"
 	text="First time user? Select “first time setup” below. If you have already setup the key manager in the past you can select “Import existing keys"
 />
-<Button arrow label="First time setup" onClick={() => goto('/setup/enter-passphrase')} />
+<Button arrow label="First time setup" onClick={() => goto('app-password')} />
 <Button label="Import existing keys" onClick={() => null} color="secondary" />

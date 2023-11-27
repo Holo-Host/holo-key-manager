@@ -1,0 +1,62 @@
+<script lang="ts">
+	import { goto } from '$app/navigation';
+	import { Button, SetupContainer, Title } from '$components';
+	import { sessionStorageQueries } from '$queries';
+	import { dismissWindow } from '$helpers';
+	import InputPassword from '$components/InputPassword.svelte';
+
+	const { changePasswordWithDeviceKeyMutation } = sessionStorageQueries();
+
+	let oldPassword = '';
+	let confirmPassword = '';
+	let password = '';
+
+	$: charCount = password.length;
+	$: isDisabled = charCount < 8 || confirmPassword !== password || oldPassword === '';
+</script>
+
+<SetupContainer>
+	<button class="self-start ml-6 mb-4 flex items-center" on:click={dismissWindow}>
+		<img src="/img/arrow-left.svg" alt="Arrow" />
+		<span class="ml-2 text-base">Back</span></button
+	>
+	<Title>Manage Password</Title>
+	{#if $changePasswordWithDeviceKeyMutation.error}
+		<span class="text-xs text-alert">{$changePasswordWithDeviceKeyMutation.error.message}</span>
+	{/if}
+	<div class="p-6 w-full">
+		<InputPassword bind:value={oldPassword} label="Old Password" extraProps="mb-6" />
+		<InputPassword
+			bind:value={password}
+			label="New Password (8 Characters min)"
+			extraProps="mb-6"
+			error={charCount < 8 ? 'Please enter a minimum of 8 Characters' : ''}
+		/>
+		<InputPassword
+			bind:value={confirmPassword}
+			label="Confirm New Password"
+			extraProps="mb-4"
+			error={confirmPassword !== password ? "Password doesn't Match" : ''}
+		/>
+	</div>
+
+	<div class="grid grid-cols-2 gap-5 w-full p-6">
+		<Button label="Cancel" onClick={dismissWindow} color="secondary" />
+		<Button
+			disabled={isDisabled}
+			label="Update password"
+			onClick={() =>
+				$changePasswordWithDeviceKeyMutation.mutate(
+					{
+						newPassword: password,
+						oldPassword: oldPassword
+					},
+					{
+						onSuccess: () => {
+							goto('/setup-keys/done');
+						}
+					}
+				)}
+		/>
+	</div>
+</SetupContainer>

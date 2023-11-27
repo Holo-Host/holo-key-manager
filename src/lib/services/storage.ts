@@ -1,19 +1,31 @@
 import { isChromeStorageSafe } from '$helpers';
-import type { AreaName, ChangesType, PasswordAndSecureData } from '$types';
-import type { LOCAL, SESSION, SESSION_DATA, PASSWORD_WITH_DEVICE_KEY } from '$const';
+import type { AreaName, ChangesType, SecureData } from '$types';
+import type { LOCAL, SESSION, SESSION_DATA, PASSWORD, DEVICE_KEY } from '$const';
 
-type StorageItem =
-	| { key: typeof SESSION_DATA; value: boolean; area: typeof SESSION }
-	| { key: typeof PASSWORD_WITH_DEVICE_KEY; value: PasswordAndSecureData; area: typeof LOCAL };
+type SetSession = { key: typeof SESSION_DATA; value: boolean; area: typeof SESSION };
+type GetSession = { key: typeof SESSION_DATA; area: typeof SESSION };
 
-type GetStorageItem =
-	| { key: typeof SESSION_DATA; area: typeof SESSION }
-	| { key: typeof PASSWORD_WITH_DEVICE_KEY; area: typeof LOCAL };
+type SetPassword = {
+	key: typeof PASSWORD;
+	value: string;
+	area: typeof LOCAL;
+};
+type GetPassword = { key: typeof PASSWORD; area: typeof LOCAL };
+
+type SetDeviceKey = {
+	key: typeof DEVICE_KEY;
+	value: SecureData;
+	area: typeof LOCAL;
+};
+type GetDeviceKey = { key: typeof DEVICE_KEY; area: typeof LOCAL };
+
+type StorageSetItem = SetSession | SetPassword | SetDeviceKey;
+type StorageGetItem = GetSession | GetPassword | GetDeviceKey;
 
 type StorageService = {
-	set: (item: StorageItem) => void;
-	get: (item: GetStorageItem, callback: (value: unknown) => void) => void;
-	getWithoutCallback: (item: GetStorageItem) => Promise<unknown>;
+	set: (item: StorageSetItem) => void;
+	get: (item: StorageGetItem, callback: (value: unknown) => void) => void;
+	getWithoutCallback: (item: StorageGetItem) => Promise<unknown>;
 	addListener: (listener: (changes: ChangesType, namespace: AreaName) => void) => void;
 	removeListener: (listener: (changes: ChangesType, namespace: AreaName) => void) => void;
 };

@@ -4,12 +4,21 @@
 	import type { SetSecret } from '$lib/types';
 	import { goto } from '$app/navigation';
 	import EnterSecretComponent from './EnterSecretComponent.svelte';
+	import { sessionStorageQueries } from '$queries';
 
 	let passphraseState: SetSecret = 'set';
 	let confirmPassphrase = '';
 	let showDialog = false;
 
 	$: charCount = $passphraseStore.length;
+
+	const { setupPasswordQuery } = sessionStorageQueries();
+
+	$: {
+		if ($setupPasswordQuery.data === false) {
+			goto('start');
+		}
+	}
 </script>
 
 {#if passphraseState === 'set'}
@@ -37,6 +46,6 @@
 		description="Tying loose ends, please enter your passphrase again."
 		nextLabel="Next"
 		inputState={confirmPassphrase !== $passphraseStore ? 'Passphrases do not match' : ``}
-		next={() => goto('/setup/generate-keys')}
+		next={() => goto('/setup-keys/generate-keys')}
 	/>
 {/if}

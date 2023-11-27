@@ -3,10 +3,13 @@
 	import { keysStore, passphraseStore } from '$stores';
 	import { goto } from '$app/navigation';
 	import { Button, Title, AppParagraph } from '$components';
+	import { sessionStorageQueries } from '$queries';
+
+	const { storeDeviceKey } = sessionStorageQueries();
 
 	onMount(() => {
 		if ($passphraseStore === '') {
-			goto('/setup/start');
+			goto('/setup-pass/start');
 		}
 	});
 
@@ -14,7 +17,14 @@
 		await keysStore.generate($passphraseStore);
 		if ($keysStore.keys) {
 			$passphraseStore = '';
-			goto('/setup/download');
+
+			if ($keysStore.keys.device) {
+				$storeDeviceKey.mutate($keysStore.keys.device, {
+					onSuccess: () => {
+						goto('download');
+					}
+				});
+			}
 		}
 	}
 </script>

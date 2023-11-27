@@ -21,10 +21,3 @@ export const SecureDataSchema = z.object({
 });
 
 export type SecureData = z.infer<typeof SecureDataSchema>;
-
-export const PasswordAndSecureDataSchema = z.object({
-	password: Password,
-	secureData: SecureDataSchema
-});
-
-export type PasswordAndSecureData = z.infer<typeof PasswordAndSecureDataSchema>;
