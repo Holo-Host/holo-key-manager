@@ -7,22 +7,22 @@ import {
 	SESSION_DATA_KEY,
 	SETUP_PASSWORD
 } from '$const';
-import { decryptData, encryptData, hashPassword } from '$helpers';
+import { decryptData, encryptData, hashPassword, verifyPassword } from '$helpers';
 import { storageService } from '$services';
-import { Password, SecureDataSchema } from '$types';
+import { HashSaltSchema, SecureDataSchema } from '$types';
 import { createMutation, createQuery, type QueryClient } from '@tanstack/svelte-query';
 
 const getPassword = async () => {
 	const data = await storageService.getWithoutCallback({ key: PASSWORD, area: LOCAL });
-	return Password.safeParse(data);
+	return HashSaltSchema.safeParse(data);
 };
 
 export function createSetupPasswordQuery() {
 	return createQuery({
 		queryKey: [SETUP_PASSWORD],
 		queryFn: async () => {
-			const validatedResult = await getPassword();
-			return validatedResult.success;
+			const parsedResult = await getPassword();
+			return parsedResult.success;
 		}
 	});
 }
@@ -46,9 +46,9 @@ export function createPasswordMutation(queryClient: QueryClient) {
 export function createSignInMutation(queryClient: QueryClient) {
 	return createMutation({
 		mutationFn: async (password: string) => {
-			const validatedResult = await getPassword();
+			const parsedResult = await getPassword();
 
-			if (validatedResult.success && (await hashPassword(password)) === validatedResult.data) {
+			if (parsedResult.success && (await verifyPassword(password, parsedResult.data))) {
 				return storageService.set({
 					key: SESSION_DATA,
 					value: true,
@@ -67,11 +67,12 @@ export function createSignInMutation(queryClient: QueryClient) {
 export function createChangePasswordWithDeviceKeyMutation(queryClient: QueryClient) {
 	return createMutation({
 		mutationFn: async (mutationData: { newPassword: string; oldPassword: string }) => {
-			const oldHash = await hashPassword(mutationData.oldPassword);
+			const parsedResult = await getPassword();
 
-			const validatePassword = await getPassword();
-
-			if (!validatePassword.success || oldHash !== validatePassword.data) {
+			if (
+				!parsedResult.success ||
+				!(await verifyPassword(mutationData.oldPassword, parsedResult.data))
+			) {
 				throw new Error('Invalid password');
 			}
 
@@ -80,23 +81,23 @@ export function createChangePasswordWithDeviceKeyMutation(queryClient: QueryClie
 				area: LOCAL
 			});
 
-			const validatedDeviceKey = SecureDataSchema.safeParse(deviceKey);
+			const parsedDeviceKey = SecureDataSchema.safeParse(deviceKey);
 
-			if (!validatedDeviceKey.success) {
+			if (!parsedDeviceKey.success) {
 				throw new Error('Invalid device key');
 			}
 
-			const decryptedData = await decryptData(validatedDeviceKey.data, oldHash);
-			const newHash = await hashPassword(mutationData.newPassword);
+			const decryptedData = await decryptData(parsedDeviceKey.data, parsedResult.data.hash);
+			const newHashSalt = await hashPassword(mutationData.newPassword);
 
 			storageService.set({
 				key: PASSWORD,
-				value: newHash,
+				value: newHashSalt,
 				area: LOCAL
 			});
 			storageService.set({
 				key: DEVICE_KEY,
-				value: await encryptData(decryptedData, newHash),
+				value: await encryptData(decryptedData, newHashSalt.hash),
 				area: LOCAL
 			});
 			storageService.set({

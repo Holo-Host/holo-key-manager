@@ -11,7 +11,7 @@
 	let password = '';
 
 	$: charCount = password.length;
-	$: isDisabled = charCount < 8 && confirmPassword !== password;
+	$: isDisabled = charCount < 8 || confirmPassword !== password;
 </script>
 
 <Title>Set Key Manager Password</Title>

@@ -13,7 +13,12 @@ export type KeysState = {
 	loading: boolean;
 };
 
-export const Password = z.string();
+export const HashSaltSchema = z.object({
+	salt: z.string(),
+	hash: z.string()
+});
+
+export type HashSalt = z.infer<typeof HashSaltSchema>;
 
 export const SecureDataSchema = z.object({
 	encryptedData: z.string(),

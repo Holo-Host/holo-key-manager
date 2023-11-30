@@ -1,4 +1,4 @@
-import type { SecureData } from '$types';
+import type { SecureData, HashSalt } from '$types';
 
 const hexStringToArrayBuffer = (hexString: string) => {
 	if (hexString.length % 2 !== 0) {
@@ -26,12 +26,36 @@ const arrayBufferToHexString = (buffer: ArrayBuffer) =>
 		.call(new Uint8Array(buffer), (x) => ('00' + x.toString(16)).slice(-2))
 		.join('');
 
-export const hashPassword = async (password: string): Promise<string> => {
-	const encoder = new TextEncoder();
-	const data = encoder.encode(password);
-	const algo = { name: 'SHA-256' };
-	const hashBuffer = await crypto.subtle.digest(algo, data);
-	return arrayBufferToHexString(hashBuffer); // Convert ArrayBuffer to hex string
+const deriveBits = async (password: string, salt: Uint8Array, iterations: number) => {
+	const encodedPassword = new TextEncoder().encode(password);
+	const algo = {
+		name: 'PBKDF2',
+		hash: 'SHA-256',
+		salt: new TextEncoder().encode(arrayBufferToHexString(salt)),
+		iterations: iterations
+	};
+	const key = await crypto.subtle.importKey('raw', encodedPassword, { name: 'PBKDF2' }, false, [
+		'deriveBits'
+	]);
+	return await crypto.subtle.deriveBits(algo, key, 256);
+};
+
+export const hashPassword = async (password: string): Promise<HashSalt> => {
+	const salt = crypto.getRandomValues(new Uint8Array(16));
+	const derivedBits = await deriveBits(password, salt, 100000);
+	return {
+		hash: arrayBufferToHexString(derivedBits),
+		salt: arrayBufferToHexString(salt)
+	};
+};
+
+export const verifyPassword = async (
+	inputPassword: string,
+	storedHashSalt: HashSalt
+): Promise<boolean> => {
+	const saltBuffer = hexStringToArrayBuffer(storedHashSalt.salt);
+	const derivedBits = await deriveBits(inputPassword, new Uint8Array(saltBuffer), 100000);
+	return arrayBufferToHexString(derivedBits) === storedHashSalt.hash;
 };
 
 export const encryptData = async (
@@ -44,6 +68,7 @@ export const encryptData = async (
 	const key = await crypto.subtle.importKey('raw', passwordHash, algo, false, ['encrypt']);
 
 	const encrypted = await crypto.subtle.encrypt(algo, key, secretData);
+
 	return {
 		encryptedData: arrayBufferToBase64(encrypted),
 		iv: arrayBufferToBase64(iv)

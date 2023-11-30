@@ -6,12 +6,6 @@
 	let password = '';
 
 	const { signInMutation } = sessionStorageQueries();
-
-	async function login() {
-		$signInMutation.mutate(password, {
-			onError: () => alert('Invalid password')
-		});
-	}
 </script>
 
 <div class="m-8">
@@ -27,7 +21,11 @@
 			extraProps="my-4 text-center max-w-xs"
 			text="Please enter your password to login into Holo Key Manager"
 		/>
-		<InputPassword bind:value={password} label="Enter password" />
+		<InputPassword
+			error={$signInMutation.error ? 'Invalid password' : ''}
+			bind:value={password}
+			label="Enter password"
+		/>
 	</div>
-	<Button label="Login" onClick={login} extraBottomMargin />
+	<Button label="Login" onClick={() => $signInMutation.mutate(password)} extraBottomMargin />
 </div>

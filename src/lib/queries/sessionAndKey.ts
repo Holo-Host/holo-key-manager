@@ -9,7 +9,7 @@ import {
 } from '$const';
 import { encryptData } from '$helpers';
 import { storageService } from '$services';
-import { Password, SecureDataSchema, SessionStateSchema } from '$types';
+import { HashSaltSchema, SecureDataSchema, SessionStateSchema } from '$types';
 import { QueryClient, createMutation, createQuery } from '@tanstack/svelte-query';
 
 export function createSessionQuery() {
@@ -20,8 +20,8 @@ export function createSessionQuery() {
 				key: SESSION_DATA,
 				area: SESSION
 			});
-			const validatedData = SessionStateSchema.safeParse(data);
-			return validatedData.success ? validatedData.data : false;
+			const parsedData = SessionStateSchema.safeParse(data);
+			return parsedData.success ? parsedData.data : false;
 		}
 	});
 }
@@ -34,8 +34,9 @@ export function createSetupDeviceKeyQuery() {
 				key: DEVICE_KEY,
 				area: LOCAL
 			});
-			const validatedData = SecureDataSchema.safeParse(data);
-			return validatedData.success;
+
+			const parsedData = SecureDataSchema.safeParse(data);
+			return parsedData.success;
 		}
 	});
 }
@@ -47,17 +48,17 @@ export function createStoreDeviceKey(queryClient: QueryClient) {
 				key: PASSWORD,
 				area: LOCAL
 			});
-			const validatePassword = Password.safeParse(result);
+			const parsedPassword = HashSaltSchema.safeParse(result);
 
-			if (validatePassword.success) {
-				storageService.set({
-					key: DEVICE_KEY,
-					value: await encryptData(deviceKey, validatePassword.data),
-					area: LOCAL
-				});
+			if (!parsedPassword.success) {
+				throw new Error('Something went wrong');
 			}
 
-			throw new Error('Something went wrong');
+			storageService.set({
+				key: DEVICE_KEY,
+				value: await encryptData(deviceKey, parsedPassword.data.hash),
+				area: LOCAL
+			});
 		},
 
 		onSuccess: () => {

@@ -1,6 +1,6 @@
 import type { LOCAL, SESSION, SESSION_DATA, PASSWORD, DEVICE_KEY } from '$const';
 import { z } from 'zod';
-import type { SecureData } from './keys';
+import type { HashSalt, SecureData } from './keys';
 
 export type AreaName = typeof SESSION | typeof LOCAL | 'sync' | 'managed';
 
@@ -17,7 +17,7 @@ type GetSession = { key: typeof SESSION_DATA; area: typeof SESSION };
 
 type SetPassword = {
 	key: typeof PASSWORD;
-	value: string;
+	value: HashSalt;
 	area: typeof LOCAL;
 };
 type GetPassword = { key: typeof PASSWORD; area: typeof LOCAL };
