@@ -18,13 +18,13 @@
 
 <Title>Import Your Device Seed</Title>
 <AppParagraph
-	extraProps="my-4 max-w-xs text-center"
+	extraProps="text-center my-4 max-w-xs"
 	text="Kindly import your device seed file below to recover your Key Manager"
 />
 <div class="w-full p-6 px-16">
 	<Dropzone
 		containerClasses={clsx('p-4 border rounded-lg flex flex-col justify-center items-center', {
-			'bg-white': file,
+			'bg-white border-primary': file,
 			'bg-primary-background py-12 px-0 border-purple': !file
 		})}
 		inputElement={false}
@@ -34,7 +34,7 @@
 		disableDefaultStyles={true}
 	>
 		{#if file}
-			<div class="flex w-full items-center justify-between">
+			<div class=" flex w-full items-center justify-between">
 				<p class="text-base font-semibold">{file?.name}</p>
 				<img src="/img/checkbox.svg" alt="Checkbox" />
 			</div>
