@@ -19,7 +19,7 @@
 		<img src="/img/setup.svg" alt="Setup" class="max-w-[48px]" />
 		<h1 class="mt-4 text-2xl font-bold">Setup Required</h1>
 		<AppParagraph
-			extraProps="my-4 text-center max-w-xs"
+			extraProps="my-4 max-w-xs text-center"
 			text="You are yet to setup Holo Key Manager. Click “start setup” to begin."
 		/>
 	</div>

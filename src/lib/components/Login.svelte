@@ -18,7 +18,7 @@
 		<img src="/img/holo_logo.svg" alt="Login" class="w-18 h-18" />
 		<h1 class="mt-4 text-2xl font-bold">Welcome Back</h1>
 		<AppParagraph
-			extraProps="my-4 text-center max-w-xs"
+			extraProps="my-4 max-w-xs text-center"
 			text="Please enter your password to login into Holo Key Manager"
 		/>
 		<InputPassword

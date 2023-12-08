@@ -51,7 +51,7 @@
 
 <Title>Save Seed Files and Keys</Title>
 <AppParagraph
-	extraProps="mx-auto text-center max-w-md"
+	extraProps="mx-auto max-w-md text-center"
 	text="All done, please save your files. Remember to back them up an external drive you store in a secure location."
 />
 

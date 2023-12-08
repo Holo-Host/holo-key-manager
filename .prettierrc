@@ -9,5 +9,7 @@
 			"files": "*.svelte",
 			"options": { "parser": "svelte" }
 		}
-	]
+	],
+	"tailwindAttributes": ["extraProps", "containerClasses"],
+	"tailwindFunctions": ["clsx"]
 }

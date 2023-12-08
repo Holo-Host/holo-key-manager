@@ -16,7 +16,7 @@
 
 <Title>Set Key Manager Password</Title>
 <AppParagraph
-	extraProps="mx-auto text-center max-w-sm"
+	extraProps="mx-auto max-w-sm text-center"
 	text="This password secures your Key Manager extension, it would be requested each time you launch it."
 />
 <div class="w-full p-6">

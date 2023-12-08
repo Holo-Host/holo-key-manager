@@ -6,11 +6,11 @@
 <Title>Setup Complete</Title>
 <div class="mb-4 w-full border-b-[0.5px] border-light-gray">
 	<AppParagraph
-		extraProps="mx-auto text-center max-w-xs"
+		extraProps="mx-auto max-w-xs text-center"
 		text="Your Holo Key Manager setup is now complete."
 	/>
 	<AppParagraph
-		extraProps="mx-auto text-center max-w-xs mb-4"
+		extraProps="mx-auto mb-4 max-w-xs text-center"
 		text="You can now login to the extension by clicking the extension icon."
 	/>
 </div>

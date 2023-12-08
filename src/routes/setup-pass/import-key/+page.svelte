@@ -18,14 +18,14 @@
 
 <Title>Import Your Device Seed</Title>
 <AppParagraph
-	extraProps="text-center my-4 max-w-xs"
+	extraProps="my-4 max-w-xs text-center"
 	text="Kindly import your device seed file below to recover your Key Manager"
 />
 <div class="w-full p-6 px-16">
 	<Dropzone
-		containerClasses={clsx('p-4 border rounded-lg flex flex-col justify-center items-center', {
-			'bg-white border-primary': file,
-			'bg-primary-background py-12 px-0 border-purple': !file
+		containerClasses={clsx('flex flex-col items-center justify-center rounded-lg border p-4', {
+			'border-primary bg-white': file,
+			'border-purple bg-primary-background px-0 py-12': !file
 		})}
 		inputElement={false}
 		on:drop={handleFilesSelect}
