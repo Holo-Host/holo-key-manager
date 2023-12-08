@@ -18,13 +18,13 @@
 
 <Title>{title}</Title>
 <AppParagraph extraProps="mx-auto text-center" text={description} />
-<div class="p-6 w-full">
+<div class="w-full p-6">
 	<textarea
 		bind:value={inputValue}
-		class="w-full h-44 rounded border border-secondary resize-none py-1 px-2 text-sm"
+		class="h-44 w-full resize-none rounded border border-secondary px-2 py-1 text-sm"
 		placeholder={title}
 	/>
-	<div class="flex justify-between items-center">
+	<div class="flex items-center justify-between">
 		<AppParagraph textColor={clsx(isDisabled && 'text-alert')} text={inputState} />
 		{#if showTooltip}
 			<Tooltip />
@@ -32,7 +32,7 @@
 	</div>
 </div>
 
-<div class="grid grid-cols-2 gap-5 w-full p-6">
+<div class="grid w-full grid-cols-2 gap-5 p-6">
 	<Button label="Cancel" onClick={dismissWindow} color="secondary" />
 	<Button disabled={isDisabled} label={nextLabel} onClick={next} />
 </div>

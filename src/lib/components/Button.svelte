@@ -11,11 +11,11 @@
 
 <button
 	class={clsx(
-		'max-w-xs p-2 my-2 rounded-2xl text-base font-bold relative flex justify-center w-full',
+		'relative my-2 flex w-full max-w-xs justify-center rounded-2xl p-2 text-base font-bold',
 		{
 			'bg-primary-disabled text-white': color === 'primary' && disabled,
 			'bg-primary text-white': color === 'primary' && !disabled,
-			'bg-white text-secondary border border-secondary': color !== 'primary',
+			'border border-secondary bg-white text-secondary': color !== 'primary',
 			'mb-4': extraBottomMargin
 		}
 	)}

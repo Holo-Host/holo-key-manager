@@ -19,7 +19,7 @@
 	extraProps="mx-auto text-center max-w-sm"
 	text="This password secures your Key Manager extension, it would be requested each time you launch it."
 />
-<div class="p-6 w-full">
+<div class="w-full p-6">
 	<InputPassword
 		bind:value={password}
 		label="New Password (8 Characters min)"
@@ -34,7 +34,7 @@
 	/>
 </div>
 
-<div class="grid grid-cols-2 gap-5 w-full p-6">
+<div class="grid w-full grid-cols-2 gap-5 p-6">
 	<Button label="Cancel" onClick={dismissWindow} color="secondary" />
 	<Button
 		disabled={isDisabled}

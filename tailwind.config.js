@@ -13,6 +13,8 @@ export default {
 				tertiary: '#5C4DA6',
 				quaternary: '#313C59',
 				'light-gray': '#262A3333',
+				'primary-border': '#C8BBFA',
+				'primary-background': '#FBFAFF',
 				alert: '#D92D20'
 			}
 		}

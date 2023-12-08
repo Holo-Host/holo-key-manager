@@ -3,9 +3,9 @@
 	import { goto } from '$app/navigation';
 </script>
 
-<img src="/img/holo_logo.svg" alt="Holo Key Manager Logo" class="w-12 my-4" />
+<img src="/img/holo_logo.svg" alt="Holo Key Manager Logo" class="my-4 w-12" />
 <Title>Holo Key Manager</Title>
-<div class="border-b-[0.5px] mb-4 border-light-gray w-full">
+<div class="mb-4 w-full border-b-[0.5px] border-light-gray">
 	<AppParagraph extraProps="mx-auto text-center max-w-xs" text="Welcome to Holo Key Manager." />
 	<AppParagraph
 		extraProps="mx-auto text-center max-w-xs mb-4"
@@ -21,4 +21,4 @@
 	text="First time user? Select “first time setup” below. If you have already setup the key manager in the past you can select “Import existing keys"
 />
 <Button arrow label="First time setup" onClick={() => goto('app-password')} />
-<Button label="Import existing keys" onClick={() => null} color="secondary" />
+<Button label="Import existing keys" onClick={() => goto('import-key')} color="secondary" />

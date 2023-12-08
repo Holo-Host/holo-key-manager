@@ -1,5 +1,5 @@
 <div
-	class="flex flex-col items-center mt-20 w-[576px] border border-light-gray rounded-xl mx-auto py-8"
+	class="mx-auto mt-20 flex w-[576px] flex-col items-center rounded-xl border border-light-gray py-8"
 >
 	<slot />
 </div>

@@ -9,14 +9,14 @@
 </script>
 
 <div class="m-8">
-	<div class="flex justify-end items-center mb-4">
-		<button on:click={dismissWindow} class="bg-transparent border-none">
+	<div class="mb-4 flex items-center justify-end">
+		<button on:click={dismissWindow} class="border-none bg-transparent">
 			<img src="/img/close.svg" alt="Close" />
 		</button>
 	</div>
-	<div class="flex flex-col justify-center items-center">
+	<div class="flex flex-col items-center justify-center">
 		<img src="/img/holo_logo.svg" alt="Login" class="w-18 h-18" />
-		<h1 class="font-bold text-2xl mt-4">Welcome Back</h1>
+		<h1 class="mt-4 text-2xl font-bold">Welcome Back</h1>
 		<AppParagraph
 			extraProps="my-4 text-center max-w-xs"
 			text="Please enter your password to login into Holo Key Manager"

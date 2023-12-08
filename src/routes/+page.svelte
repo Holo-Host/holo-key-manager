@@ -14,13 +14,13 @@
 	<span>Loading</span>
 {:else if $sessionQuery.data}
 	<div class="m-8">
-		<div class="flex justify-between items-center mb-4">
+		<div class="mb-4 flex items-center justify-between">
 			<img src="/img/holo_logo.svg" alt="Holo Key Manager Logo" />
-			<button on:click={dismissWindow} class="bg-transparent border-none">
+			<button on:click={dismissWindow} class="border-none bg-transparent">
 				<img src="/img/close.svg" alt="Close" />
 			</button>
 		</div>
-		<h1 class="font-bold text-2xl mt-4">Holo Key Manager</h1>
+		<h1 class="mt-4 text-2xl font-bold">Holo Key Manager</h1>
 		<button on:click={redirectToChangePassword} class="text-blue-500 hover:text-blue-800"
 			>Change Password</button
 		>

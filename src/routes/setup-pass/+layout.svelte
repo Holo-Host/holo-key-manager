@@ -14,7 +14,7 @@
 
 <SetupContainer>
 	{#if !$page.url.pathname.includes('start')}
-		<button class="self-start ml-6 mb-4 flex items-center" on:click={goBack}>
+		<button class="mb-4 ml-6 flex items-center self-start" on:click={goBack}>
 			<img src="/img/arrow-left.svg" alt="Arrow" />
 			<span class="ml-2 text-base">Back</span></button
 		>

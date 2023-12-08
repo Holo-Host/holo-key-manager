@@ -7,8 +7,8 @@
 	export let error = '';
 </script>
 
-<div class={clsx('flex flex-col w-full border-black border-b-[0.5px]', extraProps)}>
-	<div class="flex justify-between items-center mb-1">
+<div class={clsx('flex w-full flex-col border-b-[0.5px] border-black', extraProps)}>
+	<div class="mb-1 flex items-center justify-between">
 		<label for="password" class="text-base text-secondary">{label}</label>
 		<span class="text-xs text-alert">{error}</span>
 	</div>

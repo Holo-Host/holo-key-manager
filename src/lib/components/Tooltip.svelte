@@ -1,10 +1,10 @@
-<div class="relative cursor-pointer group">
-	<div class="flex items-center text-primary text-base">
+<div class="group relative cursor-pointer">
+	<div class="flex items-center text-base text-primary">
 		<p>What is passphrase</p>
 		<img src="/img/question.svg" alt="Question icon" class="ml-2" />
 	</div>
 	<div
-		class="absolute invisible group-hover:visible z-10 bottom-full left-1/2 transform -translate-x-1/2 bg-white px-4 py-2 text-secondary text-sm rounded-md transition-opacity opacity-0 group-hover:opacity-100 shadow-lg w-96"
+		class="invisible absolute bottom-full left-1/2 z-10 w-96 -translate-x-1/2 transform rounded-md bg-white px-4 py-2 text-sm text-secondary opacity-0 shadow-lg transition-opacity group-hover:visible group-hover:opacity-100"
 	>
 		<strong class="text-sm text-black">Passphrase</strong>
 		<p>

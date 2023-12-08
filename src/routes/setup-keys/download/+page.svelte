@@ -47,7 +47,7 @@
 	}
 </script>
 
-<img src="/img/check.svg" alt="check" class="w-12 my-4" />
+<img src="/img/check.svg" alt="check" class="my-4 w-12" />
 
 <Title>Save Seed Files and Keys</Title>
 <AppParagraph

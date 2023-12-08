@@ -16,7 +16,7 @@
 </script>
 
 <SetupContainer>
-	<button class="self-start ml-6 mb-4 flex items-center" on:click={dismissWindow}>
+	<button class="mb-4 ml-6 flex items-center self-start" on:click={dismissWindow}>
 		<img src="/img/arrow-left.svg" alt="Arrow" />
 		<span class="ml-2 text-base">Back</span></button
 	>
@@ -24,7 +24,7 @@
 	{#if $changePasswordWithDeviceKeyMutation.error}
 		<span class="text-xs text-alert">{$changePasswordWithDeviceKeyMutation.error.message}</span>
 	{/if}
-	<div class="p-6 w-full">
+	<div class="w-full p-6">
 		<InputPassword bind:value={oldPassword} label="Old Password" extraProps="mb-6" />
 		<InputPassword
 			bind:value={password}
@@ -40,7 +40,7 @@
 		/>
 	</div>
 
-	<div class="grid grid-cols-2 gap-5 w-full p-6">
+	<div class="grid w-full grid-cols-2 gap-5 p-6">
 		<Button label="Cancel" onClick={dismissWindow} color="secondary" />
 		<Button
 			disabled={isDisabled}
