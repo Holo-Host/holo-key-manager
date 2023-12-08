@@ -6,7 +6,7 @@ const uint8ArrayToBase64 = (bytes: Uint8Array) => btoa(String.fromCharCode(...by
 
 const base64ToArrayBuffer = (base64: string) => {
 	const binaryString = atob(base64);
-	return new Uint8Array([...binaryString].map((char) => char.charCodeAt(0))).buffer;
+	return new Uint8Array([...binaryString].map((char) => char.charCodeAt(0)));
 };
 
 const lock = (root: never, password: string) =>

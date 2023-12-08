@@ -1,17 +1,17 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
 	import { AppParagraph, Button, Title } from '$components';
-	import { passwordStore } from '$stores';
 	import { sessionStorageQueries } from '$queries';
 	import { dismissWindow } from '$helpers';
 	import InputPassword from '$components/InputPassword.svelte';
 
 	const { createPassword } = sessionStorageQueries();
 
+	let password = '';
 	let confirmPassword = '';
 
-	$: charCount = $passwordStore.length;
-	$: isDisabled = charCount < 8 || confirmPassword !== $passwordStore;
+	$: charCount = password.length;
+	$: isDisabled = charCount < 8 || confirmPassword !== password;
 </script>
 
 <Title>Set Key Manager Password</Title>
@@ -21,7 +21,7 @@
 />
 <div class="w-full p-6">
 	<InputPassword
-		bind:value={$passwordStore}
+		bind:value={password}
 		label="New Password (8 Characters min)"
 		extraProps="mb-6"
 		error={charCount < 8 ? 'Please enter a minimum of 8 Characters' : ''}
@@ -30,7 +30,7 @@
 		bind:value={confirmPassword}
 		label="Confirm New Password"
 		extraProps="mb-4"
-		error={confirmPassword !== $passwordStore ? "Password doesn't Match" : ''}
+		error={confirmPassword !== password ? "Password doesn't Match" : ''}
 	/>
 </div>
 
@@ -40,7 +40,7 @@
 		disabled={isDisabled}
 		label="Set password"
 		onClick={() =>
-			$createPassword.mutate($passwordStore, {
+			$createPassword.mutate(password, {
 				onSuccess: () => {
 					goto('enter-passphrase');
 				}

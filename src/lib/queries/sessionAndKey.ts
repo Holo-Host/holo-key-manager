@@ -58,8 +58,6 @@ export function createStoreDeviceKey(queryClient: QueryClient) {
 				value: deviceKey,
 				area: LOCAL
 			});
-
-			console.log(deviceKey);
 		},
 
 		onSuccess: () => {

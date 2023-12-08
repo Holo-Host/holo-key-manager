@@ -1,6 +1,7 @@
 import type { KeysState } from '$types';
 import { writable } from 'svelte/store';
 import { generateKeys } from '../services/generate-keys';
+import { getPassword } from '$helpers';
 
 const initKeysStore = () => {
 	const initialState: KeysState = {
@@ -19,10 +20,14 @@ const initKeysStore = () => {
 		isInitialState: () =>
 			subscribe((state) => JSON.stringify(state) === JSON.stringify(initialState)),
 		subscribe,
-		generate: async (passphrase: string, extensionPassword: string) => {
+		generate: async (passphrase: string) => {
 			update((state) => ({ ...state, loading: true }));
 			try {
-				const keys = await generateKeys(passphrase, extensionPassword);
+				const hashSalt = await getPassword();
+				if (!hashSalt.success) {
+					throw new Error('Password missing');
+				}
+				const keys = await generateKeys(passphrase, hashSalt.data.hash);
 				set({ keys, loading: false });
 			} catch (error) {
 				set(initialState);
