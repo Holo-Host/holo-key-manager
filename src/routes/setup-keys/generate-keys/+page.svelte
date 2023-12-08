@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
-	import { keysStore, passphraseStore } from '$stores';
+	import { keysStore, passphraseStore, passwordStore } from '$stores';
 	import { goto } from '$app/navigation';
 	import { Button, Title, AppParagraph } from '$components';
 	import { sessionStorageQueries } from '$queries';
@@ -14,12 +14,13 @@
 	});
 
 	async function generate() {
-		await keysStore.generate($passphraseStore);
+		await keysStore.generate($passphraseStore, $passwordStore);
+		console.log($keysStore.keys);
 		if ($keysStore.keys) {
-			$passphraseStore = '';
-
-			if ($keysStore.keys.device) {
-				$storeDeviceKey.mutate($keysStore.keys.device, {
+			passphraseStore.clean();
+			passwordStore.clean();
+			if ($keysStore.keys.encodedDeviceWithExtensionPassword) {
+				$storeDeviceKey.mutate($keysStore.keys.encodedDeviceWithExtensionPassword, {
 					onSuccess: () => {
 						goto('download');
 					}

@@ -7,9 +7,8 @@ import {
 	SESSION_DATA_KEY,
 	SETUP_KEY
 } from '$const';
-import { encryptData } from '$helpers';
 import { storageService } from '$services';
-import { HashSaltSchema, SecureDataSchema, SessionStateSchema } from '$types';
+import { EncryptedDeviceKeySchema, HashSaltSchema, SessionStateSchema } from '$types';
 import { QueryClient, createMutation, createQuery } from '@tanstack/svelte-query';
 
 export function createSessionQuery() {
@@ -35,7 +34,7 @@ export function createSetupDeviceKeyQuery() {
 				area: LOCAL
 			});
 
-			const parsedData = SecureDataSchema.safeParse(data);
+			const parsedData = EncryptedDeviceKeySchema.safeParse(data);
 			return parsedData.success;
 		}
 	});
@@ -43,7 +42,7 @@ export function createSetupDeviceKeyQuery() {
 
 export function createStoreDeviceKey(queryClient: QueryClient) {
 	return createMutation({
-		mutationFn: async (deviceKey: Uint8Array) => {
+		mutationFn: async (deviceKey: string) => {
 			const result = await storageService.getWithoutCallback({
 				key: PASSWORD,
 				area: LOCAL
@@ -56,9 +55,11 @@ export function createStoreDeviceKey(queryClient: QueryClient) {
 
 			storageService.set({
 				key: DEVICE_KEY,
-				value: await encryptData(deviceKey, parsedPassword.data.hash),
+				value: deviceKey,
 				area: LOCAL
 			});
+
+			console.log(deviceKey);
 		},
 
 		onSuccess: () => {

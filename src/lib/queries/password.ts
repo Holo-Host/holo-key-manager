@@ -7,9 +7,9 @@ import {
 	SESSION_DATA_KEY,
 	SETUP_PASSWORD
 } from '$const';
-import { decryptData, encryptData, hashPassword, verifyPassword } from '$helpers';
-import { storageService } from '$services';
-import { HashSaltSchema, SecureDataSchema } from '$types';
+import { hashPassword, verifyPassword } from '$helpers';
+import { lockKey, storageService, unlockKey } from '$services';
+import { EncryptedDeviceKeySchema, HashSaltSchema } from '$types';
 import { createMutation, createQuery, type QueryClient } from '@tanstack/svelte-query';
 
 const getPassword = async () => {
@@ -81,13 +81,17 @@ export function createChangePasswordWithDeviceKeyMutation(queryClient: QueryClie
 				area: LOCAL
 			});
 
-			const parsedDeviceKey = SecureDataSchema.safeParse(deviceKey);
+			const parsedDeviceKey = EncryptedDeviceKeySchema.safeParse(deviceKey);
 
 			if (!parsedDeviceKey.success) {
 				throw new Error('Invalid device key');
 			}
 
-			const decryptedData = await decryptData(parsedDeviceKey.data, parsedResult.data.hash);
+			console.log(parsedDeviceKey.data);
+			console.log(parsedResult.data.hash);
+
+			const decryptedKey = await unlockKey(parsedDeviceKey.data, parsedResult.data.hash);
+			console.log('test2');
 			const newHashSalt = await hashPassword(mutationData.newPassword);
 
 			storageService.set({
@@ -97,9 +101,10 @@ export function createChangePasswordWithDeviceKeyMutation(queryClient: QueryClie
 			});
 			storageService.set({
 				key: DEVICE_KEY,
-				value: await encryptData(decryptedData, newHashSalt.hash),
+				value: await lockKey(decryptedKey, newHashSalt.hash),
 				area: LOCAL
 			});
+			decryptedKey.zero();
 			storageService.set({
 				key: SESSION_DATA,
 				value: false,

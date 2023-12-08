@@ -8,9 +8,9 @@
 
 	onMount(() => {
 		if (
-			$keysStore.keys.master === null ||
-			$keysStore.keys.revocation === null ||
-			$keysStore.keys.device === null
+			$keysStore.keys.encodedMaster === null ||
+			$keysStore.keys.encodedRevocation === null ||
+			$keysStore.keys.encodedDevice === null
 		) {
 			goto('/setup-pass/start');
 		}
@@ -19,19 +19,19 @@
 	async function download(): Promise<void> {
 		const { saveAs } = fileSaver;
 		const keys = $keysStore?.keys;
-		if (keys?.master && keys?.device && keys?.revocation) {
+		if (keys?.encodedMaster && keys?.encodedDevice && keys?.encodedRevocation) {
 			const files = [
 				{
 					name: 'master.txt',
-					data: new TextDecoder().decode(keys.master)
+					data: new TextDecoder().decode(keys.encodedMaster)
 				},
 				{
 					name: 'device.txt',
-					data: new TextDecoder().decode(keys.device)
+					data: new TextDecoder().decode(keys.encodedDevice)
 				},
 				{
 					name: 'revocation.txt',
-					data: new TextDecoder().decode(keys.revocation)
+					data: new TextDecoder().decode(keys.encodedRevocation)
 				}
 			];
 			const zip = new JSZip();

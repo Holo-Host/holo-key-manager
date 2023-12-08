@@ -2,7 +2,42 @@
 import * as hcSeedBundle from 'hcSeedBundle';
 import type { GeneratedKeys } from '$types';
 
-export async function generateKeys(passphrase: string): Promise<GeneratedKeys> {
+const uint8ArrayToBase64 = (bytes: Uint8Array) => btoa(String.fromCharCode(...bytes));
+
+const base64ToArrayBuffer = (base64: string) => {
+	const binaryString = atob(base64);
+	return new Uint8Array([...binaryString].map((char) => char.charCodeAt(0))).buffer;
+};
+
+const lock = (root: never, password: string) =>
+	root.lock([
+		new hcSeedBundle.SeedCipherPwHash(
+			hcSeedBundle.parseSecret(new TextEncoder().encode(password)),
+			'minimum'
+		)
+	]);
+
+const deriveAndLock = (
+	master: never,
+	derivationPath: number,
+	bundleType: string,
+	passphrase: string
+) => {
+	const root = master.derive(derivationPath, {
+		bundle_type: bundleType
+	});
+	root.setAppData({
+		device_number: derivationPath,
+		generate_by: 'keymanager-v1.0'
+	});
+
+	return lock(root, passphrase);
+};
+
+export async function generateKeys(
+	passphrase: string,
+	extensionPassword: string
+): Promise<GeneratedKeys> {
 	await hcSeedBundle.seedBundleReady;
 
 	const master = hcSeedBundle.UnlockedSeedBundle.newRandom({
@@ -11,44 +46,53 @@ export async function generateKeys(passphrase: string): Promise<GeneratedKeys> {
 	master.setAppData({
 		generate_by: 'keymanager-v1.0'
 	});
-	const encodedMasterBytes: Uint8Array = master.lock([
-		new hcSeedBundle.SeedCipherPwHash(
-			hcSeedBundle.parseSecret(new TextEncoder().encode(passphrase)),
-			'minimum'
-		)
-	]);
 
-	const revocationDerivationPath = 0;
-	const encodedRevocationBytes: Uint8Array = await derive(
-		revocationDerivationPath,
-		'revocationRoot'
+	const encodedMasterBytes: Uint8Array = lock(master, passphrase);
+	const encodedRevocationBytes = deriveAndLock(master, 0, 'revocationRoot', passphrase);
+	const encodedDeviceBytes = deriveAndLock(master, 1, 'deviceRoot', passphrase);
+	const encodedDeviceBytesWithExtensionPassword = deriveAndLock(
+		master,
+		1,
+		'deviceRoot',
+		extensionPassword
 	);
-
-	const deviceNumber = 1;
-	const encodedDeviceBytes: Uint8Array = await derive(deviceNumber, 'deviceRoot');
 
 	master.zero();
 
 	return {
-		master: encodedMasterBytes,
-		device: encodedDeviceBytes,
-		revocation: encodedRevocationBytes
+		encodedMaster: encodedMasterBytes,
+		encodedDeviceWithExtensionPassword: uint8ArrayToBase64(encodedDeviceBytesWithExtensionPassword),
+		encodedDevice: encodedDeviceBytes,
+		encodedRevocation: encodedRevocationBytes
 	};
-
-	async function derive(derivationPath, bundleType) {
-		const root = master.derive(derivationPath, {
-			bundle_type: bundleType
-		});
-		root.setAppData({
-			device_number: derivationPath,
-			generate_by: 'keymanager-v1.0'
-		});
-		const encodedBytes = root.lock([
-			new hcSeedBundle.SeedCipherPwHash(
-				hcSeedBundle.parseSecret(new TextEncoder().encode(passphrase)),
-				'minimum'
-			)
-		]);
-		return encodedBytes;
-	}
 }
+
+export const lockKey = async (key: unknown, password: string) => {
+	await hcSeedBundle.seedBundleReady;
+
+	const pw = new TextEncoder().encode(password);
+	const encodedBytes = key.lock([
+		new hcSeedBundle.SeedCipherPwHash(hcSeedBundle.parseSecret(pw), 'minimum')
+	]);
+
+	key.zero();
+
+	return uint8ArrayToBase64(encodedBytes);
+};
+
+export const unlockKey = async (encodedBytesString: string, password: string) => {
+	await hcSeedBundle.seedBundleReady;
+
+	const cipherList = hcSeedBundle.UnlockedSeedBundle.fromLocked(
+		base64ToArrayBuffer(encodedBytesString)
+	);
+
+	if (!(cipherList[0] instanceof hcSeedBundle.LockedSeedCipherPwHash)) {
+		throw new Error('Expecting PwHash');
+	}
+
+	const pw = new TextEncoder().encode(password);
+	const key = cipherList[0].unlock(hcSeedBundle.parseSecret(pw));
+
+	return key;
+};

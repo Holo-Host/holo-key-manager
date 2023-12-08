@@ -5,9 +5,10 @@ import { generateKeys } from '../services/generate-keys';
 const initKeysStore = () => {
 	const initialState: KeysState = {
 		keys: {
-			master: null,
-			revocation: null,
-			device: null
+			encodedMaster: null,
+			encodedDeviceWithExtensionPassword: null,
+			encodedDevice: null,
+			encodedRevocation: null
 		},
 		loading: false
 	};
@@ -18,10 +19,10 @@ const initKeysStore = () => {
 		isInitialState: () =>
 			subscribe((state) => JSON.stringify(state) === JSON.stringify(initialState)),
 		subscribe,
-		generate: async (passphrase: string) => {
+		generate: async (passphrase: string, extensionPassword: string) => {
 			update((state) => ({ ...state, loading: true }));
 			try {
-				const keys = await generateKeys(passphrase);
+				const keys = await generateKeys(passphrase, extensionPassword);
 				set({ keys, loading: false });
 			} catch (error) {
 				set(initialState);

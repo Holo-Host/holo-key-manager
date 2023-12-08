@@ -3,9 +3,10 @@ import { z } from 'zod';
 export type SetSecret = 'set' | 'confirm';
 
 export type GeneratedKeys = {
-	master: Uint8Array | null;
-	device: Uint8Array | null;
-	revocation: Uint8Array | null;
+	encodedMaster: Uint8Array | null;
+	encodedDeviceWithExtensionPassword: string | null;
+	encodedDevice: Uint8Array | null;
+	encodedRevocation: Uint8Array | null;
 };
 
 export type KeysState = {
@@ -20,9 +21,6 @@ export const HashSaltSchema = z.object({
 
 export type HashSalt = z.infer<typeof HashSaltSchema>;
 
-export const SecureDataSchema = z.object({
-	encryptedData: z.string(),
-	iv: z.string()
-});
+export const EncryptedDeviceKeySchema = z.string();
 
-export type SecureData = z.infer<typeof SecureDataSchema>;
+export type EncryptedDeviceKey = z.infer<typeof EncryptedDeviceKeySchema>;
