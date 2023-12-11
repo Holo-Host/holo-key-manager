@@ -1,2 +1,2 @@
-export * from './secure-store';
 export * from './query-keys';
+export * from './secure-store';

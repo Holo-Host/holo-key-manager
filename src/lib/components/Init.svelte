@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { Button, AppParagraph } from '$components';
+	import { AppParagraph, Button } from '$components';
 	import { dismissWindow } from '$lib/helpers';
 
 	function redirectToSetup() {

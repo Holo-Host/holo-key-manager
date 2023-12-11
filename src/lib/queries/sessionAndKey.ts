@@ -1,3 +1,5 @@
+import { createMutation, createQuery, QueryClient } from '@tanstack/svelte-query';
+
 import {
 	DEVICE_KEY,
 	LOCAL,
@@ -7,9 +9,9 @@ import {
 	SESSION_DATA_KEY,
 	SETUP_KEY
 } from '$const';
-import { storageService } from '$services';
+import { storageService, unlockKey } from '$services';
+import { deviceKeyContentStore, passphraseStore } from '$stores';
 import { EncryptedDeviceKeySchema, HashSaltSchema, SessionStateSchema } from '$types';
-import { QueryClient, createMutation, createQuery } from '@tanstack/svelte-query';
 
 export function createSessionQuery() {
 	return createQuery({
@@ -62,6 +64,25 @@ export function createStoreDeviceKey(queryClient: QueryClient) {
 
 		onSuccess: () => {
 			queryClient.invalidateQueries({ queryKey: [SETUP_KEY] });
+		}
+	});
+}
+
+export function createRecoverDeviceKeyMutation() {
+	return createMutation({
+		mutationFn: async (mutationData: { deviceKey: string; passphrase: string }) => {
+			const parsedDeviceKey = EncryptedDeviceKeySchema.safeParse(mutationData.deviceKey);
+
+			if (!parsedDeviceKey.success) {
+				throw new Error('Invalid device key');
+			}
+
+			const decryptedKey = await unlockKey(parsedDeviceKey.data, mutationData.passphrase);
+
+			deviceKeyContentStore.set(parsedDeviceKey.data);
+			passphraseStore.set(mutationData.passphrase);
+
+			return decryptedKey.zero();
 		}
 	});
 }

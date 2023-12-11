@@ -1,10 +1,11 @@
 // @ts-nocheck
 import * as hcSeedBundle from 'hcSeedBundle';
+
 import type { GeneratedKeys } from '$types';
 
-const uint8ArrayToBase64 = (bytes: Uint8Array) => btoa(String.fromCharCode(...bytes));
+export const uint8ArrayToBase64 = (bytes: Uint8Array) => btoa(String.fromCharCode(...bytes));
 
-const base64ToArrayBuffer = (base64: string) => {
+export const base64ToArrayBuffer = (base64: string) => {
 	const binaryString = atob(base64);
 	return new Uint8Array([...binaryString].map((char) => char.charCodeAt(0)));
 };

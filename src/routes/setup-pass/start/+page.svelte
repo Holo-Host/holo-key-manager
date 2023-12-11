@@ -1,6 +1,6 @@
 <script lang="ts">
-	import { Button, Title, AppParagraph } from '$components';
 	import { goto } from '$app/navigation';
+	import { AppParagraph, Button, Title } from '$components';
 </script>
 
 <img src="/img/holo_logo.svg" alt="Holo Key Manager Logo" class="my-4 w-12" />
@@ -20,5 +20,5 @@
 	extraProps="my-4 max-w-xs"
 	text="First time user? Select “first time setup” below. If you have already setup the key manager in the past you can select “Import existing keys"
 />
-<Button arrow label="First time setup" onClick={() => goto('app-password')} />
+<Button arrow label="First time setup" onClick={() => goto('/app-password')} />
 <Button label="Import existing keys" onClick={() => goto('import-key')} color="secondary" />

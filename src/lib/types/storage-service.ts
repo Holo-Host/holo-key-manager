@@ -1,5 +1,7 @@
-import type { LOCAL, SESSION, SESSION_DATA, PASSWORD, DEVICE_KEY } from '$const';
 import { z } from 'zod';
+
+import type { DEVICE_KEY, LOCAL, PASSWORD, SESSION, SESSION_DATA } from '$const';
+
 import type { HashSalt } from './keys';
 
 export type AreaName = typeof SESSION | typeof LOCAL | 'sync' | 'managed';

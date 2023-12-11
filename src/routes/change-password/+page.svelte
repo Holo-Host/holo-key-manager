@@ -1,9 +1,9 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
 	import { Button, SetupContainer, Title } from '$components';
-	import { sessionStorageQueries } from '$queries';
-	import { dismissWindow } from '$helpers';
 	import InputPassword from '$components/InputPassword.svelte';
+	import { dismissWindow } from '$helpers';
+	import { sessionStorageQueries } from '$queries';
 
 	const { changePasswordWithDeviceKeyMutation } = sessionStorageQueries();
 

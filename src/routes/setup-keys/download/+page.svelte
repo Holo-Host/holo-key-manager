@@ -1,10 +1,12 @@
 <script lang="ts">
-	import { onMount } from 'svelte';
-	import { keysStore } from '$stores';
-	import JSZip from 'jszip';
 	import fileSaver from 'file-saver';
-	import { Button, Title, AppParagraph } from '$components';
+	import JSZip from 'jszip';
+	import { onMount } from 'svelte';
+
 	import { goto } from '$app/navigation';
+	import { AppParagraph, Button, Title } from '$components';
+	import { uint8ArrayToBase64 } from '$services';
+	import { keysStore } from '$stores';
 
 	onMount(() => {
 		if (
@@ -23,15 +25,15 @@
 			const files = [
 				{
 					name: 'master.txt',
-					data: new TextDecoder().decode(keys.encodedMaster)
+					data: uint8ArrayToBase64(keys.encodedMaster)
 				},
 				{
 					name: 'device.txt',
-					data: new TextDecoder().decode(keys.encodedDevice)
+					data: uint8ArrayToBase64(keys.encodedDevice)
 				},
 				{
 					name: 'revocation.txt',
-					data: new TextDecoder().decode(keys.encodedRevocation)
+					data: uint8ArrayToBase64(keys.encodedRevocation)
 				}
 			];
 			const zip = new JSZip();

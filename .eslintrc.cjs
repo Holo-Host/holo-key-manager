@@ -7,7 +7,7 @@ module.exports = {
 		'prettier'
 	],
 	parser: '@typescript-eslint/parser',
-	plugins: ['@typescript-eslint'],
+	plugins: ['@typescript-eslint', 'simple-import-sort'],
 	parserOptions: {
 		sourceType: 'module',
 		ecmaVersion: 2020,
@@ -29,6 +29,8 @@ module.exports = {
 		}
 	],
 	rules: {
-		'@typescript-eslint/ban-ts-comment': 0
+		'@typescript-eslint/ban-ts-comment': 0,
+		'simple-import-sort/imports': 'error',
+		'simple-import-sort/exports': 'error'
 	}
 };

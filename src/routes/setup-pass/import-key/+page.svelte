@@ -1,19 +1,39 @@
 <script lang="ts">
-	import { Button, AppParagraph, Title } from '$components';
-	import { dismissWindow } from '$helpers';
-	import Dropzone from 'svelte-file-dropzone/Dropzone.svelte';
 	import clsx from 'clsx';
+	import Dropzone from 'svelte-file-dropzone/Dropzone.svelte';
+
+	import { goto } from '$app/navigation';
+	import { AppParagraph, Button, Title } from '$components';
+	import { dismissWindow } from '$helpers';
+	import { sessionStorageQueries } from '$queries';
+	import { EncryptedDeviceKeySchema } from '$types';
+
+	const { recoverDeviceKeyMutation } = sessionStorageQueries();
 
 	let passphrase = '';
-	let error = '';
-	let file: File;
+	let fileName: string;
+	let fileContent: string;
 
 	const handleFilesSelect = (e: { detail: { acceptedFiles: File[] } }) => {
 		const { acceptedFiles } = e.detail;
-		file = acceptedFiles[0];
+		if (acceptedFiles.length === 0) return;
+
+		$recoverDeviceKeyMutation.reset();
+
+		fileName = acceptedFiles[0].name;
+
+		const reader = new FileReader();
+
+		reader.onload = (event) => {
+			const parsed = EncryptedDeviceKeySchema.safeParse(event.target?.result);
+			if (!parsed.success) return;
+			fileContent = parsed.data;
+		};
+
+		reader.readAsText(acceptedFiles[0]);
 	};
 
-	$: isDisabled = !file || passphrase === '';
+	$: isDisabled = !fileContent || passphrase === '';
 </script>
 
 <Title>Import Your Device Seed</Title>
@@ -24,8 +44,9 @@
 <div class="w-full p-6 px-16">
 	<Dropzone
 		containerClasses={clsx('flex flex-col items-center justify-center rounded-lg border p-4', {
-			'border-primary bg-white': file,
-			'border-purple bg-primary-background px-0 py-12': !file
+			'alert-background border-alert': $recoverDeviceKeyMutation.error,
+			'border-primary bg-white ': fileContent && !$recoverDeviceKeyMutation.error,
+			'border-purple bg-primary-background px-0 py-12': !fileContent
 		})}
 		inputElement={false}
 		on:drop={handleFilesSelect}
@@ -33,10 +54,19 @@
 		multiple={false}
 		disableDefaultStyles={true}
 	>
-		{#if file}
+		{#if fileContent}
 			<div class=" flex w-full items-center justify-between">
-				<p class="text-base font-semibold">{file?.name}</p>
-				<img src="/img/checkbox.svg" alt="Checkbox" />
+				<p
+					class={clsx('font-semibold', {
+						'text-base': !$recoverDeviceKeyMutation.error,
+						'text-alert': $recoverDeviceKeyMutation.error
+					})}
+				>
+					{fileName}
+				</p>
+				{#if !$recoverDeviceKeyMutation.error}
+					<img src="/img/checkbox.svg" alt="Checkbox" />
+				{/if}
 			</div>
 			<div class="mt-2 flex w-full items-center justify-between">
 				<div class="h-2 w-full rounded bg-primary-background">
@@ -55,23 +85,49 @@
 		{/if}
 	</Dropzone>
 	<div class="mt-4 flex w-full flex-col">
-		<label for="passphrase" class="text-s mb-1 font-bold text-secondary">Passphrase</label>
+		<label
+			for="passphrase"
+			class={clsx('text-s mb-1 font-bold', {
+				'text-secondary': !$recoverDeviceKeyMutation.error,
+				'text-alert': $recoverDeviceKeyMutation.error
+			})}>Passphrase</label
+		>
 		<input
 			bind:value={passphrase}
 			type="passphrase"
 			placeholder="Enter Passphrase"
 			class={clsx('rounded border p-2 outline-none focus:outline-none', {
-				'border-black': !error,
-				'border-alert': error
+				'border-black': !$recoverDeviceKeyMutation.error,
+				'border-alert': $recoverDeviceKeyMutation.error
 			})}
+			on:input={() => {
+				if ($recoverDeviceKeyMutation.error) {
+					$recoverDeviceKeyMutation.reset();
+				}
+			}}
 		/>
-		{#if error !== ''}
-			<span class="mt-2 self-end text-base text-alert">{error}</span>
+		{#if $recoverDeviceKeyMutation.error}
+			<span class="mt-2 self-end text-base text-alert">Wrong file or passphrase, try again</span>
 		{/if}
 	</div>
 </div>
 
 <div class="grid w-full grid-cols-2 gap-5 p-6">
 	<Button label="Cancel" onClick={dismissWindow} color="secondary" />
-	<Button disabled={isDisabled} label="Submit" onClick={() => null} />
+	<Button
+		disabled={isDisabled}
+		label="Submit"
+		onClick={() =>
+			$recoverDeviceKeyMutation.mutate(
+				{
+					deviceKey: fileContent,
+					passphrase
+				},
+				{
+					onSuccess: () => {
+						goto('/app-password');
+					}
+				}
+			)}
+	/>
 </div>

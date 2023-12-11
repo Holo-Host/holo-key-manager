@@ -1,3 +1,6 @@
+import { createMutation, createQuery, type QueryClient } from '@tanstack/svelte-query';
+import { get } from 'svelte/store';
+
 import {
 	DEVICE_KEY,
 	LOCAL,
@@ -5,12 +8,23 @@ import {
 	SESSION,
 	SESSION_DATA,
 	SESSION_DATA_KEY,
+	SETUP_KEY,
 	SETUP_PASSWORD
 } from '$const';
 import { getPassword, hashPassword, verifyPassword } from '$helpers';
 import { lockKey, storageService, unlockKey } from '$services';
+import { deviceKeyContentStore, passphraseStore } from '$stores';
 import { EncryptedDeviceKeySchema } from '$types';
-import { createMutation, createQuery, type QueryClient } from '@tanstack/svelte-query';
+
+const storePasswordReturnHash = async (password: string) => {
+	const hashSalt = await hashPassword(password);
+	storageService.set({
+		key: PASSWORD,
+		value: hashSalt,
+		area: LOCAL
+	});
+	return hashSalt.hash;
+};
 
 export function createSetupPasswordQuery() {
 	return createQuery({
@@ -24,16 +38,43 @@ export function createSetupPasswordQuery() {
 
 export function createPasswordMutation(queryClient: QueryClient) {
 	return createMutation({
+		mutationFn: storePasswordReturnHash,
+		onSuccess: () => {
+			queryClient.invalidateQueries({ queryKey: [SETUP_PASSWORD] });
+		}
+	});
+}
+
+export function createPasswordAndStoreDeviceKeyMutation(queryClient: QueryClient) {
+	return createMutation({
 		mutationFn: async (password: string) => {
-			const hash = await hashPassword(password);
+			const deviceKey = get(deviceKeyContentStore);
+			const passphrase = get(passphraseStore);
+
+			const decryptedKey = await unlockKey(deviceKey, passphrase);
+
+			if (!deviceKey) {
+				throw new Error('Something went wrong');
+			}
+
+			const newHash = await storePasswordReturnHash(password);
+
 			storageService.set({
-				key: PASSWORD,
-				value: hash,
+				key: DEVICE_KEY,
+				value: await lockKey(decryptedKey, newHash),
 				area: LOCAL
+			});
+			decryptedKey.zero();
+			deviceKeyContentStore.clean();
+			passphraseStore.clean();
+			storageService.set({
+				key: SESSION_DATA,
+				value: false,
+				area: SESSION
 			});
 		},
 		onSuccess: () => {
-			queryClient.invalidateQueries({ queryKey: [SETUP_PASSWORD] });
+			queryClient.invalidateQueries({ queryKey: [SETUP_KEY] });
 		}
 	});
 }
@@ -83,16 +124,12 @@ export function createChangePasswordWithDeviceKeyMutation(queryClient: QueryClie
 			}
 
 			const decryptedKey = await unlockKey(parsedDeviceKey.data, parsedResult.data.hash);
-			const newHashSalt = await hashPassword(mutationData.newPassword);
+
+			const newHash = await storePasswordReturnHash(mutationData.newPassword);
 
 			storageService.set({
-				key: PASSWORD,
-				value: newHashSalt,
-				area: LOCAL
-			});
-			storageService.set({
 				key: DEVICE_KEY,
-				value: await lockKey(decryptedKey, newHashSalt.hash),
+				value: await lockKey(decryptedKey, newHash),
 				area: LOCAL
 			});
 			decryptedKey.zero();

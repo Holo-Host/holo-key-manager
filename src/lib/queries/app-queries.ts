@@ -1,16 +1,18 @@
 import { useQueryClient } from '@tanstack/svelte-query';
 
 import {
-	createSessionQuery,
-	createSetupDeviceKeyQuery,
-	createStoreDeviceKey
-} from './sessionAndKey';
-import {
 	createChangePasswordWithDeviceKeyMutation,
+	createPasswordAndStoreDeviceKeyMutation,
 	createPasswordMutation,
 	createSetupPasswordQuery,
 	createSignInMutation
 } from './password';
+import {
+	createRecoverDeviceKeyMutation,
+	createSessionQuery,
+	createSetupDeviceKeyQuery,
+	createStoreDeviceKey
+} from './sessionAndKey';
 
 export function sessionStorageQueries() {
 	const queryClient = useQueryClient();
@@ -22,6 +24,8 @@ export function sessionStorageQueries() {
 	const setupPasswordQuery = createSetupPasswordQuery();
 	const signInMutation = createSignInMutation(queryClient);
 	const storeDeviceKey = createStoreDeviceKey(queryClient);
+	const recoverDeviceKeyMutation = createRecoverDeviceKeyMutation();
+	const passwordAndStoreDeviceKeyMutation = createPasswordAndStoreDeviceKeyMutation(queryClient);
 
 	return {
 		changePasswordWithDeviceKeyMutation,
@@ -30,6 +34,8 @@ export function sessionStorageQueries() {
 		setupDeviceKeyQuery,
 		setupPasswordQuery,
 		signInMutation,
-		storeDeviceKey
+		storeDeviceKey,
+		recoverDeviceKeyMutation,
+		passwordAndStoreDeviceKeyMutation
 	};
 }

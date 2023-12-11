@@ -1,10 +1,10 @@
 <script lang="ts">
-	import AppParagraph from '$components/AppParagraph.svelte';
-	import Button from '$components/Button.svelte';
-	import Tooltip from '../../../lib/components/Tooltip.svelte';
-	import Title from '$components/Title.svelte';
-	import { dismissWindow } from '$lib/helpers';
 	import clsx from 'clsx';
+
+	import { AppParagraph, Button, Title } from '$components';
+	import { dismissWindow } from '$lib/helpers';
+
+	import Tooltip from './Tooltip.svelte';
 
 	export let inputValue: string;
 	export let showTooltip = true;

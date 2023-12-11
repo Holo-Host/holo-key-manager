@@ -1,9 +1,10 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
-	import { keysStore, passphraseStore } from '$stores';
+
 	import { goto } from '$app/navigation';
-	import { Button, Title, AppParagraph } from '$components';
+	import { AppParagraph, Button, Title } from '$components';
 	import { sessionStorageQueries } from '$queries';
+	import { keysStore, passphraseStore } from '$stores';
 
 	const { storeDeviceKey } = sessionStorageQueries();
 

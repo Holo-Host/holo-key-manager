@@ -1,10 +1,11 @@
 <script lang="ts">
-	import PopupDialog from './PopupDialog.svelte';
-	import { passphraseStore } from '$stores';
-	import type { SetSecret } from '$lib/types';
 	import { goto } from '$app/navigation';
-	import EnterSecretComponent from './EnterSecretComponent.svelte';
+	import type { SetSecret } from '$lib/types';
 	import { sessionStorageQueries } from '$queries';
+	import { passphraseStore } from '$stores';
+
+	import EnterSecretComponent from './EnterSecretComponent.svelte';
+	import PopupDialog from './PopupDialog.svelte';
 
 	let passphraseState: SetSecret = 'set';
 	let confirmPassphrase = '';
