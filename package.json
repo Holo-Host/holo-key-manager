@@ -4,7 +4,6 @@
 	"private": true,
 	"scripts": {
 		"build": "pnpm build:vite && pnpm build:script && pnpm build:removeExport && pnpm build:removeInline",
-		"build:prod": "pnpm build:replaceGeckoId $1 && pnpm build",
 		"build:vite": "vite build",
 		"build:script": "tsc --p scripts/extension/tsconfig.json",
 		"build:removeExport": "node scripts/project/removeExportFromScript.cjs",

@@ -24,8 +24,11 @@ jobs:
       - name: Install dependencies
         run: pnpm install
 
+      - name: Replace manifest
+        run: pnpm build:replaceGeckoId ${{ vars.FF_ID }}
+
       - name: Build extension
-        run: FF_ID=${{ vars.FF_ID }} pnpm build:prod
+        run: pnpm build
 
       - name: Zip the build
         run: |
