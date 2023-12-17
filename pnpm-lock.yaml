@@ -4,102 +4,109 @@ settings:
   autoInstallPeers: true
   excludeLinksFromLockfile: false
 
-dependencies:
-  '@tanstack/svelte-query':
-    specifier: ^5.13.2
-    version: 5.13.2(svelte@4.2.8)
-  clsx:
-    specifier: ^2.0.0
-    version: 2.0.0
-  file-saver:
-    specifier: ^2.0.5
-    version: 2.0.5
-  hcSeedBundle:
-    specifier: github:mrruby/hcSeedBundle
-    version: github.com/mrruby/hcSeedBundle/11296f4f187db90e5156b564ca3175b8aa46acc0
-  jszip:
-    specifier: ^3.10.1
-    version: 3.10.1
-  svelte:
-    specifier: ^4.2.8
-    version: 4.2.8
-  tailwindcss:
-    specifier: ^3.3.6
-    version: 3.3.6
-  tiny-glob:
-    specifier: ^0.2.9
-    version: 0.2.9
-  zod:
-    specifier: ^3.22.4
-    version: 3.22.4
+importers:
 
-devDependencies:
-  '@sveltejs/adapter-static':
-    specifier: ^2.0.3
-    version: 2.0.3(@sveltejs/kit@1.27.7)
-  '@sveltejs/kit':
-    specifier: ^1.27.7
-    version: 1.27.7(svelte@4.2.8)(vite@4.5.1)
-  '@types/chrome':
-    specifier: ^0.0.254
-    version: 0.0.254
-  '@types/file-saver':
-    specifier: ^2.0.7
-    version: 2.0.7
-  '@typescript-eslint/eslint-plugin':
-    specifier: ^6.13.2
-    version: 6.13.2(@typescript-eslint/parser@6.13.2)(eslint@8.55.0)(typescript@5.3.3)
-  '@typescript-eslint/parser':
-    specifier: ^6.13.2
-    version: 6.13.2(eslint@8.55.0)(typescript@5.3.3)
-  autoprefixer:
-    specifier: ^10.4.16
-    version: 10.4.16(postcss@8.4.32)
-  eslint:
-    specifier: ^8.55.0
-    version: 8.55.0
-  eslint-config-prettier:
-    specifier: ^9.1.0
-    version: 9.1.0(eslint@8.55.0)
-  eslint-plugin-simple-import-sort:
-    specifier: ^10.0.0
-    version: 10.0.0(eslint@8.55.0)
-  eslint-plugin-svelte:
-    specifier: ^2.35.1
-    version: 2.35.1(eslint@8.55.0)(svelte@4.2.8)
-  husky:
-    specifier: ^8.0.3
-    version: 8.0.3
-  lint-staged:
-    specifier: ^15.2.0
-    version: 15.2.0
-  postcss:
-    specifier: ^8.4.32
-    version: 8.4.32
-  prettier:
-    specifier: ^3.1.0
-    version: 3.1.0
-  prettier-plugin-svelte:
-    specifier: ^3.1.2
-    version: 3.1.2(prettier@3.1.0)(svelte@4.2.8)
-  prettier-plugin-tailwindcss:
-    specifier: ^0.5.9
-    version: 0.5.9(prettier-plugin-svelte@3.1.2)(prettier@3.1.0)
-  svelte-check:
-    specifier: ^3.6.2
-    version: 3.6.2(postcss@8.4.32)(svelte@4.2.8)
-  svelte-file-dropzone:
-    specifier: ^2.0.2
-    version: 2.0.2(svelte@4.2.8)
-  tslib:
-    specifier: ^2.6.2
-    version: 2.6.2
-  typescript:
-    specifier: ^5.3.3
-    version: 5.3.3
-  vite:
-    specifier: ^4.5.1
-    version: 4.5.1
+  .:
+    dependencies:
+      '@tanstack/svelte-query':
+        specifier: ^5.13.2
+        version: 5.13.2(svelte@4.2.8)
+      clsx:
+        specifier: ^2.0.0
+        version: 2.0.0
+      file-saver:
+        specifier: ^2.0.5
+        version: 2.0.5
+      hcSeedBundle:
+        specifier: github:mrruby/hcSeedBundle
+        version: github.com/mrruby/hcSeedBundle/11296f4f187db90e5156b564ca3175b8aa46acc0
+      jszip:
+        specifier: ^3.10.1
+        version: 3.10.1
+      svelte:
+        specifier: ^4.2.8
+        version: 4.2.8
+      tailwindcss:
+        specifier: ^3.3.6
+        version: 3.3.6
+      tiny-glob:
+        specifier: ^0.2.9
+        version: 0.2.9
+      zod:
+        specifier: ^3.22.4
+        version: 3.22.4
+    devDependencies:
+      '@sveltejs/adapter-static':
+        specifier: ^2.0.3
+        version: 2.0.3(@sveltejs/kit@1.27.7)
+      '@sveltejs/kit':
+        specifier: ^1.27.7
+        version: 1.27.7(svelte@4.2.8)(vite@4.5.1)
+      '@tsconfig/node-lts':
+        specifier: ^20.1.0
+        version: 20.1.0
+      '@types/chrome':
+        specifier: ^0.0.254
+        version: 0.0.254
+      '@types/file-saver':
+        specifier: ^2.0.7
+        version: 2.0.7
+      '@typescript-eslint/eslint-plugin':
+        specifier: ^6.13.2
+        version: 6.13.2(@typescript-eslint/parser@6.13.2)(eslint@8.55.0)(typescript@5.3.3)
+      '@typescript-eslint/parser':
+        specifier: ^6.13.2
+        version: 6.13.2(eslint@8.55.0)(typescript@5.3.3)
+      autoprefixer:
+        specifier: ^10.4.16
+        version: 10.4.16(postcss@8.4.32)
+      eslint:
+        specifier: ^8.55.0
+        version: 8.55.0
+      eslint-config-prettier:
+        specifier: ^9.1.0
+        version: 9.1.0(eslint@8.55.0)
+      eslint-plugin-simple-import-sort:
+        specifier: ^10.0.0
+        version: 10.0.0(eslint@8.55.0)
+      eslint-plugin-svelte:
+        specifier: ^2.35.1
+        version: 2.35.1(eslint@8.55.0)(svelte@4.2.8)
+      husky:
+        specifier: ^8.0.3
+        version: 8.0.3
+      lint-staged:
+        specifier: ^15.2.0
+        version: 15.2.0
+      postcss:
+        specifier: ^8.4.32
+        version: 8.4.32
+      prettier:
+        specifier: ^3.1.0
+        version: 3.1.0
+      prettier-plugin-svelte:
+        specifier: ^3.1.2
+        version: 3.1.2(prettier@3.1.0)(svelte@4.2.8)
+      prettier-plugin-tailwindcss:
+        specifier: ^0.5.9
+        version: 0.5.9(prettier-plugin-svelte@3.1.2)(prettier@3.1.0)
+      svelte-check:
+        specifier: ^3.6.2
+        version: 3.6.2(postcss@8.4.32)(svelte@4.2.8)
+      svelte-file-dropzone:
+        specifier: ^2.0.2
+        version: 2.0.2(svelte@4.2.8)
+      tslib:
+        specifier: ^2.6.2
+        version: 2.6.2
+      typescript:
+        specifier: ^5.3.3
+        version: 5.3.3
+      vite:
+        specifier: ^4.5.1
+        version: 4.5.1
+
+  holo-key-manager-js-client: {}
 
 packages:
 
@@ -511,6 +518,10 @@ packages:
       '@tanstack/query-core': 5.12.1
       svelte: 4.2.8
     dev: false
+
+  /@tsconfig/node-lts@20.1.0:
+    resolution: {integrity: sha512-3w2D9MfGdqBL51pHB5nGFmGtXBn1gbO+n9xzwcGSvZPArtCn4tElk+6EeelLXispAeqv13GAgbzkgLNHtoxOCQ==}
+    dev: true
 
   /@types/chrome@0.0.254:
     resolution: {integrity: sha512-svkOGKwA+6ZZuk9xtrYun8MYpNY/9hD17rgZ19v3KunhsK1ZOKaMESw12/1AXLh1u3UPA8jQIRi2370DXv9wgw==}
