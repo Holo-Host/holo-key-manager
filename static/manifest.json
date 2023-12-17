@@ -1,13 +1,8 @@
 {
 	"name": "Holo key manager",
 	"description": "A browser extension to manage holo keys",
-	"version": "0.0.27",
+	"version": "0.0.28",
 	"manifest_version": 3,
-	"browser_specific_settings": {
-		"gecko": {
-			"id": "holo-key-manager@holo.host"
-		}
-	},
 	"action": {
 		"default_title": "Holo key manager",
 		"default_icon": "favicon.png",
@@ -16,5 +11,11 @@
 	"content_security_policy": {
 		"extension_pages": "default-src 'self' 'wasm-unsafe-eval'"
 	},
-	"permissions": ["storage"]
+	"background": {
+		"service_worker": "scripts/background.js"
+	},
+	"permissions": ["activeTab", "storage", "tabs", "nativeMessaging"],
+	"externally_connectable": {
+		"matches": ["*://localhost/*"]
+	}
 }

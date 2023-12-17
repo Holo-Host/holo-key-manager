@@ -3,8 +3,13 @@
 	"version": "0.0.3",
 	"private": true,
 	"scripts": {
-		"dev": "vite build --watch",
-		"build": "vite build && node removeInlineScript.cjs",
+		"build": "pnpm build:vite && pnpm build:script && pnpm build:removeExport && pnpm build:removeInline",
+		"build:prod": "pnpm build:replaceGeckoId -- FF_ID && pnpm build:dev",
+		"build:vite": "vite build",
+		"build:script": "tsc --p scripts/extension/tsconfig.json",
+		"build:removeExport": "node scripts/project/removeExportFromScript.cjs",
+		"build:removeInline": "node scripts/project/removeInlineScript.cjs",
+		"build:replaceGeckoId": "node scripts/project/replaceGeckoId.cjs",
 		"preview": "vite preview",
 		"check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
 		"check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch",
@@ -15,6 +20,7 @@
 	"devDependencies": {
 		"@sveltejs/adapter-static": "^2.0.3",
 		"@sveltejs/kit": "^1.27.7",
+		"@tsconfig/node-lts": "^20.1.0",
 		"@types/chrome": "^0.0.254",
 		"@types/file-saver": "^2.0.7",
 		"@typescript-eslint/eslint-plugin": "^6.13.2",

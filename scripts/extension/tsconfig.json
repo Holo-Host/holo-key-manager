@@ -1,0 +1,13 @@
+{
+	"compilerOptions": {
+		"outDir": "../../build/scripts",
+		"allowJs": true,
+		"checkJs": true,
+		"forceConsistentCasingInFileNames": true,
+		"skipLibCheck": true,
+		"strict": true,
+		"target": "esnext",
+		"types": ["chrome"]
+	},
+	"include": ["background.ts"]
+}
