@@ -25,7 +25,7 @@ jobs:
         run: pnpm install
 
       - name: Build extension
-        run: FF_ID=${{ env.FF_ID }} pnpm build:prod
+        run: FF_ID=${{ vars.FF_ID }} pnpm build:prod
 
       - name: Zip the build
         run: |
@@ -41,21 +41,21 @@ jobs:
           client_id: ${{ secrets.CHROME_CLIENT_ID }}
           client_secret: ${{ secrets.CHROME_CLIENT_SECRET }}
           refresh_token: ${{ secrets.CHROME_REFRESH_TOKEN }}
-          extension_id: ${{ env.CHROME_ID }}
+          extension_id: ${{ vars.CHROME_ID }}
           zip_file: build.zip
 
       - name: Firefox upload & release
         uses: cardinalby/webext-buildtools-firefox-addons-action@1.0.9
         with:
           zipFilePath: build.zip
-          extensionId: ${{ env.FF_ID }}
+          extensionId: ${{ vars.FF_ID }}
           jwtIssuer: ${{ secrets.FF_JWT_ISSUER }}
           jwtSecret: ${{ secrets.FF_JWT_SECRET }}
 
       - name: Edge upload & release
         uses: wdzeng/edge-addon@v1.2.1
         with:
-          product-id: ${{ env.EDGE_ID }}
+          product-id: ${{ vars.EDGE_ID }}
           zip-path: build.zip
           client-id: ${{ secrets.EDGE_CLIENT_ID }}
           client-secret: ${{ secrets.EDGE_CLIENT_SECRET }}
