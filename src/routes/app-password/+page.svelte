@@ -54,9 +54,6 @@
 					return $passwordAndStoreDeviceKeyMutation.mutate(password, {
 						onSuccess: () => {
 							goto('/setup-keys/done');
-						},
-						onError: (error) => {
-							console.log(error);
 						}
 					});
 				}
