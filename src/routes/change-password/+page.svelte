@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
-	import { Button, SetupContainer, Title } from '$components';
+	import { AppContainer, Button, Title } from '$components';
 	import InputPassword from '$components/InputPassword.svelte';
 	import { dismissWindow } from '$helpers';
 	import { sessionStorageQueries } from '$queries';
@@ -15,7 +15,7 @@
 	$: isDisabled = charCount < 8 || confirmPassword !== password || oldPassword === '';
 </script>
 
-<SetupContainer>
+<AppContainer>
 	<button class="mb-4 ml-6 flex items-center self-start" on:click={dismissWindow}>
 		<img src="/img/arrow-left.svg" alt="Arrow" />
 		<span class="ml-2 text-base">Back</span></button
@@ -59,4 +59,4 @@
 				)}
 		/>
 	</div>
-</SetupContainer>
+</AppContainer>

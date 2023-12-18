@@ -106,7 +106,11 @@ importers:
         specifier: ^4.5.1
         version: 4.5.1
 
-  holo-key-manager-js-client: {}
+  holo-key-manager-js-client:
+    dependencies:
+      dotenv:
+        specifier: ^16.3.1
+        version: 16.3.1
 
 packages:
 
@@ -1020,6 +1024,11 @@ packages:
     dependencies:
       esutils: 2.0.3
     dev: true
+
+  /dotenv@16.3.1:
+    resolution: {integrity: sha512-IPzF4w4/Rd94bA9imS68tZBaYyBWSCE47V1RGuMrB94iyTOIEwRmVL2x/4An+6mETpLrKJ5hQkB8W4kFAadeIQ==}
+    engines: {node: '>=12'}
+    dev: false
 
   /electron-to-chromium@1.4.608:
     resolution: {integrity: sha512-J2f/3iIIm3Mo0npneITZ2UPe4B1bg8fTNrFjD8715F/k1BvbviRuqYGkET1PgprrczXYTHFvotbBOmUp6KE0uA==}

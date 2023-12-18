@@ -5,7 +5,8 @@
 	"main": "lib/src/index.js",
 	"scripts": {
 		"test": "echo \"Error: no test specified\" && exit 1",
-		"build": "tsc"
+		"prebuild": "node prebuild.cjs",
+		"build": "npm run prebuild && tsc"
 	},
 	"keywords": [
 		"holo",
@@ -16,5 +17,8 @@
 		"api"
 	],
 	"author": "",
-	"license": "ISC"
+	"license": "ISC",
+	"dependencies": {
+		"dotenv": "^16.3.1"
+	}
 }

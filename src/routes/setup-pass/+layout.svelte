@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { page } from '$app/stores';
-	import { SetupContainer } from '$components';
+	import { AppContainer } from '$components';
 	import { dismissWindow } from '$helpers';
 	import { sessionStorageQueries } from '$queries';
 
@@ -12,7 +12,7 @@
 	}
 </script>
 
-<SetupContainer>
+<AppContainer>
 	{#if !$page.url.pathname.includes('start')}
 		<button class="mb-4 ml-6 flex items-center self-start" on:click={goBack}>
 			<img src="/img/arrow-left.svg" alt="Arrow" />
@@ -20,4 +20,4 @@
 		>
 	{/if}
 	<slot />
-</SetupContainer>
+</AppContainer>

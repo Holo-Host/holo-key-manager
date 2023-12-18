@@ -1,7 +1,5 @@
 import type { Message } from '../../types/index';
 
-console.log('background script loaded');
-
 chrome.runtime.onMessageExternal.addListener((message: Message, sender, sendResponse) => {
 	if (message.action === 'openWindow') {
 		try {
@@ -11,7 +9,7 @@ chrome.runtime.onMessageExternal.addListener((message: Message, sender, sendResp
 				height: 600,
 				width: 375,
 				top: 0,
-				left: screen.width - 375
+				left: 375
 			});
 		} catch (error) {
 			console.error('Error creating window:', error);

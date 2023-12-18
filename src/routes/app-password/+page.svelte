@@ -2,7 +2,7 @@
 	import { onMount } from 'svelte';
 
 	import { goto } from '$app/navigation';
-	import { AppParagraph, Button, InputPassword, SetupContainer, Title } from '$components';
+	import { AppContainer, AppParagraph, Button, InputPassword, Title } from '$components';
 	import { dismissWindow } from '$helpers';
 	import { sessionStorageQueries } from '$queries';
 	import { deviceKeyContentStore } from '$stores';
@@ -23,7 +23,7 @@
 	});
 </script>
 
-<SetupContainer>
+<AppContainer>
 	<Title>Set Key Manager Password</Title>
 	<AppParagraph
 		extraProps="mx-auto max-w-sm text-center"
@@ -69,4 +69,4 @@
 			}}
 		/>
 	</div>
-</SetupContainer>
+</AppContainer>

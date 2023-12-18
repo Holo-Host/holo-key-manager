@@ -1,7 +1,7 @@
 <script lang="ts">
-	import { SetupContainer } from '$components';
+	import { AppContainer } from '$components';
 </script>
 
-<SetupContainer>
+<AppContainer>
 	<slot />
-</SetupContainer>
+</AppContainer>
