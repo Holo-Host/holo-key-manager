@@ -8,7 +8,7 @@
 		"build:script": "tsc --p scripts/extension/tsconfig.json",
 		"build:removeExport": "node scripts/project/removeExportFromScript.cjs",
 		"build:removeInline": "node scripts/project/removeInlineScript.cjs",
-		"build:replaceGeckoId": "node scripts/project/replaceGeckoId.cjs",
+		"build:replaceForFirefox": "node scripts/project/replaceForFirefox.cjs",
 		"preview": "vite preview",
 		"check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
 		"check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch",

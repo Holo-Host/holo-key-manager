@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
-// replaceGeckoId.js
+// replaceForFirefox.cjs
 const fs = require('fs');
 const path = require('path');
 
@@ -22,6 +22,9 @@ fs.readFile(manifestPath, 'utf8', (err, data) => {
 	const manifest = JSON.parse(data);
 	const updatedManifest = {
 		...manifest,
+		background: {
+			scripts: ['background.js']
+		},
 		browser_specific_settings: {
 			...manifest.browser_specific_settings,
 			gecko: {

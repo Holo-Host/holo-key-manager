@@ -24,9 +24,6 @@ jobs:
       - name: Install dependencies
         run: pnpm install
 
-      - name: Replace manifest
-        run: pnpm build:replaceGeckoId ${{ vars.FF_ID }}
-
       - name: Build extension
         run: pnpm build
 
@@ -47,14 +44,6 @@ jobs:
           extension_id: ${{ vars.CHROME_ID }}
           zip_file: build.zip
 
-      - name: Firefox upload & release
-        uses: cardinalby/webext-buildtools-firefox-addons-action@1.0.9
-        with:
-          zipFilePath: build.zip
-          extensionId: ${{ vars.FF_ID }}
-          jwtIssuer: ${{ secrets.FF_JWT_ISSUER }}
-          jwtSecret: ${{ secrets.FF_JWT_SECRET }}
-
       - name: Edge upload & release
         uses: wdzeng/edge-addon@v1.2.1
         with:
@@ -63,3 +52,23 @@ jobs:
           client-id: ${{ secrets.EDGE_CLIENT_ID }}
           client-secret: ${{ secrets.EDGE_CLIENT_SECRET }}
           access-token-url: ${{ secrets.EDGE_ACCESS_TOKEN_URL }}
+
+      - name: Replace manifest
+        run: pnpm build:replaceForFirefox ${{ vars.FF_ID }}
+
+      - name: Build extension
+        run: pnpm build
+
+      - name: Zip the build
+        run: |
+          cd build
+          zip -r ../buildFF.zip .
+          cd ..
+
+      - name: Firefox upload & release
+        uses: cardinalby/webext-buildtools-firefox-addons-action@1.0.9
+        with:
+          zipFilePath: buildFF.zip
+          extensionId: ${{ vars.FF_ID }}
+          jwtIssuer: ${{ secrets.FF_JWT_ISSUER }}
+          jwtSecret: ${{ secrets.FF_JWT_SECRET }}
