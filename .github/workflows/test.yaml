@@ -46,6 +46,7 @@ jobs:
 
       - name: Edge upload & release
         uses: wdzeng/edge-addon@v1.2.1
+        continue-on-error: true
         with:
           product-id: ${{ vars.EDGE_ID }}
           zip-path: build.zip
