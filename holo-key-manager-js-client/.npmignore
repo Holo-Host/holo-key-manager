@@ -1,0 +1,6 @@
+
+node_modules/
+src/
+types/
+prebuild.cjs
+index.ts
