@@ -23,19 +23,21 @@ jobs:
         uses: actions/github-script@v6
         with:
           script: |
-            import fs from 'fs/promises';
-            import fetch from 'node-fetch';
-            const manifest = JSON.parse(await fs.readFile('./static/manifest.json', 'utf8'));
+            const fs = require('fs/promises');
+            const fetch = require('node-fetch');
+            const core = require('@actions/core');
+            fs.readFile('./static/manifest.json', 'utf8').then(data => {
+            const manifest = JSON.parse(data);
             const currentVersion = manifest.version;
-            const response = await fetch(`https://chrome.google.com/webstore/detail/${{ secrets.CHROME_CLIENT_ID }}?hl=en`);
-            const text = await response.text();
-            const match = text.match(/"version": "(\d+\.\d+\.\d+)"/);
-            const latestVersion = match ? match[1] : null;
-            if (currentVersion === latestVersion) {
-              core.setOutput('abort', 'true');
-            } else {
-              core.setOutput('abort', 'false');
-            }
+            fetch(`https://chrome.google.com/webstore/detail/${{ secrets.CHROME_CLIENT_ID }}?hl=en`).then(response => {
+              response.text().then(text => {
+              const match = text.match(/"version": "(\d+\.\d+\.\d+)"/);
+              const latestVersion = match ? match[1] : null;
+              if (currentVersion === latestVersion) {
+                core.setOutput('abort', 'true');
+              } else {
+                core.setOutput('abort', 'false');
+              }
       - name: Abort build if version matches
         if: steps.check_version.outputs.abort == 'true'
         run: |
