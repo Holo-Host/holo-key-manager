@@ -2,7 +2,17 @@
 
 This is a JavaScript client for the Holo Key Manager.
 
-## Installation
+## Install Holo Key Manager
+
+To fully utilize the Holo Key Manager JS Client, you need to install the Holo Key Manager extension for your browser. Here are the links for each browser:
+
+- [Chrome](https://chrome.google.com/webstore/detail/holo-key-manager/eggfhkdnfdhdpmkfpihjjbnncgmhihce)
+- [Edge](https://microsoftedge.microsoft.com/addons/detail/jfecdgefjljjfcflgbhgfkbeofjenceh)
+- [Mozilla](https://addons.mozilla.org/en-US/firefox/addon/holo-key-manager/)
+
+## Installation and Usage
+
+### Adding the Library
 
 To add this library as a dependency, download the `tgz` file from the developer. Then, add the following to your `package.json`:
 
@@ -12,7 +22,7 @@ To add this library as a dependency, download the `tgz` file from the developer.
 }
 ```
 
-## Testing
+### Testing
 
 ```javascript
 import createHoloKeyManager from 'holo-key-manager-js-client';
@@ -30,11 +40,3 @@ keyManager
 		console.error('Failed to open window:', error);
 	});
 ```
-
-## Installing the Holo Key Manager Extension
-
-Finally, to fully utilize the Holo Key Manager JS Client, you need to install the Holo Key Manager extension for your browser. Here are the links for each browser:
-
-- [Chrome](https://chrome.google.com/webstore/detail/holo-key-manager/eggfhkdnfdhdpmkfpihjjbnncgmhihce)
-- [Edge](https://microsoftedge.microsoft.com/addons/detail/jfecdgefjljjfcflgbhgfkbeofjenceh)
-- [Mozilla](https://addons.mozilla.org/en-US/firefox/addon/holo-key-manager/)
