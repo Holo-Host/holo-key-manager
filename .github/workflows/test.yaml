@@ -23,11 +23,11 @@ jobs:
         uses: actions/github-script@v6
         with:
           script: |
-            const fs = require('fs');
-            const nodeFetch = require('node-fetch');
-            const manifest = JSON.parse(fs.readFileSync('./static/manifest.json', 'utf8'));
+            import fs from 'fs/promises';
+            import fetch from 'node-fetch';
+            const manifest = JSON.parse(await fs.readFile('./static/manifest.json', 'utf8'));
             const currentVersion = manifest.version;
-            const response = await nodeFetch(`https://chrome.google.com/webstore/detail/${{ secrets.CHROME_CLIENT_ID }}?hl=en`);
+            const response = await fetch(`https://chrome.google.com/webstore/detail/${{ secrets.CHROME_CLIENT_ID }}?hl=en`);
             const text = await response.text();
             const match = text.match(/"version": "(\d+\.\d+\.\d+)"/);
             const latestVersion = match ? match[1] : null;
