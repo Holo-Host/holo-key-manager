@@ -16,15 +16,12 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: 18
-      - name: Install node-fetch
-        run: npm install node-fetch
       - name: Check version against latest release in Chrome Web Store
         id: check_version
         uses: actions/github-script@v6
         with:
           script: |
             const fs = require('fs/promises');
-            const fetch = require('node-fetch');
             const core = require('@actions/core');
             fs.readFile('./static/manifest.json', 'utf8').then(data => {
             const manifest = JSON.parse(data);
