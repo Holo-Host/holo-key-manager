@@ -25,13 +25,21 @@ jobs:
             const fetchVersionInfo = async () => {
               try {
                 const data = await fs.readFile('./static/manifest.json', 'utf8');
+                console.log('Read file data:', data);
                 const manifest = JSON.parse(data);
+                console.log('Parsed manifest:', manifest);
                 const currentVersion = manifest.version;
+                console.log('Current version:', currentVersion);
                 const response = await fetch(`https://chromewebstore.google.com/detail/holo-key-manager/${process.env.CHROME_ID}`);
+                console.log('Fetched response:', response);
                 const text = await response.text();
+                console.log('Response text:', text);
                 const versionPattern = /<div[^>]*>Version<\/div><div[^>]*>(\d+\.\d+\.\d+)<\/div>/;
+                console.log('Version pattern:', versionPattern);
                 const versionMatch = text.match(versionPattern);
+                console.log('Version match:', versionMatch);
                 const latestVersion = versionMatch ? versionMatch[1] : null;
+                console.log('Latest version:', latestVersion);
                 core.setOutput('abort', currentVersion === latestVersion ? 'true' : 'false');
               } catch (error) {
                 core.setFailed(error.message);
