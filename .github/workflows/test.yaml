@@ -16,15 +16,15 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: 18
-      - name: Install axios
-        run: npm install axios
+      - name: Install Puppeteer
+        run: npm install puppeteer
       - name: Check version against latest release in Chrome Web Store
         id: check_version
         uses: actions/github-script@v6
         with:
           script: |
             const fs = require('fs/promises');
-            const axios = require('axios');
+            const puppeteer = require('puppeteer');
             const fetchVersionInfo = async () => {
               try {
                 const data = await fs.readFile('./static/manifest.json', 'utf8');
@@ -33,15 +33,15 @@ jobs:
                 console.log('Parsed manifest:', manifest);
                 const currentVersion = manifest.version;
                 console.log('Current version:', currentVersion);
-                const response = await axios.get(`https://chromewebstore.google.com/detail/holo-key-manager/${{ vars.CHROME_ID}}`, { maxRedirects: 10 });
-                const text = response.data;
-                console.log('Response text:', text);
+                const browser = await puppeteer.launch();
+                const page = await browser.newPage();
+                await page.goto(`https://chromewebstore.google.com/detail/holo-key-manager/${{ vars.CHROME_ID}}`);
                 const versionPattern = /<div[^>]*>Version<\/div><div[^>]*>(\d+\.\d+\.\d+)<\/div>/;
-                console.log('Version pattern:', versionPattern);
+                const text = await page.content();
                 const versionMatch = text.match(versionPattern);
-                console.log('Version match:', versionMatch);
                 const latestVersion = versionMatch ? versionMatch[1] : null;
                 console.log('Latest version:', latestVersion);
+                await browser.close();
                 core.setOutput('abort', currentVersion === latestVersion ? 'true' : 'false');
               } catch (error) {
                 core.setFailed(error.message);
