@@ -22,16 +22,21 @@ jobs:
         with:
           script: |
             const fs = require('fs/promises');
-            fs.readFile('./static/manifest.json', 'utf8').then(data => {
-            const manifest = JSON.parse(data);
-            const currentVersion = manifest.version;
-            fetch(`https://chromewebstore.google.com/detail/holo-key-manager/${{ secrets.CHROME_ID }}`)
+            fs.readFile('./static/manifest.json', 'utf8')
+              .then(data => {
+                const manifest = JSON.parse(data);
+                const currentVersion = manifest.version;
+                return fetch(`https://chromewebstore.google.com/detail/holo-key-manager/${{ secrets.CHROME_ID }}`)
+              })
               .then(response => response.text())
               .then(text => {
                 const versionPattern = /<div[^>]*>Version<\/div><div[^>]*>(\d+\.\d+\.\d+)<\/div>/;
                 const versionMatch = text.match(versionPattern);
                 const latestVersion = versionMatch ? versionMatch[1] : null;
                 core.setOutput('abort', currentVersion === latestVersion ? 'true' : 'false');
+              })
+              .catch(error => {
+                core.setFailed(error.message);
               });
       - name: Abort build if version matches
         if: steps.check_version.outputs.abort == 'true'
