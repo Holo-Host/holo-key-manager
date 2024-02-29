@@ -6,7 +6,8 @@
 	"scripts": {
 		"test": "echo \"Error: no test specified\" && exit 1",
 		"prebuild": "node prebuild.cjs",
-		"buildPack": "npm run prebuild && tsc && npm pack"
+		"buildPack": "npm run prebuild && tsc && npm pack",
+		"packDev": "tsc && npm pack"
 	},
 	"keywords": [
 		"holo",

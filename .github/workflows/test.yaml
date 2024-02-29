@@ -29,15 +29,14 @@ jobs:
             fs.readFile('./static/manifest.json', 'utf8').then(data => {
             const manifest = JSON.parse(data);
             const currentVersion = manifest.version;
-            fetch(`https://chrome.google.com/webstore/detail/${{ secrets.CHROME_CLIENT_ID }}?hl=en`).then(response => {
-              response.text().then(text => {
-              const match = text.match(/"version": "(\d+\.\d+\.\d+)"/);
-              const latestVersion = match ? match[1] : null;
-              if (currentVersion === latestVersion) {
-                core.setOutput('abort', 'true');
-              } else {
-                core.setOutput('abort', 'false');
-              }
+            fetch(`https://chromewebstore.google.com/detail/holo-key-manager/${{ secrets.CHROME_ID }}`)
+              .then(response => response.text())
+              .then(text => {
+                const versionPattern = /<div[^>]*>Version<\/div><div[^>]*>(\d+\.\d+\.\d+)<\/div>/;
+                const versionMatch = text.match(versionPattern);
+                const latestVersion = versionMatch ? versionMatch[1] : null;
+                core.setOutput('abort', currentVersion === latestVersion ? 'true' : 'false');
+              });
       - name: Abort build if version matches
         if: steps.check_version.outputs.abort == 'true'
         run: |
