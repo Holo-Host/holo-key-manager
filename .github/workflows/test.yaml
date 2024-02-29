@@ -28,11 +28,8 @@ jobs:
             const fetchVersionInfo = async () => {
               try {
                 const data = await fs.readFile('./static/manifest.json', 'utf8');
-                console.log('Read file data:', data);
                 const manifest = JSON.parse(data);
-                console.log('Parsed manifest:', manifest);
                 const currentVersion = manifest.version;
-                console.log('Current version:', currentVersion);
                 const browser = await puppeteer.launch();
                 const page = await browser.newPage();
                 await page.goto(`https://chromewebstore.google.com/detail/holo-key-manager/${{ vars.CHROME_ID}}`);
@@ -40,7 +37,6 @@ jobs:
                 const text = await page.content();
                 const versionMatch = text.match(versionPattern);
                 const latestVersion = versionMatch ? versionMatch[1] : null;
-                console.log('Latest version:', latestVersion);
                 await browser.close();
                 core.setOutput('abort', currentVersion === latestVersion ? 'true' : 'false');
               } catch (error) {
