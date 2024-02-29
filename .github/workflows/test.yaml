@@ -22,7 +22,6 @@ jobs:
         with:
           script: |
             const fs = require('fs/promises');
-            const core = require('@actions/core');
             fs.readFile('./static/manifest.json', 'utf8').then(data => {
             const manifest = JSON.parse(data);
             const currentVersion = manifest.version;
