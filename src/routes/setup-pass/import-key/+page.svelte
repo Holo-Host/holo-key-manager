@@ -1,6 +1,6 @@
 <script lang="ts">
 	import clsx from 'clsx';
-	import Dropzone from 'svelte-file-dropzone/Dropzone.svelte';
+	import Dropzone from 'svelte-file-dropzone';
 
 	import { goto } from '$app/navigation';
 	import { AppParagraph, Button, Title } from '$components';
