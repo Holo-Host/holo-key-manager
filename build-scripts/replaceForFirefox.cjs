@@ -3,7 +3,7 @@
 const fs = require('fs');
 const path = require('path');
 
-const manifestPath = path.resolve(__dirname, '../../static/manifest.json');
+const manifestPath = path.resolve(__dirname, '../static/manifest.json');
 
 const args = process.argv.slice(2);
 const geckoId = args[0];
