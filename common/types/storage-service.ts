@@ -1,12 +1,17 @@
 import { z } from 'zod';
 
-import type { DEVICE_KEY, LOCAL, PASSWORD, SESSION, SESSION_DATA } from '$const';
+import type { DEVICE_KEY, LOCAL, PASSWORD, SESSION, SESSION_DATA } from '../const';
 
-import type { HashSalt } from './keys';
+export const HashSaltSchema = z.object({
+	salt: z.string(),
+	hash: z.string()
+});
+
+export type HashSalt = z.infer<typeof HashSaltSchema>;
 
 export type AreaName = typeof SESSION | typeof LOCAL | 'sync' | 'managed';
 
-export const SessionStateSchema = z.boolean();
+export const SessionStateSchema = z.string();
 
 export type SessionState = z.infer<typeof SessionStateSchema>;
 
@@ -14,7 +19,7 @@ export type ChangesType = {
 	[key: string]: unknown;
 };
 
-type SetSession = { key: typeof SESSION_DATA; value: boolean; area: typeof SESSION };
+type SetSession = { key: typeof SESSION_DATA; value: string | null; area: typeof SESSION };
 type GetSession = { key: typeof SESSION_DATA; area: typeof SESSION };
 
 type SetPassword = {

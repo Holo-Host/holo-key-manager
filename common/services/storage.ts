@@ -1,5 +1,5 @@
-import { isChromeStorageSafe } from '$helpers';
-import type { AreaName, ChangesType, StorageService } from '$types';
+import { isChromeStorageSafe } from '../helpers';
+import type { AreaName, ChangesType, StorageService } from '../types';
 
 export const storageService: StorageService = {
 	set: ({ key, value, area }) => {

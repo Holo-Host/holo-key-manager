@@ -1,18 +1,24 @@
 <script lang="ts">
+	import { onMount } from 'svelte';
+
 	import { goto } from '$app/navigation';
 	import { AppContainer, Button, Title } from '$components';
 	import InputPassword from '$components/InputPassword.svelte';
 	import { dismissWindow } from '$helpers';
 	import { sessionStorageQueries } from '$queries';
+	import { passwordStore } from '$stores';
 
 	const { changePasswordWithDeviceKeyMutation } = sessionStorageQueries();
 
 	let oldPassword = '';
 	let confirmPassword = '';
-	let password = '';
 
-	$: charCount = password.length;
-	$: isDisabled = charCount < 8 || confirmPassword !== password || oldPassword === '';
+	onMount(() => {
+		passwordStore.reset();
+	});
+
+	$: charCount = $passwordStore.length;
+	$: isDisabled = charCount < 8 || confirmPassword !== $passwordStore || oldPassword === '';
 </script>
 
 <AppContainer>
@@ -27,7 +33,7 @@
 	<div class="w-full p-6">
 		<InputPassword bind:value={oldPassword} label="Old Password" extraProps="mb-6" />
 		<InputPassword
-			bind:value={password}
+			bind:value={$passwordStore}
 			label="New Password (8 Characters min)"
 			extraProps="mb-6"
 			error={charCount < 8 ? 'Please enter a minimum of 8 Characters' : ''}
@@ -36,7 +42,7 @@
 			bind:value={confirmPassword}
 			label="Confirm New Password"
 			extraProps="mb-4"
-			error={confirmPassword !== password ? "Password doesn't Match" : ''}
+			error={confirmPassword !== $passwordStore ? "Password doesn't Match" : ''}
 		/>
 	</div>
 
@@ -48,7 +54,7 @@
 			onClick={() =>
 				$changePasswordWithDeviceKeyMutation.mutate(
 					{
-						newPassword: password,
+						newPassword: $passwordStore,
 						oldPassword: oldPassword
 					},
 					{

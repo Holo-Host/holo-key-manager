@@ -15,4 +15,4 @@ function removeExportStatement(directory, fileName) {
 	console.log(`"export {};" removed from: ${filePath}`);
 }
 
-removeExportStatement(path.resolve(__dirname, '../../build/scripts'), 'background.js');
+removeExportStatement(path.resolve(__dirname, '../build/scripts'), 'background.js');

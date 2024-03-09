@@ -1,6 +1,7 @@
 {
 	"compilerOptions": {
-		"outDir": "../../build/scripts",
+		"outDir": "../build/scripts",
+		"moduleResolution": "node",
 		"allowJs": true,
 		"checkJs": true,
 		"forceConsistentCasingInFileNames": true,

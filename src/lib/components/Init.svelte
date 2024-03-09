@@ -5,15 +5,19 @@
 	function redirectToSetup() {
 		window.open('setup-pass/start.html', '_blank');
 	}
+
+	export let outerWindow = false;
 </script>
 
 <div class="m-8">
-	<div class="mb-4 flex items-center justify-between">
-		<img src="/img/holo_logo.svg" alt="Holo Key Manager Logo" />
-		<button on:click={dismissWindow} class="border-none bg-transparent">
-			<img src="/img/close.svg" alt="Close" />
-		</button>
-	</div>
+	{#if !outerWindow}
+		<div class="mb-4 flex items-center justify-between">
+			<img src="/img/holo_logo.svg" alt="Holo Key Manager Logo" />
+			<button on:click={dismissWindow} class="border-none bg-transparent">
+				<img src="/img/close.svg" alt="Close" />
+			</button>
+		</div>
+	{/if}
 
 	<div class="flex flex-col items-center justify-center">
 		<img src="/img/setup.svg" alt="Setup" class="max-w-[48px]" />

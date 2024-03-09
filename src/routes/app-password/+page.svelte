@@ -5,18 +5,18 @@
 	import { AppContainer, AppParagraph, Button, InputPassword, Title } from '$components';
 	import { dismissWindow } from '$helpers';
 	import { sessionStorageQueries } from '$queries';
-	import { deviceKeyContentStore } from '$stores';
+	import { deviceKeyContentStore, passwordStore } from '$stores';
 
 	const { createPassword, passwordAndStoreDeviceKeyMutation } = sessionStorageQueries();
 
-	let password = '';
 	let confirmPassword = '';
 
-	$: charCount = password.length;
-	$: isDisabled = charCount < 8 || confirmPassword !== password;
+	$: charCount = $passwordStore.length;
+	$: isDisabled = charCount < 8 || confirmPassword !== $passwordStore;
 
 	const { setupDeviceKeyQuery } = sessionStorageQueries();
 	onMount(() => {
+		passwordStore.reset();
 		if ($setupDeviceKeyQuery.data) {
 			dismissWindow();
 		}
@@ -31,7 +31,7 @@
 	/>
 	<div class="w-full p-6">
 		<InputPassword
-			bind:value={password}
+			bind:value={$passwordStore}
 			label="New Password (8 Characters min)"
 			extraProps="mb-6"
 			error={charCount < 8 ? 'Please enter a minimum of 8 Characters' : ''}
@@ -40,7 +40,7 @@
 			bind:value={confirmPassword}
 			label="Confirm New Password"
 			extraProps="mb-4"
-			error={confirmPassword !== password ? "Password doesn't Match" : ''}
+			error={confirmPassword !== $passwordStore ? "Password doesn't Match" : ''}
 		/>
 	</div>
 
@@ -51,14 +51,14 @@
 			label="Set password"
 			onClick={() => {
 				if ($deviceKeyContentStore) {
-					return $passwordAndStoreDeviceKeyMutation.mutate(password, {
+					return $passwordAndStoreDeviceKeyMutation.mutate($passwordStore, {
 						onSuccess: () => {
 							goto('/setup-keys/done');
 						}
 					});
 				}
 
-				return $createPassword.mutate(password, {
+				return $createPassword.mutate($passwordStore, {
 					onSuccess: () => {
 						goto('/setup-pass/enter-passphrase');
 					}

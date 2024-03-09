@@ -14,13 +14,6 @@ export type KeysState = {
 	loading: boolean;
 };
 
-export const HashSaltSchema = z.object({
-	salt: z.string(),
-	hash: z.string()
-});
-
-export type HashSalt = z.infer<typeof HashSaltSchema>;
-
 export const EncryptedDeviceKeySchema = z.string();
 
 export type EncryptedDeviceKey = z.infer<typeof EncryptedDeviceKeySchema>;

@@ -23,7 +23,8 @@ fs.readFile(manifestPath, 'utf8', (err, data) => {
 	const updatedManifest = {
 		...manifest,
 		background: {
-			scripts: ['scripts/background.js']
+			scripts: ['scripts/background.js'],
+			type: 'module'
 		},
 		browser_specific_settings: {
 			...manifest.browser_specific_settings,

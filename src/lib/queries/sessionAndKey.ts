@@ -8,10 +8,13 @@ import {
 	SESSION_DATA,
 	SESSION_DATA_KEY,
 	SETUP_KEY
-} from '$const';
-import { storageService, unlockKey } from '$services';
+} from '$commonConst';
+import { storageService } from '$commonServices';
+import { HashSaltSchema, SessionStateSchema } from '$commonTypes';
+import { handleSuccess } from '$helpers';
+import { unlockKey } from '$services';
 import { deviceKeyContentStore, passphraseStore } from '$stores';
-import { EncryptedDeviceKeySchema, HashSaltSchema, SessionStateSchema } from '$types';
+import { EncryptedDeviceKeySchema } from '$types';
 
 export function createSessionQuery() {
 	return createQuery({
@@ -22,7 +25,7 @@ export function createSessionQuery() {
 				area: SESSION
 			});
 			const parsedData = SessionStateSchema.safeParse(data);
-			return parsedData.success ? parsedData.data : false;
+			return parsedData.success;
 		}
 	});
 }
@@ -61,10 +64,7 @@ export function createStoreDeviceKey(queryClient: QueryClient) {
 				area: LOCAL
 			});
 		},
-
-		onSuccess: () => {
-			queryClient.invalidateQueries({ queryKey: [SETUP_KEY] });
-		}
+		onSuccess: handleSuccess(queryClient, [SETUP_KEY])
 	});
 }
 
@@ -81,6 +81,28 @@ export function createRecoverDeviceKeyMutation() {
 
 			deviceKeyContentStore.set(parsedDeviceKey.data);
 			passphraseStore.set(mutationData.passphrase);
+
+			return decryptedKey.zero();
+		}
+	});
+}
+
+export function createApplicationKeyMutation() {
+	return createMutation({
+		mutationFn: async () => {
+			const data = await storageService.getWithoutCallback({
+				key: SESSION_DATA,
+				area: SESSION
+			});
+			const parsedData = SessionStateSchema.safeParse(data);
+			if (!parsedData.success) throw new Error('Invalid device key');
+
+			const decryptedKey = await unlockKey(parsedData.data, SESSION);
+
+			console.log(decryptedKey);
+
+			const app_key_1 = decryptedKey.derive(0);
+			console.log(app_key_1);
 
 			return decryptedKey.zero();
 		}

@@ -4,7 +4,7 @@
 	import { goto } from '$app/navigation';
 	import { AppParagraph, Button, Title } from '$components';
 	import { sessionStorageQueries } from '$queries';
-	import { keysStore, passphraseStore } from '$stores';
+	import { keysStore, passphraseStore, passwordStore } from '$stores';
 
 	const { storeDeviceKey } = sessionStorageQueries();
 
@@ -15,10 +15,11 @@
 	});
 
 	async function generate() {
-		await keysStore.generate($passphraseStore);
+		await keysStore.generate($passphraseStore, $passwordStore);
 
 		if ($keysStore.keys) {
 			passphraseStore.clean();
+			passwordStore.reset();
 
 			if ($keysStore.keys.encodedDeviceWithExtensionPassword) {
 				$storeDeviceKey.mutate($keysStore.keys.encodedDeviceWithExtensionPassword, {

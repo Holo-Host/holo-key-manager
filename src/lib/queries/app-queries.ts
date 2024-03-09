@@ -8,6 +8,7 @@ import {
 	createSignInMutation
 } from './password';
 import {
+	createApplicationKeyMutation,
 	createRecoverDeviceKeyMutation,
 	createSessionQuery,
 	createSetupDeviceKeyQuery,
@@ -25,6 +26,7 @@ export function sessionStorageQueries() {
 	const signInMutation = createSignInMutation(queryClient);
 	const storeDeviceKey = createStoreDeviceKey(queryClient);
 	const recoverDeviceKeyMutation = createRecoverDeviceKeyMutation();
+	const applicationKeyMutation = createApplicationKeyMutation();
 	const passwordAndStoreDeviceKeyMutation = createPasswordAndStoreDeviceKeyMutation(queryClient);
 
 	return {
@@ -35,6 +37,7 @@ export function sessionStorageQueries() {
 		setupPasswordQuery,
 		signInMutation,
 		storeDeviceKey,
+		applicationKeyMutation,
 		recoverDeviceKeyMutation,
 		passwordAndStoreDeviceKeyMutation
 	};

@@ -1,4 +1,4 @@
 export * from './encryption';
 export * from './navigation';
-export * from './other';
+export * from './queries';
 export * from './storage';

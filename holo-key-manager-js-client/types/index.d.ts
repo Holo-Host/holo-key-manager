@@ -1,4 +1,5 @@
 type IHoloKeyManager = {
-	openWindow(): Promise<void>;
+	signUp(): Promise<void>;
+	signIn(): Promise<void>;
 };
 export { IHoloKeyManager };

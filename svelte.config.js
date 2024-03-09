@@ -12,11 +12,15 @@ const config = {
 		alias: {
 			$components: path.resolve('./src/lib/components'),
 			$const: path.resolve('./src/lib/const'),
+			$commonConst: path.resolve('./common/const'),
 			$helpers: path.resolve('./src/lib/helpers'),
+			$commonHelpers: path.resolve('./common/helpers'),
 			$stores: path.resolve('./src/lib/stores'),
 			$types: path.resolve('./src/lib/types'),
+			$commonTypes: path.resolve('./common/types'),
 			$queries: path.resolve('./src/lib/queries'),
-			$services: path.resolve('./src/lib/services')
+			$services: path.resolve('./src/lib/services'),
+			$commonServices: path.resolve('./common/services')
 		}
 	}
 };
