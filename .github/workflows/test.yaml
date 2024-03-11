@@ -73,7 +73,7 @@ jobs:
           client_secret: ${{ secrets.CHROME_CLIENT_SECRET }}
           refresh_token: ${{ secrets.CHROME_REFRESH_TOKEN }}
           extension_id: ${{ vars.CHROME_ID }}
-          zip_file: build.zip
+          zip_file: holo-key-manager-extension/build.zip
 
       - name: Edge upload & release
         uses: wdzeng/edge-addon@v1.2.1
@@ -100,7 +100,7 @@ jobs:
       - name: Firefox upload & release
         uses: cardinalby/webext-buildtools-firefox-addons-action@1.0.9
         with:
-          zipFilePath: buildFF.zip
+          zipFilePath: holo-key-manager-extension/buildFF.zip
           extensionId: ${{ vars.FF_ID }}
           jwtIssuer: ${{ secrets.FF_JWT_ISSUER }}
           jwtSecret: ${{ secrets.FF_JWT_SECRET }}
