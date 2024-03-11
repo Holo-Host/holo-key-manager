@@ -55,8 +55,11 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile=false
 
+      - name: Change directory
+        run: cd holo-key-manager-extension
+
       - name: Build extension
-        run: cd holo-key-manager-extension && pnpm build
+        run: pnpm build
 
       - name: Zip the build
         run: |
