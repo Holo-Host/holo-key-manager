@@ -1,1 +1,1 @@
-export { default as createHoloKeyManager } from "./src";
+export { default as createHoloKeyManager } from './src';

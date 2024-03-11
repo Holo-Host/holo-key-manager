@@ -1,14 +1,14 @@
 {
-  "extends": "../tsconfig.base.json",
-  "compilerOptions": {
-    "outDir": "lib",
-    "declaration": true,
-    "types": [],
-    "paths": {
-      "@sharedTypes": ["../shared/types"],
-      "@sharedTypes/*": ["../shared/types/*"]
-    }
-  },
-  "include": ["src/**/*.ts"],
-  "exclude": ["node_modules/**/*"]
+	"extends": "../tsconfig.base.json",
+	"compilerOptions": {
+		"outDir": "lib",
+		"declaration": true,
+		"types": [],
+		"paths": {
+			"@sharedTypes": ["../shared/types"],
+			"@sharedTypes/*": ["../shared/types/*"]
+		}
+	},
+	"include": ["src/**/*.ts"],
+	"exclude": ["node_modules/**/*"]
 }

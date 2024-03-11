@@ -75,7 +75,10 @@ export function createSignInMutation(queryClient: QueryClient) {
 			if (!parsedResult.success || !(await verifyPassword(password, parsedResult.data)))
 				throw new Error('Invalid password or data');
 
-			const deviceKey = await storageService.getWithoutCallback({ key: DEVICE_KEY, area: LOCAL });
+			const deviceKey = await storageService.getWithoutCallback({
+				key: DEVICE_KEY,
+				area: LOCAL
+			});
 			const parsedDeviceKey = EncryptedDeviceKeySchema.safeParse(deviceKey);
 			if (!parsedDeviceKey.success) throw new Error('Invalid device key');
 

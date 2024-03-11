@@ -23,7 +23,14 @@ const focusWindow = (sendResponse: (response?: Message) => void) => {
 
 const createWindow = () => {
 	chrome.windows.create(
-		{ url: 'sign.html', type: 'popup', height: 500, width: 375, top: 100, left: 1100 },
+		{
+			url: 'sign.html',
+			type: 'popup',
+			height: 500,
+			width: 375,
+			top: 100,
+			left: 1100
+		},
 		(newWindow) => {
 			if (!newWindow) return;
 			windowId = newWindow.id;
