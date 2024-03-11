@@ -1,6 +1,7 @@
-import type { Message } from '../../common/types/message';
-import type { IHoloKeyManager } from '../types';
+import type { Message } from '@sharedTypes';
+
 import { sendMessage } from './helpers';
+import type { IHoloKeyManager } from './types';
 
 const createHoloKeyManager = ({
 	happId,
@@ -19,11 +20,18 @@ const createHoloKeyManager = ({
 		try {
 			const message: Message = {
 				action: 'SignUp',
-				payload: { happId, happName, happLogo, happUiUrl, requireRegistrationCode }
+				payload: {
+					happId,
+					happName,
+					happLogo,
+					happUiUrl,
+					requireRegistrationCode
+				}
 			};
+			console.log('sending message:', message);
 			const response = await sendMessage(message);
 			console.log('response:', response);
-			return response;
+			// return response;
 		} catch (error) {
 			console.error('Failed to signUp:', error);
 			throw error;
@@ -33,12 +41,13 @@ const createHoloKeyManager = ({
 	const signIn = async (): Promise<void> => {
 		try {
 			const message: Message = { action: 'SignIn', payload: { happId } };
-			const response = await sendMessage(message);
-			if (response.action === 'NoKeyForHapp') {
-				throw new Error('No key for happ');
-			}
-			console.log('response:', response);
-			return response;
+			// const response = await
+			sendMessage(message);
+			// if (response.action === 'NoKeyForHapp') {
+			// 	throw new Error('No key for happ');
+			// }
+			// console.log('response:', response);
+			// return response;
 		} catch (error) {
 			console.error('Failed to signIn:', error);
 			throw error;

@@ -1,4 +1,4 @@
-import type { Message } from '../common/types/message';
+import type { Message } from '@sharedTypes';
 
 let windowId: number | undefined;
 
@@ -58,7 +58,7 @@ const signInHandler = async (sendResponse: (response?: Message) => void) => {
 	}
 };
 
-chrome.runtime.onMessageExternal.addListener(
+chrome.runtime.onMessage.addListener(
 	(message: Message, sender, sendResponse: (response?: Message) => void) => {
 		if (message.action === 'SignIn') signInHandler(sendResponse);
 	}

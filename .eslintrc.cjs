@@ -1,11 +1,6 @@
 module.exports = {
 	root: true,
-	extends: [
-		'eslint:recommended',
-		'plugin:@typescript-eslint/recommended',
-		'plugin:svelte/recommended',
-		'prettier'
-	],
+	extends: ['eslint:recommended', 'plugin:@typescript-eslint/recommended', 'prettier'],
 	parser: '@typescript-eslint/parser',
 	plugins: ['@typescript-eslint', 'simple-import-sort'],
 	parserOptions: {
@@ -19,15 +14,6 @@ module.exports = {
 		node: true,
 		webextensions: true
 	},
-	overrides: [
-		{
-			files: ['*.svelte'],
-			parser: 'svelte-eslint-parser',
-			parserOptions: {
-				parser: '@typescript-eslint/parser'
-			}
-		}
-	],
 	rules: {
 		'@typescript-eslint/ban-ts-comment': 0,
 		'simple-import-sort/imports': 'error',

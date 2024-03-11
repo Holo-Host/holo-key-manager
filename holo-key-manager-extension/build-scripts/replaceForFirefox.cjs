@@ -23,7 +23,7 @@ fs.readFile(manifestPath, 'utf8', (err, data) => {
 	const updatedManifest = {
 		...manifest,
 		background: {
-			scripts: ['scripts/background.js'],
+			scripts: ['holo-key-manager-extension/scripts/background.js'],
 			type: 'module'
 		},
 		browser_specific_settings: {

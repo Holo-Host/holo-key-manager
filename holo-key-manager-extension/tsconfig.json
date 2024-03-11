@@ -10,6 +10,8 @@
 		"skipLibCheck": true,
 		"sourceMap": true,
 		"strict": true,
+		"noEmit": false,
+		"composite": true,
 		"types": ["svelte", "chrome"]
 	}
 }

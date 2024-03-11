@@ -1,0 +1,14 @@
+{
+  "compilerOptions": {
+    "lib": ["esnext", "DOM", "DOM.Iterable"],
+    "strict": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+    "moduleResolution": "bundler",
+    "verbatimModuleSyntax": true,
+    "module": "esnext",
+    "target": "esnext",
+    "types": ["chrome"]
+  }
+}

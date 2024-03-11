@@ -1,4 +1,4 @@
-import type { HashSalt } from '$commonTypes';
+import type { HashSalt } from '$sharedTypes';
 
 const hexStringToArrayBuffer = (hexString: string) => {
 	if (hexString.length % 2 !== 0) {

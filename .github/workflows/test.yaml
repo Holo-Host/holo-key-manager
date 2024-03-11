@@ -27,7 +27,7 @@ jobs:
             const puppeteer = require('puppeteer');
             const fetchVersionInfo = async () => {
               try {
-                const data = await fs.readFile('./static/manifest.json', 'utf8');
+                const data = await fs.readFile('./holo-key-manager-extension/static/manifest.json', 'utf8');
                 const manifest = JSON.parse(data);
                 const currentVersion = manifest.version;
                 const browser = await puppeteer.launch();
@@ -56,7 +56,7 @@ jobs:
         run: pnpm install --frozen-lockfile=false
 
       - name: Build extension
-        run: pnpm build
+        run: cd holo-key-manager-extension && pnpm build
 
       - name: Zip the build
         run: |

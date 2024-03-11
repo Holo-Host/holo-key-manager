@@ -1,6 +1,6 @@
-import { LOCAL, PASSWORD } from '$commonConst';
-import { storageService } from '$commonServices';
-import { HashSaltSchema } from '$commonTypes';
+import { LOCAL, PASSWORD } from '$sharedConst';
+import { storageService } from '$sharedServices';
+import { HashSaltSchema } from '$sharedTypes';
 
 export const getPassword = async () => {
 	const data = await storageService.getWithoutCallback({ key: PASSWORD, area: LOCAL });

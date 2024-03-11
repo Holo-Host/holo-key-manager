@@ -1,6 +1,8 @@
 import { createMutation, createQuery, type QueryClient } from '@tanstack/svelte-query';
 import { get } from 'svelte/store';
 
+import { getPassword, handleSuccess, hashPassword, verifyPassword } from '$helpers';
+import { lockKey, unlockKey } from '$services';
 import {
 	DEVICE_KEY,
 	LOCAL,
@@ -10,10 +12,8 @@ import {
 	SESSION_DATA_KEY,
 	SETUP_KEY,
 	SETUP_PASSWORD
-} from '$commonConst';
-import { storageService } from '$commonServices';
-import { getPassword, handleSuccess, hashPassword, verifyPassword } from '$helpers';
-import { lockKey, unlockKey } from '$services';
+} from '$sharedConst';
+import { storageService } from '$sharedServices';
 import { deviceKeyContentStore, passphraseStore, passwordStore } from '$stores';
 import { EncryptedDeviceKeySchema } from '$types';
 

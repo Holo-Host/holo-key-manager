@@ -5,4 +5,5 @@ types/
 prebuild.cjs
 index.ts
 *.tgz
+tsconfig.json
 

@@ -1,23 +1,14 @@
 {
-	"extends": "@tsconfig/node-lts/tsconfig.json",
-	"compilerOptions": {
-		"lib": ["ESNext", "dom"],
-		"outDir": "lib",
-		"removeComments": true,
-		"composite": true,
-		"module": "commonjs",
-		"moduleResolution": "node",
-		"sourceMap": true,
-		"alwaysStrict": true,
-		"allowUnreachableCode": false,
-		"noImplicitAny": true,
-		"strictNullChecks": true,
-		"noImplicitReturns": true,
-		"noUncheckedIndexedAccess": true,
-		"noUnusedLocals": true,
-		"noUnusedParameters": true,
-		"types": ["chrome"]
-	},
-	"include": ["src/**/*.ts"],
-	"exclude": ["node_modules/**/*"]
+  "extends": "../tsconfig.base.json",
+  "compilerOptions": {
+    "outDir": "lib",
+    "declaration": true,
+    "types": [],
+    "paths": {
+      "@sharedTypes": ["../shared/types"],
+      "@sharedTypes/*": ["../shared/types/*"]
+    }
+  },
+  "include": ["src/**/*.ts"],
+  "exclude": ["node_modules/**/*"]
 }
