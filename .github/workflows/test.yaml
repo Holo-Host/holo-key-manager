@@ -55,15 +55,12 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile=false
 
-      - name: Change directory
-        run: cd holo-key-manager-extension
-
       - name: Build extension
-        run: pnpm build
+        run: cd holo-key-manager-extension && pnpm build
 
       - name: Zip the build
         run: |
-          cd build
+          cd holo-key-manager-extension/build
           zip -r ../build.zip .
           cd ..
 
@@ -89,14 +86,14 @@ jobs:
           access-token-url: ${{ secrets.EDGE_ACCESS_TOKEN_URL }}
 
       - name: Replace manifest
-        run: pnpm build:replaceForFirefox ${{ vars.FF_ID }}
+        run: cd holo-key-manager-extension && pnpm build:replaceForFirefox ${{ vars.FF_ID }}
 
       - name: Build extension
-        run: pnpm build
+        run: cd holo-key-manager-extension && pnpm build
 
       - name: Zip the build
         run: |
-          cd build
+          cd holo-key-manager-extension/build
           zip -r ../buildFF.zip .
           cd ..
 
