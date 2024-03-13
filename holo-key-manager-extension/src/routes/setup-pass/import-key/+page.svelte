@@ -125,7 +125,7 @@
 				},
 				{
 					onSuccess: () => {
-						goto('/app-password');
+						goto('/extension-password');
 					}
 				}
 			)}
