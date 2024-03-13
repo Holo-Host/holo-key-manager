@@ -1,13 +1,20 @@
-import type { Message } from '@sharedTypes';
+import { responseToMessage, sendMessage } from '@sharedServices';
+import { MessageSchema, MessageWithIdSchema } from '@sharedTypes';
 
-console.log('Content script loaded');
 const isMessageFromSelf = (event: MessageEvent) => event.source === window;
-const isSignInAction = (data: Message) => data.action === 'SignIn';
-
-window.addEventListener('message', async (event: MessageEvent) => {
+const parseAndHandleMessage = async (event: MessageEvent) => {
 	if (!isMessageFromSelf(event)) return;
-	if (isSignInAction(event.data)) {
-		const response = await chrome.runtime.sendMessage(event.data);
-		window.postMessage({ ...response, id: event.data.id }, '*');
+	const parsedResult = MessageWithIdSchema.safeParse(event.data);
+	if (!parsedResult.success || parsedResult.data.action !== 'SignIn') return;
+
+	try {
+		const response = await sendMessage(parsedResult.data);
+		const parsedMessageSchema = MessageSchema.safeParse(response);
+		if (!parsedMessageSchema.success) throw new Error('Invalid response format');
+		window.postMessage(responseToMessage(parsedMessageSchema.data, parsedResult.data.id), '*');
+	} catch (error) {
+		console.error(error);
 	}
-});
+};
+
+window.addEventListener('message', parseAndHandleMessage);

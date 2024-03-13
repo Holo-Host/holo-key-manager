@@ -1,13 +1,8 @@
 {
 	"extends": "../tsconfig.base.json",
 	"compilerOptions": {
-		"outDir": "lib",
 		"declaration": true,
-		"types": [],
-		"paths": {
-			"@sharedTypes": ["../shared/types"],
-			"@sharedTypes/*": ["../shared/types/*"]
-		}
+		"outDir": "./lib"
 	},
 	"include": ["src/**/*.ts"],
 	"exclude": ["node_modules/**/*"]

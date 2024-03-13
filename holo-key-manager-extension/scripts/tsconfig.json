@@ -1,11 +1,7 @@
 {
 	"extends": "../../tsconfig.base.json",
 	"compilerOptions": {
-		"outDir": "../build",
-		"paths": {
-			"@sharedTypes": ["../../shared/types"],
-			"@sharedTypes/*": ["../../shared/types/*"]
-		}
+		"outDir": "../build"
 	},
 	"include": ["background.ts", "content.ts"]
 }

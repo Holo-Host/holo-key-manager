@@ -1,7 +1,7 @@
 {
 	"name": "Holo key manager",
 	"description": "A browser extension to manage holo keys",
-	"version": "0.0.35",
+	"version": "0.0.36",
 	"manifest_version": 3,
 	"action": {
 		"default_title": "Holo key manager",
@@ -9,20 +9,18 @@
 		"default_popup": "index.html"
 	},
 	"content_security_policy": {
-		"extension_pages": "default-src 'self' 'wasm-unsafe-eval'"
+		"extension_pages": "script-src 'self' 'wasm-unsafe-eval'; object-src 'self'"
 	},
 	"background": {
-		"service_worker": "holo-key-manager-extension/scripts/background.js",
+		"service_worker": "scripts/background.js",
 		"type": "module"
 	},
 	"permissions": ["activeTab", "storage", "tabs", "nativeMessaging"],
-	"externally_connectable": {
-		"matches": ["*://localhost/*"]
-	},
+	"host_permissions": ["<all_urls>"],
 	"content_scripts": [
 		{
 			"matches": ["*://localhost/*"],
-			"js": ["holo-key-manager-extension/scripts/content.js"]
+			"js": ["scripts/content.js"]
 		}
 	]
 }

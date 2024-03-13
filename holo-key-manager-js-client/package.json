@@ -2,10 +2,11 @@
   "name": "holo-key-manager-js-client",
   "version": "1.0.0",
   "description": "A JavaScript client API for managing Holo keys",
-  "main": "lib/holo-key-manager-js-client/src/index.js",
+  "main": "lib/index.js",
+  "types": "lib/holo-key-manager-js-client/src/index.d.ts",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "buildPack": "tsc && npm pack"
+    "buildPack": "rollup -c && npm pack"
   },
   "keywords": [
     "holo",
@@ -19,7 +20,6 @@
   "license": "ISC",
   "dependencies": {
     "dotenv": "^16.4.5",
-    "uid": "^2.0.2",
     "zod": "^3.22.4"
   },
   "type": "module",

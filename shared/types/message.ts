@@ -1,5 +1,7 @@
 import { z } from 'zod';
 
+import { HOLO_KEY_MANAGER_APP_ID, SENDER_EXTENSION, SENDER_WEBAPP } from '../const';
+
 const BasePayloadSchema = z.object({
 	happId: z.string()
 });
@@ -11,29 +13,22 @@ const SignUpPayloadSchema = BasePayloadSchema.extend({
 	requireRegistrationCode: z.boolean()
 });
 
-const MessageSchema = z.discriminatedUnion('action', [
-	z.object({
-		action: z.literal('SignUp'),
-		payload: SignUpPayloadSchema
-	}),
-	z.object({
-		action: z.literal('SignIn'),
-		payload: BasePayloadSchema
-	}),
-	z.object({
-		action: z.literal('NoKeyForHapp')
-	}),
-	z.object({
-		action: z.literal('GenericError')
-	}),
-	z.object({
-		action: z.literal('Success')
-	}),
-	z.object({
-		action: z.literal('SuccessWithPayload'),
-		payload: z.string()
-	})
+const MessageBaseSchema = z.object({
+	sender: z.union([z.literal(SENDER_WEBAPP), z.literal(SENDER_EXTENSION)])
+});
+
+const ActionPayloadSchema = z.union([
+	z.object({ action: z.literal('SignUp'), payload: SignUpPayloadSchema }),
+	z.object({ action: z.literal('SignIn'), payload: BasePayloadSchema }),
+	z.object({ action: z.literal('NoKeyForHapp') }),
+	z.object({ action: z.literal('GenericError') }),
+	z.object({ action: z.literal('Success') }),
+	z.object({ action: z.literal('SuccessWithPayload'), payload: z.string() })
 ]);
+
+export type ActionPayload = z.infer<typeof ActionPayloadSchema>;
+
+export const MessageSchema = z.intersection(MessageBaseSchema, ActionPayloadSchema);
 
 export type Message = z.infer<typeof MessageSchema>;
 
@@ -41,7 +36,7 @@ export const MessageWithIdSchema = z.intersection(
 	MessageSchema,
 	z.object({
 		id: z.string(),
-		appId: z.literal('holo-key-manager')
+		appId: z.literal(HOLO_KEY_MANAGER_APP_ID)
 	})
 );
 

@@ -2,6 +2,14 @@
 	"compilerOptions": {
 		"lib": ["esnext", "DOM", "DOM.Iterable"],
 		"strict": true,
+		"paths": {
+			"@sharedConst": ["./shared/const"],
+			"@sharedConst/*": ["./shared/const/*"],
+			"@sharedTypes": ["./shared/types"],
+			"@sharedTypes/*": ["./shared/types/*"],
+			"@sharedServices": ["./shared/services"],
+			"@sharedServices/*": ["./shared/services/*"]
+		},
 		"esModuleInterop": true,
 		"skipLibCheck": true,
 		"forceConsistentCasingInFileNames": true,

@@ -1,24 +1,29 @@
-import type { Message } from '@sharedTypes';
+import { SENDER_EXTENSION } from '@sharedConst';
+import { type ActionPayload, type Message, MessageWithIdSchema } from '@sharedTypes';
 
 let windowId: number | undefined;
 
-const handleError = (error: string, sendResponse: (response?: Message) => void) => {
+type SendResponse = (response?: Message) => void;
+type SendResponseWithSender = (response: ActionPayload) => void;
+
+const handleError = (error: string, sendResponse: SendResponseWithSender) => {
 	console.error(error);
 	windowId = undefined;
 	sendResponse({ action: 'GenericError' });
 };
 
-const handleSuccess = (sendResponse: (response?: Message) => void, payload?: string) => {
-	sendResponse(payload ? { action: 'SuccessWithPayload', payload } : { action: 'Success' });
-};
-
-const focusWindow = (sendResponse: (response?: Message) => void) => {
-	if (typeof windowId !== 'number') return handleError('Window ID is not a number', sendResponse);
-	chrome.windows.update(windowId, { focused: true }, () => {
-		chrome.runtime.lastError
-			? handleError('Error focusing window: ' + chrome.runtime.lastError.message, sendResponse)
-			: handleSuccess(sendResponse);
-	});
+const createAndFocusWindow = async (sendResponse: SendResponseWithSender) => {
+	if (typeof windowId === 'number') {
+		chrome.windows.update(windowId, { focused: true }, () => {
+			if (chrome.runtime.lastError) {
+				handleError('Error focusing window: ' + chrome.runtime.lastError.message, sendResponse);
+			} else {
+				sendResponse({ action: 'Success' });
+			}
+		});
+		return true;
+	}
+	return false;
 };
 
 const createWindow = () => {
@@ -41,32 +46,25 @@ const createWindow = () => {
 	);
 };
 
-const signInHandler = async (sendResponse: (response?: Message) => void) => {
-	if (windowId !== undefined) {
-		focusWindow(sendResponse);
-		return;
-	}
-	try {
-		createWindow();
-		// const deviceKey = await storageService.getWithoutCallback({ key: DEVICE_KEY, area: 'local' });
-		// if (typeof deviceKey === 'string') {
-		// 	handleSuccess(sendResponse, deviceKey);
-		// } else {
-		// 	handleError('Device key is not a string', sendResponse);
-		// }
-		chrome.storage.local.get(['deviceKey'], (result) => {
-			handleSuccess(sendResponse, result.deviceKey);
-		});
-	} catch (error) {
-		handleError(
-			'Error creating window: ' + (error instanceof Error ? error.message : String(error)),
-			sendResponse
-		);
-	}
+const handleSignIn = async (sendResponse: SendResponseWithSender) => {
+	if (await createAndFocusWindow(sendResponse)) return;
+	createWindow();
+	sendResponse({ action: 'Success' });
 };
 
-chrome.runtime.onMessage.addListener(
-	(message: Message, sender, sendResponse: (response?: Message) => void) => {
-		if (message.action === 'SignIn') signInHandler(sendResponse);
+chrome.runtime.onMessage.addListener((message: Message, sender, sendResponse: SendResponse) => {
+	const sendResponseWithSender = (response: ActionPayload) =>
+		sendResponse({ ...response, sender: SENDER_EXTENSION });
+
+	const parsedMessage = MessageWithIdSchema.safeParse(message);
+	if (!parsedMessage.success || parsedMessage.data.action !== 'SignIn') return;
+	try {
+		handleSignIn(sendResponseWithSender);
+	} catch (error) {
+		handleError(
+			'Error processing sign in: ' + (error instanceof Error ? error.message : String(error)),
+			sendResponseWithSender
+		);
 	}
-);
+	return true;
+});

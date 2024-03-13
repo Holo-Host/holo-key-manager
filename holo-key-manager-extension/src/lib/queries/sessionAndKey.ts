@@ -102,6 +102,7 @@ export function createApplicationKeyMutation() {
 			console.log(decryptedKey);
 
 			const app_key_1 = decryptedKey.derive(0);
+
 			console.log(app_key_1);
 
 			return decryptedKey.zero();
