@@ -1,3 +1,4 @@
 packages:
   - 'holo-key-manager-js-client'
   - 'holo-key-manager-extension'
+  - 'shared'
