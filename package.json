@@ -12,6 +12,7 @@
 		"buildClient": "cd holo-key-manager-js-client && pnpm buildPack && cd ..",
 		"lint": "prettier --check '**/*.{js,ts,svelte,json}' && eslint --fix '**/*.{js,ts,svelte}'",
 		"format": "prettier --write '**/*.{js,ts,svelte,json}'",
+		"check": "cd holo-key-manager-extension && pnpm check",
 		"prepare": "husky install"
 	},
 	"devDependencies": {
