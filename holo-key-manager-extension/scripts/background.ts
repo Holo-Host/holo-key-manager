@@ -68,3 +68,18 @@ chrome.runtime.onMessage.addListener((message: Message, sender, sendResponse: Se
 	}
 	return true;
 });
+
+chrome.runtime.onInstalled.addListener(function () {
+	chrome.permissions.request(
+		{
+			origins: ['*://localhost/*']
+		},
+		function (granted) {
+			if (granted) {
+				console.log('Permission to access localhost granted');
+			} else {
+				console.log('Permission to access localhost denied');
+			}
+		}
+	);
+});
