@@ -21,9 +21,9 @@
 			</button>
 		</div>
 		<h1 class="mt-4 text-2xl font-bold">Holo Key Manager</h1>
-		<button on:click={redirectToChangePassword} class="text-blue-500 hover:text-blue-800"
-			>Change Password</button
-		>
+		<button on:click={redirectToChangePassword} class="text-blue-500 hover:text-blue-800">
+			Change Password
+		</button>
 	</div>
 {:else if $setupDeviceKeyQuery.data}
 	<Login />

@@ -1,7 +1,7 @@
-import { SENDER_WEBAPP } from '@sharedConst';
+import { SENDER_WEBAPP, SIGN_IN, SIGN_UP } from '@sharedConst';
 import type { Message } from '@sharedTypes';
 
-import { sendMessage } from './helpers';
+import { checkContentScriptAndBrowser, sendMessage } from './helpers';
 import type { IHoloKeyManager } from './types';
 
 const createHoloKeyManager = ({
@@ -13,38 +13,30 @@ const createHoloKeyManager = ({
 }: {
 	happId: string;
 	happName: string;
-	happLogo: URL;
-	happUiUrl: URL;
+	happLogo: string;
+	happUiUrl: string;
 	requireRegistrationCode: boolean;
 }): IHoloKeyManager => {
 	const signUp = async () => {
-		try {
-			const message: Message = {
-				action: 'SignUp',
-				payload: {
-					happId,
-					happName,
-					happLogo,
-					happUiUrl,
-					requireRegistrationCode
-				},
-				sender: SENDER_WEBAPP
-			};
-			return sendMessage(message);
-		} catch (error) {
-			console.error('Failed to signUp:', error);
-			throw error;
-		}
+		checkContentScriptAndBrowser();
+		const message: Message = {
+			action: SIGN_UP,
+			payload: {
+				happId,
+				happName,
+				happLogo,
+				happUiUrl,
+				requireRegistrationCode
+			},
+			sender: SENDER_WEBAPP
+		};
+		return sendMessage(message);
 	};
 
 	const signIn = async () => {
-		try {
-			const message: Message = { action: 'SignIn', payload: { happId }, sender: SENDER_WEBAPP };
-			return sendMessage(message);
-		} catch (error) {
-			console.error('Failed to signIn:', error);
-			throw error;
-		}
+		checkContentScriptAndBrowser();
+		const message: Message = { action: SIGN_IN, payload: { happId }, sender: SENDER_WEBAPP };
+		return sendMessage(message);
 	};
 
 	return { signUp, signIn };

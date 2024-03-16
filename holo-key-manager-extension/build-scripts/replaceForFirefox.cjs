@@ -26,7 +26,6 @@ fs.readFile(manifestPath, 'utf8', (err, data) => {
 			scripts: ['scripts/background.js'],
 			type: 'module'
 		},
-		optional_permissions: ['*://localhost/*'],
 		browser_specific_settings: {
 			...manifest.browser_specific_settings,
 			gecko: {

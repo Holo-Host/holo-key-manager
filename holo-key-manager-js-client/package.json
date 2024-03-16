@@ -6,7 +6,7 @@
   "types": "lib/holo-key-manager-js-client/src/index.d.ts",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "buildPack": "rollup -c && npm pack"
+    "buildPack": "rm -rf lib/* && rollup -c && npm pack"
   },
   "keywords": [
     "holo",

@@ -14,8 +14,8 @@ import {
 	SETUP_PASSWORD
 } from '$sharedConst';
 import { storageService } from '$sharedServices';
+import { EncryptedDeviceKeySchema } from '$sharedTypes';
 import { deviceKeyContentStore, passphraseStore, passwordStore } from '$stores';
-import { EncryptedDeviceKeySchema } from '$types';
 
 const storePassword = async (password: string) => {
 	const hashSalt = await hashPassword(password);

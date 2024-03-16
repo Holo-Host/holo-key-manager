@@ -11,10 +11,9 @@ import {
 	SESSION_DATA_KEY,
 	SETUP_KEY
 } from '$sharedConst';
-import { storageService } from '$sharedServices';
-import { HashSaltSchema, SessionStateSchema } from '$sharedTypes';
+import { isSetupComplete, storageService } from '$sharedServices';
+import { EncryptedDeviceKeySchema, HashSaltSchema, SessionStateSchema } from '$sharedTypes';
 import { deviceKeyContentStore, passphraseStore } from '$stores';
-import { EncryptedDeviceKeySchema } from '$types';
 
 export function createSessionQuery() {
 	return createQuery({
@@ -33,15 +32,7 @@ export function createSessionQuery() {
 export function createSetupDeviceKeyQuery() {
 	return createQuery({
 		queryKey: [SETUP_KEY],
-		queryFn: async () => {
-			const data = await storageService.getWithoutCallback({
-				key: DEVICE_KEY,
-				area: LOCAL
-			});
-
-			const parsedData = EncryptedDeviceKeySchema.safeParse(data);
-			return parsedData.success;
-		}
+		queryFn: isSetupComplete
 	});
 }
 

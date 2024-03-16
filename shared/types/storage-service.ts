@@ -2,6 +2,10 @@ import { z } from 'zod';
 
 import type { DEVICE_KEY, LOCAL, PASSWORD, SESSION, SESSION_DATA } from '../const';
 
+export const EncryptedDeviceKeySchema = z.string();
+
+export type EncryptedDeviceKey = z.infer<typeof EncryptedDeviceKeySchema>;
+
 export const HashSaltSchema = z.object({
 	salt: z.string(),
 	hash: z.string()

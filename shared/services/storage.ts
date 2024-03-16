@@ -1,5 +1,11 @@
+import { DEVICE_KEY, LOCAL } from '../const';
 import { isChromeStorageSafe } from '../helpers';
-import type { AreaName, ChangesType, StorageService } from '../types';
+import {
+	type AreaName,
+	type ChangesType,
+	EncryptedDeviceKeySchema,
+	type StorageService
+} from '../types';
 
 export const storageService: StorageService = {
 	set: ({ key, value, area }) => {
@@ -37,4 +43,14 @@ export const storageService: StorageService = {
 			chrome.storage.onChanged.removeListener(listener);
 		}
 	}
+};
+
+export const isSetupComplete = async () => {
+	const data = await storageService.getWithoutCallback({
+		key: DEVICE_KEY,
+		area: LOCAL
+	});
+
+	const parsedData = EncryptedDeviceKeySchema.safeParse(data);
+	return parsedData.success;
 };

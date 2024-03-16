@@ -1,4 +1,5 @@
-import { SENDER_EXTENSION } from '@sharedConst';
+import { GENERIC_ERROR, NEEDS_SETUP, SENDER_EXTENSION, SIGN_UP, SUCCESS } from '@sharedConst';
+import { isSetupComplete } from '@sharedServices';
 import { type ActionPayload, type Message, MessageWithIdSchema } from '@sharedTypes';
 
 let windowId: number | undefined;
@@ -7,9 +8,8 @@ type SendResponse = (response?: Message) => void;
 type SendResponseWithSender = (response: ActionPayload) => void;
 
 const handleError = (error: string, sendResponse: SendResponseWithSender) => {
-	console.error(error);
 	windowId = undefined;
-	sendResponse({ action: 'GenericError' });
+	sendResponse({ action: GENERIC_ERROR });
 };
 
 const createAndFocusWindow = async (sendResponse: SendResponseWithSender) => {
@@ -18,7 +18,7 @@ const createAndFocusWindow = async (sendResponse: SendResponseWithSender) => {
 			if (chrome.runtime.lastError) {
 				handleError('Error focusing window: ' + chrome.runtime.lastError.message, sendResponse);
 			} else {
-				sendResponse({ action: 'Success' });
+				sendResponse({ action: SUCCESS });
 			}
 		});
 		return true;
@@ -46,40 +46,36 @@ const createWindow = () => {
 	);
 };
 
-const handleSignIn = async (sendResponse: SendResponseWithSender) => {
+const handleAction = async (
+	actionType: typeof SUCCESS | typeof NEEDS_SETUP,
+	sendResponse: SendResponseWithSender
+) => {
 	if (await createAndFocusWindow(sendResponse)) return;
 	createWindow();
-	sendResponse({ action: 'Success' });
+	sendResponse({ action: actionType });
 };
 
 chrome.runtime.onMessage.addListener((message: Message, sender, sendResponse: SendResponse) => {
-	const sendResponseWithSender = (response: ActionPayload) =>
-		sendResponse({ ...response, sender: SENDER_EXTENSION });
+	(async () => {
+		const sendResponseWithSender = (response: ActionPayload) =>
+			sendResponse({ ...response, sender: SENDER_EXTENSION });
 
-	const parsedMessage = MessageWithIdSchema.safeParse(message);
-	if (!parsedMessage.success || parsedMessage.data.action !== 'SignIn') return;
-	try {
-		handleSignIn(sendResponseWithSender);
-	} catch (error) {
-		handleError(
-			'Error processing sign in: ' + (error instanceof Error ? error.message : String(error)),
-			sendResponseWithSender
-		);
-	}
-	return true;
-});
+		const parsedMessage = MessageWithIdSchema.safeParse(message);
+		if (!parsedMessage.success) return;
+		if (parsedMessage.data.action !== SIGN_UP) return;
 
-chrome.runtime.onInstalled.addListener(function () {
-	chrome.permissions.request(
-		{
-			origins: ['*://localhost/*']
-		},
-		function (granted) {
-			if (granted) {
-				console.log('Permission to access localhost granted');
-			} else {
-				console.log('Permission to access localhost denied');
-			}
+		const setupComplete = await isSetupComplete();
+		const actionType = setupComplete ? SUCCESS : NEEDS_SETUP;
+
+		try {
+			handleAction(actionType, sendResponseWithSender);
+		} catch (error) {
+			handleError(
+				`Error processing sign in: ${error instanceof Error ? error.message : String(error)}`,
+				sendResponseWithSender
+			);
 		}
-	);
+	})();
+
+	return true;
 });
