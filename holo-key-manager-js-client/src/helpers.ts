@@ -2,6 +2,8 @@ import { HOLO_KEY_MANAGER_EXTENSION_MARKER_ID, SENDER_WEBAPP } from '@sharedCons
 import { createMessageWithId } from '@sharedServices';
 import { type Message, type MessageWithId, MessageWithIdSchema } from '@sharedTypes';
 
+let timeoutId: number | null = null;
+
 const isWindowDefined = () => typeof window !== 'undefined';
 
 export const sendMessage = (message: Message): Promise<MessageWithId> =>
@@ -9,6 +11,11 @@ export const sendMessage = (message: Message): Promise<MessageWithId> =>
 		if (!isWindowDefined()) {
 			reject(new Error('window is not defined'));
 			return;
+		}
+
+		if (timeoutId) {
+			clearTimeout(timeoutId);
+			timeoutId = null;
 		}
 
 		const messageWithId = createMessageWithId(message);
@@ -30,7 +37,7 @@ export const sendMessage = (message: Message): Promise<MessageWithId> =>
 		window.postMessage(messageWithId, '*');
 		window.addEventListener('message', responseHandler);
 
-		setTimeout(() => {
+		timeoutId = setTimeout(() => {
 			removeListener();
 			reject(new Error('Response timeout'));
 		}, 30000);

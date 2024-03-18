@@ -2,11 +2,11 @@
 	import { AppParagraph, Button } from '$components';
 	import { dismissWindow } from '$lib/helpers';
 
-	function redirectToSetup() {
-		window.open('setup-pass/start.html', '_blank');
-	}
-
 	export let outerWindow = false;
+	export let mainAction: () => void;
+	export let mainActionLabel: string;
+	export let title: string;
+	export let subTitle: string;
 </script>
 
 <div class="m-8">
@@ -21,13 +21,10 @@
 
 	<div class="flex flex-col items-center justify-center">
 		<img src="/img/setup.svg" alt="Setup" class="max-w-[48px]" />
-		<h1 class="mt-4 text-2xl font-bold">Setup Required</h1>
-		<AppParagraph
-			extraProps="my-4 max-w-xs text-center"
-			text="You are yet to setup Holo Key Manager. Click “start setup” to begin."
-		/>
+		<h1 class="mt-4 text-2xl font-bold">{title}</h1>
+		<AppParagraph extraProps="my-4 max-w-xs text-center" text={subTitle} />
 	</div>
 
-	<Button label="Start setup" onClick={redirectToSetup} extraBottomMargin />
+	<Button label={mainActionLabel} onClick={mainAction} extraBottomMargin />
 	<Button label="Cancel" onClick={dismissWindow} color="secondary" />
 </div>

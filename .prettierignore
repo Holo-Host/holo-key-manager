@@ -6,6 +6,7 @@ build
 .env.*
 !.env.example
 package.json
+.vscode
 
 holo-key-manager-js-client/lib
 

@@ -1,18 +1,21 @@
 <script lang="ts">
-	import { Init, Login } from '$components';
+	import { ActionPage, Login } from '$components';
 	import { dismissWindow } from '$helpers';
 	import { sessionStorageQueries } from '$queries';
 
 	const { sessionQuery, setupDeviceKeyQuery } = sessionStorageQueries();
+	$: isLoading = $sessionQuery.isFetching || $setupDeviceKeyQuery.isFetching;
+	$: hasSessionData = $sessionQuery.data;
+	$: hasSetupData = $setupDeviceKeyQuery.data;
 
-	function redirectToChangePassword() {
-		window.open('change-password.html', '_blank');
-	}
+	const openInNewTab = (url: string) => () => window.open(url, '_blank');
+	const redirectToChangePassword = openInNewTab('change-password.html');
+	const redirectToSetup = openInNewTab('setup-pass/start.html');
 </script>
 
-{#if $sessionQuery.isFetching || $setupDeviceKeyQuery.isFetching}
+{#if isLoading}
 	<span>Loading</span>
-{:else if $sessionQuery.data}
+{:else if hasSessionData}
 	<div class="m-8">
 		<div class="mb-4 flex items-center justify-between">
 			<img src="/img/holo_logo.svg" alt="Holo Key Manager Logo" />
@@ -25,8 +28,13 @@
 			Change Password
 		</button>
 	</div>
-{:else if $setupDeviceKeyQuery.data}
+{:else if hasSetupData}
 	<Login />
 {:else}
-	<Init />
+	<ActionPage
+		mainAction={redirectToSetup}
+		mainActionLabel="Setup"
+		title="Setup Required"
+		subTitle="You are yet to setup Holo Key Manager. Click “start setup” to begin."
+	/>
 {/if}

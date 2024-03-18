@@ -10,10 +10,11 @@
 		"buildExtension": "cd holo-key-manager-extension && pnpm build && cd ..",
 		"buildExtensionDev": "cd holo-key-manager-extension && pnpm buildDev && cd ..",
 		"buildClient": "cd holo-key-manager-js-client && pnpm buildPack && cd ..",
-		"buildDev": "concurrently \"pnpm buildExtensionDev\" \"pnpm buildClient\"",
+		"buildDev": "pnpm lintAndFormat && concurrently \"pnpm buildExtensionDev\" \"pnpm buildClient\"",
 		"lint": "prettier --check '**/*.{js,ts,svelte,json}' && eslint --fix '**/*.{js,ts,svelte}'",
 		"format": "prettier --write '**/*.{js,ts,svelte,json}'",
 		"check": "cd holo-key-manager-extension && pnpm check",
+		"lintAndFormat": "concurrently \"pnpm lint && pnpm format\" \"pnpm check\"",
 		"prepare": "husky install"
 	},
 	"devDependencies": {

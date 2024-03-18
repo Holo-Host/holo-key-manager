@@ -1,5 +1,13 @@
-import { GENERIC_ERROR, NEEDS_SETUP, SENDER_EXTENSION, SIGN_UP, SUCCESS } from '@sharedConst';
-import { isSetupComplete } from '@sharedServices';
+import {
+	GENERIC_ERROR,
+	NEEDS_SETUP,
+	NO_KEY_FOR_HAPP,
+	SENDER_EXTENSION,
+	SIGN_IN,
+	SIGN_UP,
+	SUCCESS
+} from '@sharedConst';
+import { isAppSignUpComplete, isSetupComplete } from '@sharedServices';
 import { type ActionPayload, type Message, MessageWithIdSchema } from '@sharedTypes';
 
 let windowId: number | undefined;
@@ -7,20 +15,24 @@ let windowId: number | undefined;
 type SendResponse = (response?: Message) => void;
 type SendResponseWithSender = (response: ActionPayload) => void;
 
-const handleError = (error: string, sendResponse: SendResponseWithSender) => {
+const handleError = (sendResponse: SendResponseWithSender) => {
 	windowId = undefined;
 	sendResponse({ action: GENERIC_ERROR });
 };
 
+const updateWindowFocus = (sendResponse: SendResponseWithSender) => {
+	chrome.windows.update(windowId as number, { focused: true }, () => {
+		if (chrome.runtime.lastError) {
+			handleError(sendResponse);
+		} else {
+			sendResponse({ action: SUCCESS });
+		}
+	});
+};
+
 const createAndFocusWindow = async (sendResponse: SendResponseWithSender) => {
 	if (typeof windowId === 'number') {
-		chrome.windows.update(windowId, { focused: true }, () => {
-			if (chrome.runtime.lastError) {
-				handleError('Error focusing window: ' + chrome.runtime.lastError.message, sendResponse);
-			} else {
-				sendResponse({ action: SUCCESS });
-			}
-		});
+		updateWindowFocus(sendResponse);
 		return true;
 	}
 	return false;
@@ -29,7 +41,7 @@ const createAndFocusWindow = async (sendResponse: SendResponseWithSender) => {
 const createWindow = () => {
 	chrome.windows.create(
 		{
-			url: 'sign.html',
+			url: 'sign-up-key.html',
 			type: 'popup',
 			height: 500,
 			width: 375,
@@ -47,35 +59,46 @@ const createWindow = () => {
 };
 
 const handleAction = async (
-	actionType: typeof SUCCESS | typeof NEEDS_SETUP,
+	actionType: typeof SUCCESS | typeof NEEDS_SETUP | typeof NO_KEY_FOR_HAPP,
 	sendResponse: SendResponseWithSender
 ) => {
-	if (await createAndFocusWindow(sendResponse)) return;
-	createWindow();
+	if (!(await createAndFocusWindow(sendResponse))) {
+		createWindow();
+	}
 	sendResponse({ action: actionType });
 };
 
-chrome.runtime.onMessage.addListener((message: Message, sender, sendResponse: SendResponse) => {
-	(async () => {
-		const sendResponseWithSender = (response: ActionPayload) =>
-			sendResponse({ ...response, sender: SENDER_EXTENSION });
+const processMessage = async (message: Message, sendResponse: SendResponse) => {
+	const sendResponseWithSender = (response: ActionPayload) =>
+		sendResponse({ ...response, sender: SENDER_EXTENSION });
 
-		const parsedMessage = MessageWithIdSchema.safeParse(message);
-		if (!parsedMessage.success) return;
-		if (parsedMessage.data.action !== SIGN_UP) return;
+	const parsedMessage = MessageWithIdSchema.safeParse(message);
+	if (!parsedMessage.success) return;
 
+	try {
 		const setupComplete = await isSetupComplete();
-		const actionType = setupComplete ? SUCCESS : NEEDS_SETUP;
-
-		try {
-			handleAction(actionType, sendResponseWithSender);
-		} catch (error) {
-			handleError(
-				`Error processing sign in: ${error instanceof Error ? error.message : String(error)}`,
-				sendResponseWithSender
-			);
+		if (!setupComplete) {
+			return handleAction(NEEDS_SETUP, sendResponseWithSender);
 		}
-	})();
 
+		if (parsedMessage.data.action === SIGN_UP) {
+			return handleAction(SUCCESS, sendResponseWithSender);
+		}
+
+		const signUpIncomplete =
+			parsedMessage.data.action === SIGN_IN &&
+			!(await isAppSignUpComplete(parsedMessage.data.payload.happId));
+		if (signUpIncomplete) {
+			return sendResponseWithSender({ action: NO_KEY_FOR_HAPP });
+		}
+
+		return handleAction(SUCCESS, sendResponseWithSender);
+	} catch (error) {
+		handleError(sendResponseWithSender);
+	}
+};
+
+chrome.runtime.onMessage.addListener((message: Message, sender, sendResponse: SendResponse) => {
+	processMessage(message, sendResponse);
 	return true;
 });

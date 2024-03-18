@@ -1,6 +1,7 @@
-import { DEVICE_KEY, LOCAL } from '../const';
+import { APPS_LIST, DEVICE_KEY, LOCAL } from '../const';
 import { isChromeStorageSafe } from '../helpers';
 import {
+	AppsListSchema,
 	type AreaName,
 	type ChangesType,
 	EncryptedDeviceKeySchema,
@@ -53,4 +54,14 @@ export const isSetupComplete = async () => {
 
 	const parsedData = EncryptedDeviceKeySchema.safeParse(data);
 	return parsedData.success;
+};
+
+export const isAppSignUpComplete = async (happId: string) => {
+	const data = await storageService.getWithoutCallback({
+		key: APPS_LIST,
+		area: LOCAL
+	});
+
+	const parsedData = AppsListSchema.safeParse(data);
+	return parsedData.success && parsedData.data.some((app) => app.happId === happId);
 };

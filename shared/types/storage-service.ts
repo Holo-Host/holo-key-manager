@@ -1,6 +1,6 @@
 import { z } from 'zod';
 
-import type { DEVICE_KEY, LOCAL, PASSWORD, SESSION, SESSION_DATA } from '../const';
+import type { APPS_LIST, DEVICE_KEY, LOCAL, PASSWORD, SESSION, SESSION_DATA } from '../const';
 
 export const EncryptedDeviceKeySchema = z.string();
 
@@ -13,6 +13,16 @@ export const HashSaltSchema = z.object({
 
 export type HashSalt = z.infer<typeof HashSaltSchema>;
 
+export const AppsListSchema = z.array(
+	z.object({
+		keyName: z.string(),
+		happId: z.string(),
+		isDeleted: z.boolean()
+	})
+);
+
+export type AppsList = z.infer<typeof AppsListSchema>;
+
 export type AreaName = typeof SESSION | typeof LOCAL | 'sync' | 'managed';
 
 export const SessionStateSchema = z.string();
@@ -23,25 +33,28 @@ export type ChangesType = {
 	[key: string]: unknown;
 };
 
-type SetSession = { key: typeof SESSION_DATA; value: string | null; area: typeof SESSION };
-type GetSession = { key: typeof SESSION_DATA; area: typeof SESSION };
-
-type SetPassword = {
-	key: typeof PASSWORD;
-	value: HashSalt;
-	area: typeof LOCAL;
+type SetAction<T, V, A = typeof SESSION | typeof LOCAL> = {
+	key: T;
+	value: V;
+	area: A;
 };
-type GetPassword = { key: typeof PASSWORD; area: typeof LOCAL };
 
-type SetDeviceKey = {
-	key: typeof DEVICE_KEY;
-	value: string;
-	area: typeof LOCAL;
+type GetAction<T, A = typeof SESSION | typeof LOCAL> = {
+	key: T;
+	area: A;
 };
-type GetDeviceKey = { key: typeof DEVICE_KEY; area: typeof LOCAL };
 
-type StorageSetItem = SetSession | SetPassword | SetDeviceKey;
-type StorageGetItem = GetSession | GetPassword | GetDeviceKey;
+type StorageSetItem =
+	| SetAction<typeof SESSION_DATA, string | null, typeof SESSION>
+	| SetAction<typeof PASSWORD, HashSalt, typeof LOCAL>
+	| SetAction<typeof APPS_LIST, AppsList, typeof LOCAL>
+	| SetAction<typeof DEVICE_KEY, string, typeof LOCAL>;
+
+type StorageGetItem =
+	| GetAction<typeof SESSION_DATA, typeof SESSION>
+	| GetAction<typeof APPS_LIST, typeof LOCAL>
+	| GetAction<typeof PASSWORD, typeof LOCAL>
+	| GetAction<typeof DEVICE_KEY, typeof LOCAL>;
 
 export type StorageService = {
 	set: (item: StorageSetItem) => void;
