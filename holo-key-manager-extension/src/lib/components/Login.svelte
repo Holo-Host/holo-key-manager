@@ -1,9 +1,8 @@
 <script lang="ts">
-	import { AppParagraph, Button } from '$components';
+	import { AppParagraph, Button, Input } from '$components';
 	import { dismissWindow } from '$lib/helpers';
 	import { sessionStorageQueries } from '$queries';
 
-	import InputPassword from './InputPassword.svelte';
 	let password = '';
 
 	export let outerWindow = false;
@@ -26,7 +25,8 @@
 			extraProps="my-4 max-w-xs text-center"
 			text="Please enter your password to login into Holo Key Manager"
 		/>
-		<InputPassword
+		<Input
+			type="password"
 			error={$signInMutation.error ? 'Invalid password' : ''}
 			bind:value={password}
 			label="Enter password"

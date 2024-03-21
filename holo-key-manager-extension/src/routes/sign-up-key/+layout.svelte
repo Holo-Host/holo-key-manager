@@ -12,17 +12,11 @@
 	<title>Holo Key Manager</title>
 </svelte:head>
 
-<div class="mx-auto flex h-screen w-full max-w-[375px] flex-col items-center justify-center py-8">
+<div class="mx-auto flex h-screen w-full max-w-xs flex-col items-center justify-center py-8">
 	{#if isLoading}
 		<span>Loading</span>
 	{:else if hasSessionData}
-		<ActionPage
-			outerWindow={true}
-			mainAction={() => {}}
-			mainActionLabel="Connect"
-			title="Holo Key Manager"
-			subTitle="Haxe would like to connect to Holo Key Manager"
-		/>
+		<slot />
 	{:else if hasSetupData}
 		<Login outerWindow={true} />
 	{:else}

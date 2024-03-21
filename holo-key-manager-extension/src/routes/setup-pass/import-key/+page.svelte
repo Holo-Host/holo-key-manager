@@ -6,7 +6,7 @@
 	import { AppParagraph, Button, Title } from '$components';
 	import { dismissWindow } from '$helpers';
 	import { sessionStorageQueries } from '$queries';
-	import { EncryptedDeviceKeySchema } from '$sharedTypes';
+	import { EncryptedDeviceKeySchema } from '$shared/types';
 
 	const { recoverDeviceKeyMutation } = sessionStorageQueries();
 

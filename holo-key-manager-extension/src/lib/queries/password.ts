@@ -12,9 +12,9 @@ import {
 	SESSION_DATA_KEY,
 	SETUP_KEY,
 	SETUP_PASSWORD
-} from '$sharedConst';
-import { storageService } from '$sharedServices';
-import { EncryptedDeviceKeySchema } from '$sharedTypes';
+} from '$shared/const';
+import { storageService } from '$shared/services';
+import { EncryptedDeviceKeySchema } from '$shared/types';
 import { deviceKeyContentStore, passphraseStore, passwordStore } from '$stores';
 
 const storePassword = async (password: string) => {

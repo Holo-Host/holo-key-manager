@@ -1,6 +1,6 @@
-import { HOLO_KEY_MANAGER_EXTENSION_MARKER_ID, SENDER_WEBAPP } from '@sharedConst';
-import { createMessageWithId } from '@sharedServices';
-import { type Message, type MessageWithId, MessageWithIdSchema } from '@sharedTypes';
+import { HOLO_KEY_MANAGER_EXTENSION_MARKER_ID, SENDER_WEBAPP } from '@shared/const';
+import { createMessageWithId } from '@shared/services';
+import { type Message, type MessageWithId, MessageWithIdSchema } from '@shared/types';
 
 let timeoutId: number | null = null;
 

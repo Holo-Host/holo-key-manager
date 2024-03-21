@@ -2,8 +2,7 @@
 	import { onMount } from 'svelte';
 
 	import { goto } from '$app/navigation';
-	import { AppContainer, Button, Title } from '$components';
-	import InputPassword from '$components/InputPassword.svelte';
+	import { AppContainer, Button, Input, Title } from '$components';
 	import { dismissWindow } from '$helpers';
 	import { sessionStorageQueries } from '$queries';
 	import { passwordStore } from '$stores';
@@ -31,14 +30,16 @@
 		<span class="text-xs text-alert">{$changePasswordWithDeviceKeyMutation.error.message}</span>
 	{/if}
 	<div class="w-full p-6">
-		<InputPassword bind:value={oldPassword} label="Old Password" extraProps="mb-6" />
-		<InputPassword
+		<Input type="password" bind:value={oldPassword} label="Old Password" extraProps="mb-6" />
+		<Input
+			type="password"
 			bind:value={$passwordStore}
 			label="New Password (8 Characters min)"
 			extraProps="mb-6"
 			error={charCount < 8 ? 'Please enter a minimum of 8 Characters' : ''}
 		/>
-		<InputPassword
+		<Input
+			type="password"
 			bind:value={confirmPassword}
 			label="Confirm New Password"
 			extraProps="mb-4"

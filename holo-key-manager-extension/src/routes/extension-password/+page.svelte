@@ -2,7 +2,7 @@
 	import { onMount } from 'svelte';
 
 	import { goto } from '$app/navigation';
-	import { AppContainer, AppParagraph, Button, InputPassword, Title } from '$components';
+	import { AppContainer, AppParagraph, Button, Input, Title } from '$components';
 	import { dismissWindow } from '$helpers';
 	import { sessionStorageQueries } from '$queries';
 	import { deviceKeyContentStore, passwordStore } from '$stores';
@@ -30,13 +30,15 @@
 		text="This password secures your Key Manager extension, it would be requested each time you launch it."
 	/>
 	<div class="w-full p-6">
-		<InputPassword
+		<Input
+			type="password"
 			bind:value={$passwordStore}
 			label="New Password (8 Characters min)"
 			extraProps="mb-6"
 			error={charCount < 8 ? 'Please enter a minimum of 8 Characters' : ''}
 		/>
-		<InputPassword
+		<Input
+			type="password"
 			bind:value={confirmPassword}
 			label="Confirm New Password"
 			extraProps="mb-4"

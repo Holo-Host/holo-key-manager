@@ -20,7 +20,11 @@
 	{/if}
 
 	<div class="flex flex-col items-center justify-center">
-		<img src="/img/setup.svg" alt="Setup" class="max-w-[48px]" />
+		<img
+			src={mainActionLabel === 'Setup' ? '/img/setup.svg' : '/img/holo_logo.svg'}
+			alt={mainActionLabel}
+			class="max-w-[48px]"
+		/>
 		<h1 class="mt-4 text-2xl font-bold">{title}</h1>
 		<AppParagraph extraProps="my-4 max-w-xs text-center" text={subTitle} />
 	</div>

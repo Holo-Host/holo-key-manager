@@ -63,5 +63,7 @@ export const isAppSignUpComplete = async (happId: string) => {
 	});
 
 	const parsedData = AppsListSchema.safeParse(data);
+
+	console.log(parsedData.success ? parsedData.data : '');
 	return parsedData.success && parsedData.data.some((app) => app.happId === happId);
 };

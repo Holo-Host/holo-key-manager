@@ -3,6 +3,7 @@ import { createMutation, createQuery, QueryClient } from '@tanstack/svelte-query
 import { handleSuccess } from '$helpers';
 import { unlockKey } from '$services';
 import {
+	APPS_LIST,
 	DEVICE_KEY,
 	LOCAL,
 	PASSWORD,
@@ -10,9 +11,14 @@ import {
 	SESSION_DATA,
 	SESSION_DATA_KEY,
 	SETUP_KEY
-} from '$sharedConst';
-import { isSetupComplete, storageService } from '$sharedServices';
-import { EncryptedDeviceKeySchema, HashSaltSchema, SessionStateSchema } from '$sharedTypes';
+} from '$shared/const';
+import { isSetupComplete, storageService } from '$shared/services';
+import {
+	AppsListSchema,
+	EncryptedDeviceKeySchema,
+	HashSaltSchema,
+	SessionStateSchema
+} from '$shared/types';
 import { deviceKeyContentStore, passphraseStore } from '$stores';
 
 export function createSessionQuery() {
@@ -80,23 +86,25 @@ export function createRecoverDeviceKeyMutation() {
 
 export function createApplicationKeyMutation() {
 	return createMutation({
-		mutationFn: async () => {
-			const data = await storageService.getWithoutCallback({
-				key: SESSION_DATA,
-				area: SESSION
+		mutationFn: async (mutationData: { app_key_name: string; happId: string }) => {
+			const appsListData = await storageService.getWithoutCallback({
+				key: APPS_LIST,
+				area: LOCAL
 			});
-			const parsedData = SessionStateSchema.safeParse(data);
-			if (!parsedData.success) throw new Error('Invalid device key');
+			const parsedAppsListData = AppsListSchema.safeParse(appsListData);
 
-			const decryptedKey = await unlockKey(parsedData.data, SESSION);
-
-			console.log(decryptedKey);
-
-			const app_key_1 = decryptedKey.derive(0);
-
-			console.log(app_key_1);
-
-			return decryptedKey.zero();
+			return storageService.set({
+				key: APPS_LIST,
+				value: [
+					...(parsedAppsListData.success ? parsedAppsListData.data : []),
+					{
+						keyName: mutationData.app_key_name,
+						happId: mutationData.happId,
+						isDeleted: false
+					}
+				],
+				area: LOCAL
+			});
 		}
 	});
 }

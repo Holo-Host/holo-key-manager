@@ -1,5 +1,5 @@
-import { SENDER_WEBAPP, SIGN_IN, SIGN_UP } from '@sharedConst';
-import type { Message } from '@sharedTypes';
+import { SENDER_WEBAPP, SIGN_IN, SIGN_UP } from '@shared/const';
+import type { Message } from '@shared/types';
 
 import { checkContentScriptAndBrowser, sendMessage } from './helpers';
 import type { IHoloKeyManager } from './types';

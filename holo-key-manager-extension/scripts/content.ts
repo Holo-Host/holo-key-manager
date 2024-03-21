@@ -1,6 +1,6 @@
-import { HOLO_KEY_MANAGER_EXTENSION_MARKER_ID, SENDER_EXTENSION } from '@sharedConst';
-import { responseToMessage, sendMessage } from '@sharedServices';
-import { MessageSchema, MessageWithIdSchema } from '@sharedTypes';
+import { HOLO_KEY_MANAGER_EXTENSION_MARKER_ID, SENDER_EXTENSION } from '@shared/const';
+import { responseToMessage, sendMessage } from '@shared/services';
+import { MessageSchema, MessageWithIdSchema } from '@shared/types';
 
 const parseAndHandleMessage = async (event: MessageEvent) => {
 	const parsedResult = MessageWithIdSchema.safeParse(event.data);

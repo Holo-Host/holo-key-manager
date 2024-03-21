@@ -1,8 +1,8 @@
 import type { QueryClient } from '@tanstack/svelte-query';
 
-import { LOCAL, PASSWORD } from '$sharedConst';
-import { storageService } from '$sharedServices';
-import { HashSaltSchema } from '$sharedTypes';
+import { LOCAL, PASSWORD } from '$shared/const';
+import { storageService } from '$shared/services';
+import { HashSaltSchema } from '$shared/types';
 
 export const handleSuccess = (queryClient: QueryClient, queryKey: string[]) => () =>
 	queryClient.invalidateQueries({ queryKey });

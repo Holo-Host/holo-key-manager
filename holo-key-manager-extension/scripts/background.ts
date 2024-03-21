@@ -5,10 +5,17 @@ import {
 	SENDER_EXTENSION,
 	SIGN_IN,
 	SIGN_UP,
+	SIGN_UP_STARTED,
 	SUCCESS
-} from '@sharedConst';
-import { isAppSignUpComplete, isSetupComplete } from '@sharedServices';
-import { type ActionPayload, type Message, MessageWithIdSchema } from '@sharedTypes';
+} from '@shared/const';
+import { createQueryParams } from '@shared/helpers';
+import { isAppSignUpComplete, isSetupComplete } from '@shared/services';
+import {
+	type ActionPayload,
+	type Message,
+	MessageWithIdSchema,
+	type WindowProperties
+} from '@shared/types';
 
 let windowId: number | undefined;
 
@@ -20,52 +27,67 @@ const handleError = (sendResponse: SendResponseWithSender) => {
 	sendResponse({ action: GENERIC_ERROR });
 };
 
-const updateWindowFocus = (sendResponse: SendResponseWithSender) => {
-	chrome.windows.update(windowId as number, { focused: true }, () => {
-		if (chrome.runtime.lastError) {
-			handleError(sendResponse);
-		} else {
-			sendResponse({ action: SUCCESS });
-		}
-	});
+const createWindowProperties = (actionPayload: ActionPayload): WindowProperties => {
+	const queryParams =
+		actionPayload.action === SIGN_UP
+			? createQueryParams({
+					happName: actionPayload.payload.happName,
+					happId: actionPayload.payload.happId
+				})
+			: '';
+	const urlSuffix = queryParams ? `?${queryParams}` : '';
+	return {
+		url: `sign-up-key/setup.html${urlSuffix}`,
+		type: 'popup',
+		height: 500,
+		width: 375,
+		top: 100,
+		left: 1100
+	};
 };
 
-const createAndFocusWindow = async (sendResponse: SendResponseWithSender) => {
-	if (typeof windowId === 'number') {
-		updateWindowFocus(sendResponse);
-		return true;
-	}
-	return false;
-};
+const updateOrCreateWindow = (
+	sendResponse: SendResponseWithSender,
+	actionPayload: ActionPayload
+) => {
+	const windowProperties = createWindowProperties(actionPayload);
+	const handleWindowUpdateOrCreate = () =>
+		chrome.runtime.lastError ? handleError(sendResponse) : sendResponse({ action: SUCCESS });
 
-const createWindow = () => {
-	chrome.windows.create(
-		{
-			url: 'sign-up-key.html',
-			type: 'popup',
-			height: 500,
-			width: 375,
-			top: 100,
-			left: 1100
-		},
-		(newWindow) => {
+	const updateWindow = (updateWindowId: number) =>
+		chrome.windows.update(
+			updateWindowId,
+			{ ...windowProperties, focused: true },
+			handleWindowUpdateOrCreate
+		);
+	const createWindow = () =>
+		chrome.windows.create(windowProperties, (newWindow) => {
 			if (!newWindow) return;
 			windowId = newWindow.id;
 			chrome.windows.onRemoved.addListener((id) => {
 				if (id === windowId) windowId = undefined;
 			});
-		}
-	);
+			handleWindowUpdateOrCreate();
+		});
+
+	typeof windowId === 'number' ? updateWindow(windowId) : createWindow();
+};
+const createAndFocusWindow = async (
+	sendResponse: SendResponseWithSender,
+	actionPayload: ActionPayload
+) => {
+	if (typeof windowId === 'number') {
+		updateOrCreateWindow(sendResponse, actionPayload);
+		return true;
+	}
+	return false;
 };
 
-const handleAction = async (
-	actionType: typeof SUCCESS | typeof NEEDS_SETUP | typeof NO_KEY_FOR_HAPP,
-	sendResponse: SendResponseWithSender
-) => {
-	if (!(await createAndFocusWindow(sendResponse))) {
-		createWindow();
+const handleAction = async (actionPayload: ActionPayload, sendResponse: SendResponseWithSender) => {
+	if (!(await createAndFocusWindow(sendResponse, actionPayload))) {
+		updateOrCreateWindow(sendResponse, actionPayload);
 	}
-	sendResponse({ action: actionType });
+	sendResponse(actionPayload);
 };
 
 const processMessage = async (message: Message, sendResponse: SendResponse) => {
@@ -78,11 +100,11 @@ const processMessage = async (message: Message, sendResponse: SendResponse) => {
 	try {
 		const setupComplete = await isSetupComplete();
 		if (!setupComplete) {
-			return handleAction(NEEDS_SETUP, sendResponseWithSender);
+			return handleAction({ action: NEEDS_SETUP }, sendResponseWithSender);
 		}
 
 		if (parsedMessage.data.action === SIGN_UP) {
-			return handleAction(SUCCESS, sendResponseWithSender);
+			return handleAction({ action: SIGN_UP_STARTED }, sendResponseWithSender);
 		}
 
 		const signUpIncomplete =
@@ -92,7 +114,7 @@ const processMessage = async (message: Message, sendResponse: SendResponse) => {
 			return sendResponseWithSender({ action: NO_KEY_FOR_HAPP });
 		}
 
-		return handleAction(SUCCESS, sendResponseWithSender);
+		return handleAction({ action: SUCCESS }, sendResponseWithSender);
 	} catch (error) {
 		handleError(sendResponseWithSender);
 	}

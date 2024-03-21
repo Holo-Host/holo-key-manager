@@ -1,6 +1,14 @@
 import { z } from 'zod';
 
-import { GENERIC_ERROR, NEEDS_SETUP, NO_KEY_FOR_HAPP, SIGN_IN, SIGN_UP, SUCCESS } from '../const';
+import {
+	GENERIC_ERROR,
+	NEEDS_SETUP,
+	NO_KEY_FOR_HAPP,
+	SIGN_IN,
+	SIGN_UP,
+	SIGN_UP_STARTED,
+	SUCCESS
+} from '../const';
 import { HOLO_KEY_MANAGER_APP_ID, SENDER_EXTENSION, SENDER_WEBAPP } from '../const';
 
 const BasePayloadSchema = z.object({
@@ -24,6 +32,7 @@ const ActionPayloadSchema = z.union([
 	z.object({ action: z.literal(NO_KEY_FOR_HAPP) }),
 	z.object({ action: z.literal(GENERIC_ERROR) }),
 	z.object({ action: z.literal(NEEDS_SETUP) }),
+	z.object({ action: z.literal(SIGN_UP_STARTED) }),
 	z.object({ action: z.literal(SUCCESS) })
 ]);
 

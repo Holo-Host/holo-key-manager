@@ -12,15 +12,12 @@ const config = {
 		alias: {
 			$components: path.resolve('./src/lib/components'),
 			$const: path.resolve('./src/lib/const'),
-			$sharedConst: path.resolve('../shared/const'),
+			$shared: path.resolve('../shared'),
 			$helpers: path.resolve('./src/lib/helpers'),
-			$sharedHelpers: path.resolve('../shared/helpers'),
 			$stores: path.resolve('./src/lib/stores'),
 			$types: path.resolve('./src/lib/types'),
-			$sharedTypes: path.resolve('../shared/types'),
 			$queries: path.resolve('./src/lib/queries'),
-			$services: path.resolve('./src/lib/services'),
-			$sharedServices: path.resolve('../shared/services')
+			$services: path.resolve('./src/lib/services')
 		}
 	}
 };

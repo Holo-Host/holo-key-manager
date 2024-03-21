@@ -1,4 +1,4 @@
-import type { MessageWithId } from '@sharedTypes';
+import type { MessageWithId } from '@shared/types';
 
 type IHoloKeyManager = {
 	signUp(): Promise<MessageWithId>;
