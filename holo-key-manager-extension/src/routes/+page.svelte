@@ -10,7 +10,7 @@
 
 	const openInNewTab = (url: string) => () => window.open(url, '_blank');
 	const redirectToChangePassword = openInNewTab('change-password.html');
-	const redirectToSetup = openInNewTab('setup-pass/start.html');
+	const redirectToSetup = openInNewTab('/setup-pass/start.html');
 </script>
 
 {#if isLoading}

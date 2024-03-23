@@ -22,7 +22,7 @@
 	{:else}
 		<ActionPage
 			outerWindow={true}
-			mainAction={() => window.open('setup-pass/start.html', '_blank')}
+			mainAction={() => window.open('/setup-pass/start.html', '_blank')}
 			mainActionLabel="Setup"
 			title="Setup Required"
 			subTitle="You are yet to setup Holo Key Manager. Click “start setup” to begin."

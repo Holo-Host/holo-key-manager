@@ -19,11 +19,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "dotenv": "^16.4.5",
-    "zod": "^3.22.4"
+    "dotenv": "^16.4.5"
   },
-  "type": "module",
-  "devDependencies": {
-    "typescript": "^5.3.3"
-  }
+  "type": "module"
 }
