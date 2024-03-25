@@ -43,13 +43,21 @@
 />
 <Input label="Name This Key:" bind:value={keyName} extraProps="mb-4" error={errors.keyName} />
 
+{#if $applicationKeyMutation.error}
+	<div class="mutation-error">
+		<p>Error: {$applicationKeyMutation.error.message}</p>
+	</div>
+{/if}
+
 <Button
 	label="Create keys"
 	onClick={() => {
 		if (validateAllFields()) {
 			$applicationKeyMutation.mutate(
 				{ app_key_name: keyName, happId: $extractHAppDetailsFromUrl.happId },
-				{ onSuccess: () => console.log('success'), onError: () => console.log('error') }
+				{
+					onSuccess: window.close
+				}
 			);
 		}
 	}}
