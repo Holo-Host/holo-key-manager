@@ -1,16 +1,19 @@
 import { z } from 'zod';
 
 import {
+	BACKGROUND_SCRIPT_RECEIVED_FORM_DATA,
 	GENERIC_ERROR,
+	HOLO_KEY_MANAGER_APP_ID,
 	NEEDS_SETUP,
 	NO_KEY_FOR_HAPP,
+	SENDER_BACKGROUND_SCRIPT,
+	SENDER_EXTENSION,
+	SENDER_WEBAPP,
 	SIGN_IN,
 	SIGN_UP,
-	SIGN_UP_STARTED,
-	SUCCESS
+	SIGN_UP_SUCCESS,
+	UNKNOWN_ACTION
 } from '../const';
-import { HOLO_KEY_MANAGER_APP_ID, SENDER_EXTENSION, SENDER_WEBAPP } from '../const';
-
 const BasePayloadSchema = z.object({
 	happId: z.string()
 });
@@ -22,8 +25,17 @@ const SignUpPayloadSchema = BasePayloadSchema.extend({
 	requireRegistrationCode: z.boolean()
 });
 
+const SignUpSuccessPayloadSchema = z.object({
+	email: z.string(),
+	registrationCode: z.string()
+});
+
 const MessageBaseSchema = z.object({
-	sender: z.union([z.literal(SENDER_WEBAPP), z.literal(SENDER_EXTENSION)])
+	sender: z.union([
+		z.literal(SENDER_WEBAPP),
+		z.literal(SENDER_EXTENSION),
+		z.literal(SENDER_BACKGROUND_SCRIPT)
+	])
 });
 
 const ActionPayloadSchema = z.union([
@@ -32,8 +44,9 @@ const ActionPayloadSchema = z.union([
 	z.object({ action: z.literal(NO_KEY_FOR_HAPP) }),
 	z.object({ action: z.literal(GENERIC_ERROR) }),
 	z.object({ action: z.literal(NEEDS_SETUP) }),
-	z.object({ action: z.literal(SIGN_UP_STARTED) }),
-	z.object({ action: z.literal(SUCCESS) })
+	z.object({ action: z.literal(SIGN_UP_SUCCESS), payload: SignUpSuccessPayloadSchema }),
+	z.object({ action: z.literal(UNKNOWN_ACTION) }),
+	z.object({ action: z.literal(BACKGROUND_SCRIPT_RECEIVED_FORM_DATA) })
 ]);
 
 export type ActionPayload = z.infer<typeof ActionPayloadSchema>;

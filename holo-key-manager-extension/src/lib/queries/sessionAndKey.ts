@@ -4,19 +4,23 @@ import { handleSuccess } from '$helpers';
 import { unlockKey } from '$services';
 import {
 	APPS_LIST,
+	BACKGROUND_SCRIPT_RECEIVED_FORM_DATA,
 	DEVICE_KEY,
 	LOCAL,
 	PASSWORD,
+	SENDER_EXTENSION,
 	SESSION,
 	SESSION_DATA,
 	SESSION_DATA_KEY,
-	SETUP_KEY
+	SETUP_KEY,
+	SIGN_UP_SUCCESS
 } from '$shared/const';
-import { isSetupComplete, storageService } from '$shared/services';
+import { isSetupComplete, sendMessage, storageService } from '$shared/services';
 import {
 	AppsListSchema,
 	EncryptedDeviceKeySchema,
 	HashSaltSchema,
+	MessageSchema,
 	SessionStateSchema
 } from '$shared/types';
 import { deviceKeyContentStore, passphraseStore } from '$stores';
@@ -86,14 +90,19 @@ export function createRecoverDeviceKeyMutation() {
 
 export function createApplicationKeyMutation() {
 	return createMutation({
-		mutationFn: async (mutationData: { app_key_name: string; happId: string }) => {
+		mutationFn: async (mutationData: {
+			app_key_name: string;
+			happId: string;
+			email: string;
+			registrationCode: string;
+		}) => {
 			const appsListData = await storageService.getWithoutCallback({
 				key: APPS_LIST,
 				area: LOCAL
 			});
 			const parsedAppsListData = AppsListSchema.safeParse(appsListData);
 
-			return storageService.set({
+			await storageService.set({
 				key: APPS_LIST,
 				value: [
 					...(parsedAppsListData.success ? parsedAppsListData.data : []),
@@ -105,6 +114,21 @@ export function createApplicationKeyMutation() {
 				],
 				area: LOCAL
 			});
+
+			const message = await sendMessage({
+				sender: SENDER_EXTENSION,
+				action: SIGN_UP_SUCCESS,
+				payload: {
+					email: mutationData.email,
+					registrationCode: mutationData.registrationCode
+				}
+			});
+			const parsedMessageSchema = MessageSchema.safeParse(message);
+			if (
+				!parsedMessageSchema.success ||
+				parsedMessageSchema.data.action !== BACKGROUND_SCRIPT_RECEIVED_FORM_DATA
+			)
+				throw new Error('Error sending data to webapp	');
 		}
 	});
 }

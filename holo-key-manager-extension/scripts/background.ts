@@ -1,12 +1,13 @@
 import {
+	BACKGROUND_SCRIPT_RECEIVED_FORM_DATA,
 	GENERIC_ERROR,
 	NEEDS_SETUP,
 	NO_KEY_FOR_HAPP,
+	SENDER_BACKGROUND_SCRIPT,
 	SENDER_EXTENSION,
 	SIGN_IN,
 	SIGN_UP,
-	SIGN_UP_STARTED,
-	SUCCESS
+	UNKNOWN_ACTION
 } from '@shared/const';
 import { createQueryParams } from '@shared/helpers';
 import { isAppSignUpComplete, isSetupComplete } from '@shared/services';
@@ -46,23 +47,18 @@ const createWindowProperties = ({
 	};
 };
 
-const updateOrCreateWindow = async (
-	successAction: typeof SIGN_UP_STARTED | typeof SUCCESS | typeof NEEDS_SETUP,
-	sendResponse: SendResponseWithSender,
-	happId?: string,
-	happName?: string
+const manageWindow = async (
+	action: 'update' | 'create',
+	windowProperties: WindowProperties,
+	handleWindowUpdateOrCreate: () => Promise<void>
 ) => {
-	const windowProperties = createWindowProperties({ happId, happName });
-	const handleWindowUpdateOrCreate = () =>
-		chrome.runtime.lastError ? handleError(sendResponse) : sendResponse({ action: successAction });
-
-	if (typeof windowId === 'number') {
+	const updateWindow = () =>
 		chrome.windows.update(
-			windowId,
+			windowId!,
 			{ ...windowProperties, focused: true },
 			handleWindowUpdateOrCreate
 		);
-	} else {
+	const createWindow = () =>
 		chrome.windows.create(windowProperties, (newWindow) => {
 			if (!newWindow) return;
 			windowId = newWindow.id;
@@ -71,12 +67,77 @@ const updateOrCreateWindow = async (
 			});
 			handleWindowUpdateOrCreate();
 		});
-	}
+
+	action === 'update' ? updateWindow() : createWindow();
+};
+
+const updateOrCreateWindowCommon = async (
+	handleWindowUpdateOrCreate: () => Promise<void>,
+	happId?: string,
+	happName?: string
+) => {
+	const windowProperties = createWindowProperties({ happId, happName });
+	const actionType = windowId ? 'update' : 'create';
+	manageWindow(actionType, windowProperties, handleWindowUpdateOrCreate);
+};
+
+const updateOrCreateWindow = async (
+	successAction: typeof NEEDS_SETUP,
+	sendResponse: SendResponseWithSender
+) => {
+	const handleWindowUpdateOrCreate = async () => {
+		if (chrome.runtime.lastError) return handleError(sendResponse);
+
+		try {
+			sendResponse({ action: successAction });
+		} catch (error) {
+			handleError(sendResponse);
+		}
+	};
+
+	await updateOrCreateWindowCommon(handleWindowUpdateOrCreate);
+};
+
+const updateOrCreateWindowForSignUp = async (
+	sendResponse: SendResponseWithSender,
+	happId?: string,
+	happName?: string
+) => {
+	const waitForFormSubmission = (): Promise<Message> =>
+		new Promise((resolve) => {
+			const messageListener = (
+				message: Message,
+				sender: chrome.runtime.MessageSender,
+				sendResponse: SendResponse
+			) => {
+				if (message.sender !== SENDER_EXTENSION) return;
+				sendResponse({
+					action: BACKGROUND_SCRIPT_RECEIVED_FORM_DATA,
+					sender: SENDER_BACKGROUND_SCRIPT
+				});
+				chrome.runtime.onMessage.removeListener(messageListener);
+				resolve(message);
+			};
+			chrome.runtime.onMessage.addListener(messageListener);
+		});
+
+	const handleWindowUpdateOrCreate = async () => {
+		if (chrome.runtime.lastError) return handleError(sendResponse);
+
+		try {
+			const message = await waitForFormSubmission();
+			sendResponse(message);
+		} catch (error) {
+			handleError(sendResponse);
+		}
+	};
+
+	await updateOrCreateWindowCommon(handleWindowUpdateOrCreate, happId, happName);
 };
 
 const processMessage = async (message: Message, sendResponse: SendResponse) => {
 	const sendResponseWithSender = (response: ActionPayload) =>
-		sendResponse({ ...response, sender: SENDER_EXTENSION });
+		sendResponse({ ...response, sender: SENDER_BACKGROUND_SCRIPT });
 	const parsedMessage = MessageWithIdSchema.safeParse(message);
 	if (!parsedMessage.success) return;
 
@@ -85,23 +146,21 @@ const processMessage = async (message: Message, sendResponse: SendResponse) => {
 			return updateOrCreateWindow(NEEDS_SETUP, sendResponseWithSender);
 		}
 
-		if (parsedMessage.data.action === SIGN_UP) {
-			return updateOrCreateWindow(
-				SIGN_UP_STARTED,
-				sendResponseWithSender,
-				parsedMessage.data.payload.happId,
-				parsedMessage.data.payload.happName
-			);
+		switch (parsedMessage.data.action) {
+			case SIGN_UP:
+				return updateOrCreateWindowForSignUp(
+					sendResponseWithSender,
+					parsedMessage.data.payload.happId,
+					parsedMessage.data.payload.happName
+				);
+			case SIGN_IN:
+				if (!(await isAppSignUpComplete(parsedMessage.data.payload.happId))) {
+					return sendResponseWithSender({ action: NO_KEY_FOR_HAPP });
+				}
+				break;
+			default:
+				return sendResponseWithSender({ action: UNKNOWN_ACTION });
 		}
-
-		if (
-			parsedMessage.data.action === SIGN_IN &&
-			!(await isAppSignUpComplete(parsedMessage.data.payload.happId))
-		) {
-			return sendResponseWithSender({ action: NO_KEY_FOR_HAPP });
-		}
-
-		return updateOrCreateWindow(SUCCESS, sendResponseWithSender);
 	} catch (error) {
 		handleError(sendResponseWithSender);
 	}

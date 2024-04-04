@@ -54,9 +54,14 @@
 	onClick={() => {
 		if (validateAllFields()) {
 			$applicationKeyMutation.mutate(
-				{ app_key_name: keyName, happId: $extractHAppDetailsFromUrl.happId },
 				{
-					onSuccess: window.close
+					app_key_name: keyName,
+					happId: $extractHAppDetailsFromUrl.happId,
+					email,
+					registrationCode
+				},
+				{
+					onSuccess: () => window.close()
 				}
 			);
 		}
