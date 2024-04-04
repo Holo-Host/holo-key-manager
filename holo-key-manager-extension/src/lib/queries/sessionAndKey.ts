@@ -15,12 +15,12 @@ import {
 	SETUP_KEY,
 	SIGN_UP_SUCCESS
 } from '$shared/const';
+import { parseMessageSchema } from '$shared/helpers';
 import { isSetupComplete, sendMessage, storageService } from '$shared/services';
 import {
 	AppsListSchema,
 	EncryptedDeviceKeySchema,
 	HashSaltSchema,
-	MessageSchema,
 	SessionStateSchema
 } from '$shared/types';
 import { deviceKeyContentStore, passphraseStore } from '$stores';
@@ -123,11 +123,8 @@ export function createApplicationKeyMutation() {
 					registrationCode: mutationData.registrationCode
 				}
 			});
-			const parsedMessageSchema = MessageSchema.safeParse(message);
-			if (
-				!parsedMessageSchema.success ||
-				parsedMessageSchema.data.action !== BACKGROUND_SCRIPT_RECEIVED_FORM_DATA
-			)
+			const parsedMessageSchema = parseMessageSchema(message);
+			if (parsedMessageSchema.data.action !== BACKGROUND_SCRIPT_RECEIVED_FORM_DATA)
 				throw new Error('Error sending data to webapp	');
 		}
 	});

@@ -1,14 +1,14 @@
 import { HOLO_KEY_MANAGER_EXTENSION_MARKER_ID, SENDER_BACKGROUND_SCRIPT } from '@shared/const';
+import { parseMessageSchema } from '@shared/helpers';
 import { responseToMessage, sendMessage } from '@shared/services';
-import { MessageSchema, MessageWithIdSchema } from '@shared/types';
+import { MessageWithIdSchema } from '@shared/types';
 
 const parseAndHandleMessage = async (event: MessageEvent) => {
 	const parsedResult = MessageWithIdSchema.safeParse(event.data);
 	if (!parsedResult.success || parsedResult.data.sender === SENDER_BACKGROUND_SCRIPT) return;
 	try {
 		const response = await sendMessage(parsedResult.data);
-		const parsedMessageSchema = MessageSchema.safeParse(response);
-		if (!parsedMessageSchema.success) throw new Error('Invalid response format');
+		const parsedMessageSchema = parseMessageSchema(response);
 		window.postMessage(responseToMessage(parsedMessageSchema.data, parsedResult.data.id), '*');
 	} catch (error) {
 		window.postMessage(

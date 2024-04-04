@@ -1,7 +1,17 @@
-import type { MessageWithId } from '@shared/types';
+type HoloKeyManagerConfig = {
+	happId: string;
+	happName: string;
+	happLogo: string;
+	happUiUrl: string;
+	requireRegistrationCode: boolean;
+};
+type SignUpSuccessPayload = {
+	email: string;
+	registrationCode: string;
+};
 
 type IHoloKeyManager = {
-	signUp(): Promise<MessageWithId>;
-	signIn(): Promise<MessageWithId>;
+	signUp(): Promise<SignUpSuccessPayload>;
+	signIn(): Promise<void>;
 };
-export type { IHoloKeyManager };
+export type { HoloKeyManagerConfig, IHoloKeyManager };

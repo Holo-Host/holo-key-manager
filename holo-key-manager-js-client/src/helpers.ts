@@ -40,7 +40,7 @@ export const sendMessage = (message: Message): Promise<MessageWithId> =>
 		timeoutId = setTimeout(() => {
 			removeListener();
 			reject(new Error('Response timeout'));
-		}, 30000);
+		}, 300000);
 	});
 
 const isFirefox = () => navigator.userAgent.indexOf('Firefox') !== -1;

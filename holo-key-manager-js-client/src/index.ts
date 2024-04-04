@@ -1,8 +1,9 @@
-import { SENDER_WEBAPP, SIGN_IN, SIGN_UP } from '@shared/const';
-import type { Message } from '@shared/types';
+import { SENDER_WEBAPP, SIGN_IN, SIGN_IN_SUCCESS, SIGN_UP, SIGN_UP_SUCCESS } from '@shared/const';
+import { parseMessageSchema } from '@shared/helpers';
+import { type MessageWithId, type SignUpSuccessPayload } from '@shared/types';
 
 import { checkContentScriptAndBrowser, sendMessage } from './helpers';
-import type { IHoloKeyManager } from './types';
+import type { HoloKeyManagerConfig, IHoloKeyManager } from './types';
 
 const createHoloKeyManager = ({
 	happId,
@@ -10,16 +11,28 @@ const createHoloKeyManager = ({
 	happLogo,
 	happUiUrl,
 	requireRegistrationCode
-}: {
-	happId: string;
-	happName: string;
-	happLogo: string;
-	happUiUrl: string;
-	requireRegistrationCode: boolean;
-}): IHoloKeyManager => {
-	const signUp = async () => {
+}: HoloKeyManagerConfig): IHoloKeyManager => {
+	const handleSignUpResponse = (response: MessageWithId): SignUpSuccessPayload => {
+		const parsedMessageSchema = parseMessageSchema(response);
+
+		if (parsedMessageSchema.data.action === SIGN_UP_SUCCESS) {
+			return parsedMessageSchema.data.payload as SignUpSuccessPayload;
+		} else {
+			throw new Error(parsedMessageSchema.data.action);
+		}
+	};
+
+	const handleSignInResponse = (response: MessageWithId): void => {
+		const parsedMessageSchema = parseMessageSchema(response);
+
+		if (parsedMessageSchema.data.action !== SIGN_IN_SUCCESS) {
+			throw new Error(parsedMessageSchema.data.action);
+		}
+	};
+
+	const performSignUpAction = async (): Promise<SignUpSuccessPayload> => {
 		checkContentScriptAndBrowser();
-		const message: Message = {
+		const response = await sendMessage({
 			action: SIGN_UP,
 			payload: {
 				happId,
@@ -29,17 +42,22 @@ const createHoloKeyManager = ({
 				requireRegistrationCode
 			},
 			sender: SENDER_WEBAPP
-		};
-		return sendMessage(message);
+		});
+		return handleSignUpResponse(response);
 	};
 
-	const signIn = async () => {
+	const performSignInAction = async (): Promise<void> => {
 		checkContentScriptAndBrowser();
-		const message: Message = { action: SIGN_IN, payload: { happId }, sender: SENDER_WEBAPP };
-		return sendMessage(message);
+		const response = await sendMessage({
+			action: SIGN_IN,
+			payload: {
+				happId
+			},
+			sender: SENDER_WEBAPP
+		});
+		return handleSignInResponse(response);
 	};
 
-	return { signUp, signIn };
+	return { signUp: performSignUpAction, signIn: performSignInAction };
 };
-
 export default createHoloKeyManager;
