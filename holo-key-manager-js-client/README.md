@@ -35,34 +35,16 @@ const holoKeyManagerConfig = {
 	happName: 'your-happName',
 	happLogo: 'https://example.com/happLogo.png',
 	happUiUrl: 'https://example.com/ui',
+	requireRegistrationCode: true,
 	requireRegistrationCode: true
 };
 
 const initiateSignUp = async () => {
 	const { signUp } = createHoloKeyManager(holoKeyManagerConfig);
 	try {
-		const response = await signUp();
-		handleSignUpResponse(response);
+		const { email, registrationCode } = await signUp();
 	} catch (error) {
 		handleSignUpError(error);
-	}
-};
-```
-
-### Handling Responses
-
-```javascript
-const handleSignUpResponse = (response) => {
-	switch (response.action) {
-		case 'NeedsSetup':
-			// Prompt the user to complete the extension setup, then retry signup.
-			break;
-		case 'SignUpStarted':
-			// Notify the user to follow the extension's instructions, then redirect to login on success.
-			break;
-		default:
-			// Handle other actions or statuses.
-			break;
 	}
 };
 ```
@@ -76,12 +58,17 @@ const handleSignUpError = (error) => {
 };
 
 const getErrorMessage = (error) => {
-	if (error.message.includes('permissions are not granted')) {
-		return 'Ensure the extension is installed and permissions are granted in Firefox.';
-	} else if (error.message.includes('not installed')) {
-		return 'Install the Holo Key Manager extension in Chrome/Edge to proceed.';
-	} else {
-		return 'An unexpected error occurred. Please try again.';
-	}
+	const errorMessages = {
+		'permissions are not granted':
+			'Ensure the extension is installed and permissions are granted in Firefox.',
+		'not installed': 'Install the Holo Key Manager extension in Chrome/Edge to proceed.',
+		NeedsSetup: 'Instruct the user to set up the extension before proceeding.',
+		NoKeyForHapp: 'No existing key found for this happ; initiate the signup flow.'
+	};
+
+	return (
+		Object.entries(errorMessages).find(([key, message]) => error.message.includes(key))?.[1] ||
+		'An unknown error occurred.'
+	);
 };
 ```
