@@ -11,6 +11,8 @@ export const extractHAppDetailsFromUrl = derived(page, ($page) => {
 	const params = new URLSearchParams(url.search);
 	return {
 		happName: params.get('happName') || 'Unknown App',
-		happId: params.get('happId') || 'Unknown ID'
+		happId: params.get('happId') || 'Unknown ID',
+		requireEmail: params.get('requireEmail') === 'true',
+		requireRegistrationCode: params.get('requireRegistrationCode') === 'true'
 	};
 });

@@ -23,6 +23,13 @@ let windowId: number | undefined;
 type SendResponse = (response?: Message) => void;
 type SendResponseWithSender = (response: ActionPayload) => void;
 
+type CreateWindowPropertiesParams = {
+	happId?: string;
+	happName?: string;
+	requireEmail?: boolean;
+	requireRegistrationCode?: boolean;
+};
+
 const handleError = (sendResponse: SendResponseWithSender) => {
 	windowId = undefined;
 	sendResponse({ action: GENERIC_ERROR });
@@ -30,12 +37,16 @@ const handleError = (sendResponse: SendResponseWithSender) => {
 
 const createWindowProperties = ({
 	happId,
-	happName
-}: {
-	happId?: string;
-	happName?: string;
-}): WindowProperties => {
-	const queryParams = createQueryParams({ happId, happName });
+	happName,
+	requireEmail,
+	requireRegistrationCode
+}: CreateWindowPropertiesParams): WindowProperties => {
+	const queryParams = createQueryParams({
+		happId,
+		happName,
+		requireEmail,
+		requireRegistrationCode
+	});
 	const urlSuffix = queryParams ? `?${queryParams}` : '';
 	return {
 		url: `webapp-extension/setup.html${urlSuffix}`,
@@ -73,10 +84,9 @@ const manageWindow = async (
 
 const updateOrCreateWindowCommon = async (
 	handleWindowUpdateOrCreate: () => Promise<void>,
-	happId?: string,
-	happName?: string
+	params: CreateWindowPropertiesParams
 ) => {
-	const windowProperties = createWindowProperties({ happId, happName });
+	const windowProperties = createWindowProperties(params);
 	const actionType = windowId ? 'update' : 'create';
 	manageWindow(actionType, windowProperties, handleWindowUpdateOrCreate);
 };
@@ -95,13 +105,12 @@ const updateOrCreateWindow = async (
 		}
 	};
 
-	await updateOrCreateWindowCommon(handleWindowUpdateOrCreate);
+	await updateOrCreateWindowCommon(handleWindowUpdateOrCreate, {});
 };
 
 const updateOrCreateWindowForSignUp = async (
 	sendResponse: SendResponseWithSender,
-	happId?: string,
-	happName?: string
+	params: CreateWindowPropertiesParams
 ) => {
 	const waitForFormSubmission = (): Promise<Message> =>
 		new Promise((resolve) => {
@@ -132,7 +141,7 @@ const updateOrCreateWindowForSignUp = async (
 		}
 	};
 
-	await updateOrCreateWindowCommon(handleWindowUpdateOrCreate, happId, happName);
+	await updateOrCreateWindowCommon(handleWindowUpdateOrCreate, params);
 };
 
 const processMessage = async (message: Message, sendResponse: SendResponse) => {
@@ -148,11 +157,7 @@ const processMessage = async (message: Message, sendResponse: SendResponse) => {
 
 		switch (parsedMessage.data.action) {
 			case SIGN_UP:
-				return updateOrCreateWindowForSignUp(
-					sendResponseWithSender,
-					parsedMessage.data.payload.happId,
-					parsedMessage.data.payload.happName
-				);
+				return updateOrCreateWindowForSignUp(sendResponseWithSender, parsedMessage.data.payload);
 			case SIGN_IN:
 				if (!(await isAppSignUpComplete(parsedMessage.data.payload.happId))) {
 					return sendResponseWithSender({ action: NO_KEY_FOR_HAPP });

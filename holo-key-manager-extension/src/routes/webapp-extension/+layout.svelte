@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { ActionPage, Login } from '$components';
+	import { dismissWindow } from '$helpers';
 	import { sessionStorageQueries } from '$queries';
 
 	const { sessionQuery, setupDeviceKeyQuery } = sessionStorageQueries();
@@ -24,7 +25,7 @@
 			outerWindow={true}
 			mainAction={() => {
 				window.open('/setup-pass/start.html', '_blank');
-				window.close();
+				dismissWindow();
 			}}
 			mainActionLabel="Setup"
 			title="Setup Required"

@@ -4,10 +4,11 @@ type HoloKeyManagerConfig = {
 	happLogo: string;
 	happUiUrl: string;
 	requireRegistrationCode: boolean;
+	requireEmail: boolean;
 };
 type SignUpSuccessPayload = {
-	email: string;
-	registrationCode: string;
+	email?: string;
+	registrationCode?: string;
 };
 
 type IHoloKeyManager = {

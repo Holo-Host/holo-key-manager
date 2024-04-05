@@ -24,14 +24,15 @@ const HoloKeyManagerConfigSchema = HappIdSchema.extend({
 	happName: z.string(),
 	happLogo: z.string(),
 	happUiUrl: z.string(),
-	requireRegistrationCode: z.boolean()
+	requireRegistrationCode: z.boolean(),
+	requireEmail: z.boolean()
 });
 
 export type HoloKeyManagerConfig = z.infer<typeof HoloKeyManagerConfigSchema>;
 
 const SignUpSuccessPayloadSchema = z.object({
-	email: z.string(),
-	registrationCode: z.string()
+	email: z.string().optional(),
+	registrationCode: z.string().optional()
 });
 
 export type SignUpSuccessPayload = z.infer<typeof SignUpSuccessPayloadSchema>;

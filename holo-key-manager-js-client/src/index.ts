@@ -10,7 +10,8 @@ const createHoloKeyManager = ({
 	happName,
 	happLogo,
 	happUiUrl,
-	requireRegistrationCode
+	requireRegistrationCode,
+	requireEmail
 }: HoloKeyManagerConfig): IHoloKeyManager => {
 	const handleSignUpResponse = (response: MessageWithId): SignUpSuccessPayload => {
 		const parsedMessageSchema = parseMessageSchema(response);
@@ -39,7 +40,8 @@ const createHoloKeyManager = ({
 				happName,
 				happLogo,
 				happUiUrl,
-				requireRegistrationCode
+				requireRegistrationCode,
+				requireEmail
 			},
 			sender: SENDER_WEBAPP
 		});

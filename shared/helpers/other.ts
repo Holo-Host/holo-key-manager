@@ -7,11 +7,11 @@ export const isChromeStorageSafe = () =>
 export const isChromeMessageSafe = () =>
 	isChromeDefined() && chrome.runtime && chrome.runtime.sendMessage;
 
-export const createQueryParams = (params: Record<string, string | undefined>) =>
+export const createQueryParams = (params: Record<string, string | boolean | undefined>) =>
 	new URLSearchParams(
 		Object.entries(params).reduce(
 			(acc, [key, value]) => {
-				if (value) acc[key] = value;
+				if (value) acc[key] = String(value);
 				return acc;
 			},
 			{} as Record<string, string>

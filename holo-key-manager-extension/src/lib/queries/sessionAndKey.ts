@@ -93,8 +93,8 @@ export function createApplicationKeyMutation() {
 		mutationFn: async (mutationData: {
 			app_key_name: string;
 			happId: string;
-			email: string;
-			registrationCode: string;
+			email?: string;
+			registrationCode?: string;
 		}) => {
 			const appsListData = await storageService.getWithoutCallback({
 				key: APPS_LIST,
@@ -102,7 +102,7 @@ export function createApplicationKeyMutation() {
 			});
 			const parsedAppsListData = AppsListSchema.safeParse(appsListData);
 
-			await storageService.set({
+			storageService.set({
 				key: APPS_LIST,
 				value: [
 					...(parsedAppsListData.success ? parsedAppsListData.data : []),
@@ -119,8 +119,8 @@ export function createApplicationKeyMutation() {
 				sender: SENDER_EXTENSION,
 				action: SIGN_UP_SUCCESS,
 				payload: {
-					email: mutationData.email,
-					registrationCode: mutationData.registrationCode
+					...(mutationData.email && { email: mutationData.email }),
+					...(mutationData.registrationCode && { registrationCode: mutationData.registrationCode })
 				}
 			});
 			const parsedMessageSchema = parseMessageSchema(message);

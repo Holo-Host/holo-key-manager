@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { AppParagraph, Button, Input } from '$components';
-	import { isValidEmail } from '$helpers';
+	import { dismissWindow, isValidEmail } from '$helpers';
 	import { extractHAppDetailsFromUrl } from '$helpers';
 	import { sessionStorageQueries } from '$queries';
 
@@ -10,17 +10,19 @@
 	let keyName = '';
 	let errors = { email: '', registrationCode: '', keyName: '' };
 
-	const validateField = (field: string, value: string, validator: (value: string) => boolean) => {
-		errors = {
-			...errors,
-			[field]: value === '' ? 'This field is required' : validator(value) ? '' : 'Invalid value'
-		};
-	};
+	const validateField = (field: string, value: string, validator: (value: string) => boolean) =>
+		value === ''
+			? { ...errors, [field]: 'This field is required' }
+			: { ...errors, [field]: validator(value) ? '' : 'Invalid value' };
 
 	const validateAllFields = () => {
-		validateField('email', email, isValidEmail);
-		validateField('registrationCode', registrationCode, () => true);
-		validateField('keyName', keyName, () => true);
+		if ($extractHAppDetailsFromUrl.requireEmail) {
+			errors = validateField('email', email, isValidEmail);
+		}
+		if ($extractHAppDetailsFromUrl.requireRegistrationCode) {
+			errors = validateField('registrationCode', registrationCode, () => true);
+		}
+		errors = validateField('keyName', keyName, () => true);
 		return Object.values(errors).every((error) => error === '');
 	};
 </script>
@@ -34,13 +36,17 @@
 	/>
 </div>
 
-<Input label="Email:" bind:value={email} extraProps="mb-4" error={errors.email} />
-<Input
-	label="Registration Code:"
-	bind:value={registrationCode}
-	extraProps="mb-4"
-	error={errors.registrationCode}
-/>
+{#if $extractHAppDetailsFromUrl.requireEmail}
+	<Input label="Email:" bind:value={email} extraProps="mb-4" error={errors.email} />
+{/if}
+{#if $extractHAppDetailsFromUrl.requireRegistrationCode}
+	<Input
+		label="Registration Code:"
+		bind:value={registrationCode}
+		extraProps="mb-4"
+		error={errors.registrationCode}
+	/>
+{/if}
 <Input label="Name This Key:" bind:value={keyName} extraProps="mb-4" error={errors.keyName} />
 
 {#if $applicationKeyMutation.error}
@@ -61,7 +67,7 @@
 					registrationCode
 				},
 				{
-					onSuccess: () => window.close()
+					onSuccess: dismissWindow
 				}
 			);
 		}
