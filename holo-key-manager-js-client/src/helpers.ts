@@ -43,13 +43,9 @@ export const sendMessage = (message: Message): Promise<MessageWithId> =>
 		}, 300000);
 	});
 
-const isFirefox = () => navigator.userAgent.indexOf('Firefox') !== -1;
-
 export const checkContentScriptAndBrowser = () => {
 	if (!document.getElementById(HOLO_KEY_MANAGER_EXTENSION_MARKER_ID)) {
-		const errorMessage =
-			'Holo Key Manager extension is not installed' +
-			(isFirefox() ? ' or permissions are not granted' : '');
+		const errorMessage = 'Holo Key Manager extension is not installed';
 		throw new Error(errorMessage);
 	}
 };

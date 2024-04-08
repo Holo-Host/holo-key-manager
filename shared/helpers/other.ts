@@ -7,6 +7,12 @@ export const isChromeStorageSafe = () =>
 export const isChromeMessageSafe = () =>
 	isChromeDefined() && chrome.runtime && chrome.runtime.sendMessage;
 
+export const isChromePermissionsSafe = () =>
+	isChromeDefined() &&
+	chrome.permissions &&
+	typeof chrome.permissions.request === 'function' &&
+	typeof chrome.permissions.getAll === 'function';
+
 export const createQueryParams = (params: Record<string, string | boolean | undefined>) =>
 	new URLSearchParams(
 		Object.entries(params).reduce(

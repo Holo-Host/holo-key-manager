@@ -59,10 +59,9 @@ const handleSignUpError = (error) => {
 
 const getErrorMessage = (error) => {
 	const errorMessages = {
-		'permissions are not granted':
-			'Ensure the extension is installed and permissions are granted in Firefox.',
 		'not installed': 'Install the Holo Key Manager extension in Chrome/Edge to proceed.',
-		NeedsSetup: 'Instruct the user to set up the extension before proceeding.',
+		NeedsSetup:
+			'Instruct the user to set up the extension, grant necessary permissions, and then reload the page.',
 		NoKeyForHapp: 'No existing key found for this happ; initiate the signup flow.'
 	};
 
