@@ -1,9 +1,9 @@
 <script lang="ts">
 	import { ActionPage, Login } from '$components';
 	import { dismissWindow } from '$helpers';
-	import { sessionStorageQueries } from '$queries';
+	import { appQueries } from '$queries';
 
-	const { sessionQuery, setupDeviceKeyQuery } = sessionStorageQueries();
+	const { sessionQuery, setupDeviceKeyQuery } = appQueries();
 	$: isLoading = $sessionQuery.isFetching || $setupDeviceKeyQuery.isFetching;
 	$: hasSessionData = $sessionQuery.data;
 	$: hasSetupData = $setupDeviceKeyQuery.data;
@@ -13,7 +13,7 @@
 	<title>Holo Key Manager</title>
 </svelte:head>
 
-<div class="mx-auto flex h-screen w-full max-w-xs flex-col items-center justify-center py-8">
+<div class="mx-auto flex h-screen w-full max-w-xs flex-col justify-center py-8">
 	{#if isLoading}
 		<span>Loading</span>
 	{:else if hasSessionData}

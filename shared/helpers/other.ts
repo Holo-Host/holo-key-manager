@@ -1,4 +1,5 @@
-import { MessageSchema, type MessageWithId } from '../types';
+import { relevantKeys } from '../const';
+import { type ActionPayload, MessageSchema, type MessageWithId } from '../types';
 
 export const isChromeDefined = () => typeof chrome !== 'undefined';
 export const isChromeStorageSafe = () =>
@@ -13,16 +14,19 @@ export const isChromePermissionsSafe = () =>
 	typeof chrome.permissions.request === 'function' &&
 	typeof chrome.permissions.getAll === 'function';
 
-export const createQueryParams = (params: Record<string, string | boolean | undefined>) =>
-	new URLSearchParams(
-		Object.entries(params).reduce(
-			(acc, [key, value]) => {
-				if (value) acc[key] = String(value);
-				return acc;
-			},
-			{} as Record<string, string>
-		)
-	).toString();
+export const createQueryParams = (params: ActionPayload) => {
+	const additionalParams = relevantKeys.reduce(
+		(acc, key) => {
+			if ('payload' in params && params.payload && key in params.payload) {
+				return { ...acc, [key]: String(params.payload[key as keyof typeof params.payload]) };
+			}
+			return acc;
+		},
+		{ action: params.action }
+	);
+
+	return new URLSearchParams(additionalParams).toString();
+};
 
 export const parseMessageSchema = (response: MessageWithId) => {
 	const parsedMessageSchema = MessageSchema.safeParse(response);

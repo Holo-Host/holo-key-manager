@@ -1,12 +1,11 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
 
-	import { ActionPage, Login } from '$components';
-	import { dismissWindow } from '$helpers';
-	import { sessionStorageQueries } from '$queries';
+	import { ActionPage, Login, LogoCloseBar } from '$components';
+	import { appQueries } from '$queries';
 	import { isChromePermissionsSafe } from '$shared/helpers';
 
-	const { sessionQuery, setupDeviceKeyQuery } = sessionStorageQueries();
+	const { sessionQuery, setupDeviceKeyQuery } = appQueries();
 	$: isLoading = $sessionQuery.isFetching || $setupDeviceKeyQuery.isFetching;
 	$: hasSessionData = $sessionQuery.data;
 	$: hasSetupData = $setupDeviceKeyQuery.data;
@@ -43,12 +42,7 @@
 	/>
 {:else if hasSessionData}
 	<div class="m-8">
-		<div class="mb-4 flex items-center justify-between">
-			<img src="/img/holo_logo.svg" alt="Holo Key Manager Logo" />
-			<button on:click={dismissWindow} class="border-none bg-transparent">
-				<img src="/img/close.svg" alt="Close" />
-			</button>
-		</div>
+		<LogoCloseBar />
 		<h1 class="mt-4 text-2xl font-bold">Holo Key Manager</h1>
 		<button on:click={redirectToChangePassword} class="text-blue-500 hover:text-blue-800">
 			Change Password

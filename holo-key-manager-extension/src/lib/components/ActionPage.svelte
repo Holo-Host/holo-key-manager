@@ -2,6 +2,8 @@
 	import { AppParagraph, Button } from '$components';
 	import { dismissWindow } from '$lib/helpers';
 
+	import LogoCloseBar from './LogoCloseBar.svelte';
+
 	export let outerWindow = false;
 	export let mainAction: () => void;
 	export let mainActionLabel: string;
@@ -11,12 +13,7 @@
 
 <div class="m-8">
 	{#if !outerWindow}
-		<div class="mb-4 flex items-center justify-between">
-			<img src="/img/holo_logo.svg" alt="Holo Key Manager Logo" />
-			<button on:click={dismissWindow} class="border-none bg-transparent">
-				<img src="/img/close.svg" alt="Close" />
-			</button>
-		</div>
+		<LogoCloseBar />
 	{/if}
 
 	<div class="flex flex-col items-center justify-center">

@@ -1,16 +1,18 @@
 import {
-	BACKGROUND_SCRIPT_RECEIVED_FORM_DATA,
+	BACKGROUND_SCRIPT_RECEIVED_DATA,
 	GENERIC_ERROR,
 	NEEDS_SETUP,
 	NO_KEY_FOR_HAPP,
 	SENDER_BACKGROUND_SCRIPT,
 	SENDER_EXTENSION,
 	SIGN_IN,
+	SIGN_OUT,
+	SIGN_OUT_SUCCESS,
 	SIGN_UP,
 	UNKNOWN_ACTION
 } from '@shared/const';
 import { createQueryParams } from '@shared/helpers';
-import { isAppSignUpComplete, isSetupComplete } from '@shared/services';
+import { isAppSignUpComplete, isSetupComplete, signOut } from '@shared/services';
 import {
 	type ActionPayload,
 	type Message,
@@ -23,79 +25,61 @@ let windowId: number | undefined;
 type SendResponse = (response?: Message) => void;
 type SendResponseWithSender = (response: ActionPayload) => void;
 
-type CreateWindowPropertiesParams = {
-	happId?: string;
-	happName?: string;
-	requireEmail?: boolean;
-	requireRegistrationCode?: boolean;
-};
-
 const handleError = (sendResponse: SendResponseWithSender) => {
 	windowId = undefined;
 	sendResponse({ action: GENERIC_ERROR });
 };
 
-const createWindowProperties = ({
-	happId,
-	happName,
-	requireEmail,
-	requireRegistrationCode
-}: CreateWindowPropertiesParams): WindowProperties => {
-	const queryParams = createQueryParams({
-		happId,
-		happName,
-		requireEmail,
-		requireRegistrationCode
-	});
-	const urlSuffix = queryParams ? `?${queryParams}` : '';
-	return {
-		url: `webapp-extension/setup.html${urlSuffix}`,
-		type: 'popup',
-		height: 500,
-		width: 375,
-		top: 100,
-		left: 1100
-	};
-};
+const createWindowProperties = (actionPayload?: ActionPayload): WindowProperties => ({
+	url: `webapp-extension/setup.html${actionPayload ? `?${createQueryParams(actionPayload)}` : ''}`,
+	type: 'popup',
+	height: 500,
+	width: 375,
+	top: 100,
+	left: 1100
+});
 
-const manageWindow = async (
-	action: 'update' | 'create',
+const updateWindow = (
 	windowProperties: WindowProperties,
 	handleWindowUpdateOrCreate: () => Promise<void>
-) => {
-	const updateWindow = () =>
-		chrome.windows.update(
-			windowId!,
-			{ ...windowProperties, focused: true },
-			handleWindowUpdateOrCreate
-		);
-	const createWindow = () =>
-		chrome.windows.create(windowProperties, (newWindow) => {
-			if (!newWindow) return;
-			windowId = newWindow.id;
-			chrome.windows.onRemoved.addListener((id) => {
-				if (id === windowId) windowId = undefined;
-			});
-			handleWindowUpdateOrCreate();
+) =>
+	chrome.windows.update(
+		windowId!,
+		{ ...windowProperties, focused: true },
+		handleWindowUpdateOrCreate
+	);
+
+const createWindow = (
+	windowProperties: WindowProperties,
+	handleWindowUpdateOrCreate: () => Promise<void>
+) =>
+	chrome.windows.create(windowProperties, (newWindow) => {
+		if (!newWindow) return;
+		windowId = newWindow.id;
+		chrome.windows.onRemoved.addListener((id) => {
+			if (id === windowId) windowId = undefined;
 		});
+		handleWindowUpdateOrCreate();
+	});
 
-	action === 'update' ? updateWindow() : createWindow();
-};
+const manageWindow = (
+	windowProperties: WindowProperties,
+	handleWindowUpdateOrCreate: () => Promise<void>
+) =>
+	windowId
+		? updateWindow(windowProperties, handleWindowUpdateOrCreate)
+		: createWindow(windowProperties, handleWindowUpdateOrCreate);
 
-const updateOrCreateWindowCommon = async (
+const updateOrCreateWindowCommon = (
 	handleWindowUpdateOrCreate: () => Promise<void>,
-	params: CreateWindowPropertiesParams
-) => {
-	const windowProperties = createWindowProperties(params);
-	const actionType = windowId ? 'update' : 'create';
-	manageWindow(actionType, windowProperties, handleWindowUpdateOrCreate);
-};
+	actionPayload?: ActionPayload
+) => manageWindow(createWindowProperties(actionPayload), handleWindowUpdateOrCreate);
 
-const updateOrCreateWindow = async (
+const updateOrCreateWindow = (
 	successAction: typeof NEEDS_SETUP,
 	sendResponse: SendResponseWithSender
-) => {
-	const handleWindowUpdateOrCreate = async () => {
+) =>
+	updateOrCreateWindowCommon(async () => {
 		if (chrome.runtime.lastError) return handleError(sendResponse);
 
 		try {
@@ -103,34 +87,31 @@ const updateOrCreateWindow = async (
 		} catch (error) {
 			handleError(sendResponse);
 		}
-	};
+	});
 
-	await updateOrCreateWindowCommon(handleWindowUpdateOrCreate, {});
-};
+const waitForFormSubmission = (): Promise<Message> =>
+	new Promise((resolve) => {
+		const messageListener = (
+			message: Message,
+			sender: chrome.runtime.MessageSender,
+			sendResponse: SendResponse
+		) => {
+			if (message.sender !== SENDER_EXTENSION) return;
+			sendResponse({
+				action: BACKGROUND_SCRIPT_RECEIVED_DATA,
+				sender: SENDER_BACKGROUND_SCRIPT
+			});
+			chrome.runtime.onMessage.removeListener(messageListener);
+			resolve(message);
+		};
+		chrome.runtime.onMessage.addListener(messageListener);
+	});
 
-const updateOrCreateWindowForSignUp = async (
+const createOrUpdateDataResponseWindow = (
 	sendResponse: SendResponseWithSender,
-	params: CreateWindowPropertiesParams
-) => {
-	const waitForFormSubmission = (): Promise<Message> =>
-		new Promise((resolve) => {
-			const messageListener = (
-				message: Message,
-				sender: chrome.runtime.MessageSender,
-				sendResponse: SendResponse
-			) => {
-				if (message.sender !== SENDER_EXTENSION) return;
-				sendResponse({
-					action: BACKGROUND_SCRIPT_RECEIVED_FORM_DATA,
-					sender: SENDER_BACKGROUND_SCRIPT
-				});
-				chrome.runtime.onMessage.removeListener(messageListener);
-				resolve(message);
-			};
-			chrome.runtime.onMessage.addListener(messageListener);
-		});
-
-	const handleWindowUpdateOrCreate = async () => {
+	actionPayload: ActionPayload
+) =>
+	updateOrCreateWindowCommon(async () => {
 		if (chrome.runtime.lastError) return handleError(sendResponse);
 
 		try {
@@ -139,10 +120,7 @@ const updateOrCreateWindowForSignUp = async (
 		} catch (error) {
 			handleError(sendResponse);
 		}
-	};
-
-	await updateOrCreateWindowCommon(handleWindowUpdateOrCreate, params);
-};
+	}, actionPayload);
 
 const processMessage = async (message: Message, sendResponse: SendResponse) => {
 	const sendResponseWithSender = (response: ActionPayload) =>
@@ -157,12 +135,20 @@ const processMessage = async (message: Message, sendResponse: SendResponse) => {
 
 		switch (parsedMessage.data.action) {
 			case SIGN_UP:
-				return updateOrCreateWindowForSignUp(sendResponseWithSender, parsedMessage.data.payload);
+				return createOrUpdateDataResponseWindow(sendResponseWithSender, {
+					action: parsedMessage.data.action,
+					payload: parsedMessage.data.payload
+				});
 			case SIGN_IN:
-				if (!(await isAppSignUpComplete(parsedMessage.data.payload.happId))) {
-					return sendResponseWithSender({ action: NO_KEY_FOR_HAPP });
-				}
-				break;
+				return (await isAppSignUpComplete(parsedMessage.data.payload.happId))
+					? createOrUpdateDataResponseWindow(sendResponseWithSender, {
+							action: parsedMessage.data.action,
+							payload: parsedMessage.data.payload
+						})
+					: sendResponseWithSender({ action: NO_KEY_FOR_HAPP });
+			case SIGN_OUT:
+				signOut(parsedMessage.data.payload.happId);
+				return sendResponseWithSender({ action: SIGN_OUT_SUCCESS });
 			default:
 				return sendResponseWithSender({ action: UNKNOWN_ACTION });
 		}

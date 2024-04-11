@@ -2,11 +2,11 @@
 	import { page } from '$app/stores';
 	import { AppContainer } from '$components';
 	import { dismissWindow } from '$helpers';
-	import { sessionStorageQueries } from '$queries';
+	import { appQueries } from '$queries';
 
 	const goBack = () => window?.history.back();
 
-	const { setupDeviceKeyQuery } = sessionStorageQueries();
+	const { setupDeviceKeyQuery } = appQueries();
 	$: if ($setupDeviceKeyQuery.data) {
 		dismissWindow();
 	}

@@ -5,10 +5,10 @@
 	import { goto } from '$app/navigation';
 	import { AppParagraph, Button, Title } from '$components';
 	import { dismissWindow } from '$helpers';
-	import { sessionStorageQueries } from '$queries';
+	import { appQueries } from '$queries';
 	import { EncryptedDeviceKeySchema } from '$shared/types';
 
-	const { recoverDeviceKeyMutation } = sessionStorageQueries();
+	const { recoverDeviceKeyMutation } = appQueries();
 
 	let passphrase = '';
 	let fileName: string;

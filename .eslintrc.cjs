@@ -17,6 +17,7 @@ module.exports = {
 	rules: {
 		'@typescript-eslint/ban-ts-comment': 0,
 		'simple-import-sort/imports': 'error',
-		'simple-import-sort/exports': 'error'
+		'simple-import-sort/exports': 'error',
+		'@typescript-eslint/no-unused-vars': ['error', { ignoreRestSiblings: true }]
 	}
 };

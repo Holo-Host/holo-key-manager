@@ -4,17 +4,17 @@
 	import { goto } from '$app/navigation';
 	import { AppContainer, AppParagraph, Button, Input, Title } from '$components';
 	import { dismissWindow } from '$helpers';
-	import { sessionStorageQueries } from '$queries';
+	import { appQueries } from '$queries';
 	import { deviceKeyContentStore, passwordStore } from '$stores';
 
-	const { createPassword, passwordAndStoreDeviceKeyMutation } = sessionStorageQueries();
+	const { createPassword, passwordAndStoreDeviceKeyMutation } = appQueries();
 
 	let confirmPassword = '';
 
 	$: charCount = $passwordStore.length;
 	$: isDisabled = charCount < 8 || confirmPassword !== $passwordStore;
 
-	const { setupDeviceKeyQuery } = sessionStorageQueries();
+	const { setupDeviceKeyQuery } = appQueries();
 	onMount(() => {
 		passwordStore.reset();
 		if ($setupDeviceKeyQuery.data) {

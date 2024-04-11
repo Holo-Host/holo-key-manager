@@ -38,13 +38,40 @@ const holoKeyManagerConfig = {
 	requireRegistrationCode: true,
 	requireRegistrationCode: true
 };
-
 const initiateSignUp = async () => {
 	const { signUp } = createHoloKeyManager(holoKeyManagerConfig);
 	try {
-		const { email, registrationCode } = await signUp();
+		const { email, registrationCode, pubKey } = await signUp();
+		console.log(
+			'SignUp successful. Email:',
+			email,
+			'Registration Code:',
+			registrationCode,
+			'Public Key:',
+			pubKey
+		);
 	} catch (error) {
-		handleSignUpError(error);
+		handleError(error);
+	}
+};
+
+const initiateSignIn = async () => {
+	const { signIn } = createHoloKeyManager(holoKeyManagerConfig);
+	try {
+		const { pubKey } = await signIn();
+		console.log('SignIn successful. Public Key:', pubKey);
+	} catch (error) {
+		handleError(error);
+	}
+};
+
+const initiateSignOut = async () => {
+	const { signOut } = createHoloKeyManager(holoKeyManagerConfig);
+	try {
+		await signOut();
+		console.log('SignOut successful');
+	} catch (error) {
+		handleError(error);
 	}
 };
 ```
@@ -52,12 +79,12 @@ const initiateSignUp = async () => {
 ### Error Handling
 
 ```javascript
-const handleSignUpError = (error) => {
-	const errorMessage = getErrorMessage(error);
+const handleError = (error) => {
+	const errorMessage = getGenericErrorMessage(error);
 	console.error(errorMessage);
 };
 
-const getErrorMessage = (error) => {
+const getGenericErrorMessage = (error) => {
 	const errorMessages = {
 		'not installed': 'Install the Holo Key Manager extension in Chrome/Edge to proceed.',
 		NeedsSetup:

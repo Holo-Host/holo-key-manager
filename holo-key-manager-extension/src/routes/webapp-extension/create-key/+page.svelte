@@ -1,10 +1,10 @@
 <script lang="ts">
 	import { AppParagraph, Button, Input } from '$components';
 	import { dismissWindow, isValidEmail } from '$helpers';
-	import { extractHAppDetailsFromUrl } from '$helpers';
-	import { sessionStorageQueries } from '$queries';
+	import { extractDetailsFromUrl } from '$helpers';
+	import { appQueries } from '$queries';
 
-	const { applicationKeyMutation } = sessionStorageQueries();
+	const { applicationKeyMutation } = appQueries();
 	let email = '';
 	let registrationCode = '';
 	let keyName = '';
@@ -16,10 +16,10 @@
 			: { ...errors, [field]: validator(value) ? '' : 'Invalid value' };
 
 	const validateAllFields = () => {
-		if ($extractHAppDetailsFromUrl.requireEmail) {
+		if ($extractDetailsFromUrl.requireEmail) {
 			errors = validateField('email', email, isValidEmail);
 		}
-		if ($extractHAppDetailsFromUrl.requireRegistrationCode) {
+		if ($extractDetailsFromUrl.requireRegistrationCode) {
 			errors = validateField('registrationCode', registrationCode, () => true);
 		}
 		errors = validateField('keyName', keyName, () => true);
@@ -36,10 +36,10 @@
 	/>
 </div>
 
-{#if $extractHAppDetailsFromUrl.requireEmail}
+{#if $extractDetailsFromUrl.requireEmail}
 	<Input label="Email:" bind:value={email} extraProps="mb-4" error={errors.email} />
 {/if}
-{#if $extractHAppDetailsFromUrl.requireRegistrationCode}
+{#if $extractDetailsFromUrl.requireRegistrationCode}
 	<Input
 		label="Registration Code:"
 		bind:value={registrationCode}
@@ -62,7 +62,7 @@
 			$applicationKeyMutation.mutate(
 				{
 					app_key_name: keyName,
-					happId: $extractHAppDetailsFromUrl.happId,
+					happId: $extractDetailsFromUrl.happId,
 					email,
 					registrationCode
 				},

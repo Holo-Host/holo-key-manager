@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
 	import type { SetSecret } from '$lib/types';
-	import { sessionStorageQueries } from '$queries';
+	import { appQueries } from '$queries';
 	import { passphraseStore } from '$stores';
 
 	import EnterSecretComponent from './EnterSecretComponent.svelte';
@@ -13,7 +13,7 @@
 
 	$: charCount = $passphraseStore.length;
 
-	const { setupPasswordQuery } = sessionStorageQueries();
+	const { setupPasswordQuery } = appQueries();
 
 	$: {
 		if ($setupPasswordQuery.data === false) {

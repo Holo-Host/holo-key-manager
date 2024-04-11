@@ -1,7 +1,7 @@
 import { z } from 'zod';
 
 import {
-	BACKGROUND_SCRIPT_RECEIVED_FORM_DATA,
+	BACKGROUND_SCRIPT_RECEIVED_DATA,
 	GENERIC_ERROR,
 	HOLO_KEY_MANAGER_APP_ID,
 	NEEDS_SETUP,
@@ -11,6 +11,8 @@ import {
 	SENDER_WEBAPP,
 	SIGN_IN,
 	SIGN_IN_SUCCESS,
+	SIGN_OUT,
+	SIGN_OUT_SUCCESS,
 	SIGN_UP,
 	SIGN_UP_SUCCESS,
 	UNKNOWN_ACTION
@@ -18,6 +20,10 @@ import {
 
 const HappIdSchema = z.object({
 	happId: z.string()
+});
+
+export const PubKeySchema = z.object({
+	pubKey: z.string()
 });
 
 const HoloKeyManagerConfigSchema = HappIdSchema.extend({
@@ -30,10 +36,12 @@ const HoloKeyManagerConfigSchema = HappIdSchema.extend({
 
 export type HoloKeyManagerConfig = z.infer<typeof HoloKeyManagerConfigSchema>;
 
-const SignUpSuccessPayloadSchema = z.object({
-	email: z.string().optional(),
-	registrationCode: z.string().optional()
-});
+const SignUpSuccessPayloadSchema = z
+	.object({
+		email: z.string().optional(),
+		registrationCode: z.string().optional()
+	})
+	.merge(PubKeySchema);
 
 export type SignUpSuccessPayload = z.infer<typeof SignUpSuccessPayloadSchema>;
 
@@ -45,27 +53,18 @@ const MessageBaseSchema = z.object({
 	])
 });
 
-const SignUpActionPayloadSchema = z.object({
-	action: z.literal(SIGN_UP),
-	payload: HoloKeyManagerConfigSchema
-});
-export type SignUpActionPayload = z.infer<typeof SignUpActionPayloadSchema>;
-const SignInActionPayloadSchema = z.object({
-	action: z.literal(SIGN_IN),
-	payload: HappIdSchema
-});
-export type SignInActionPayload = z.infer<typeof SignInActionPayloadSchema>;
-
 const ActionPayloadSchema = z.union([
-	SignUpActionPayloadSchema,
-	SignInActionPayloadSchema,
-	z.object({ action: z.literal(NO_KEY_FOR_HAPP) }),
+	z.object({ action: z.literal(BACKGROUND_SCRIPT_RECEIVED_DATA) }),
 	z.object({ action: z.literal(GENERIC_ERROR) }),
 	z.object({ action: z.literal(NEEDS_SETUP) }),
+	z.object({ action: z.literal(NO_KEY_FOR_HAPP) }),
+	z.object({ action: z.literal(SIGN_IN), payload: HappIdSchema }),
+	z.object({ action: z.literal(SIGN_IN_SUCCESS), payload: PubKeySchema }),
+	z.object({ action: z.literal(SIGN_OUT), payload: HappIdSchema }),
+	z.object({ action: z.literal(SIGN_OUT_SUCCESS) }),
+	z.object({ action: z.literal(SIGN_UP), payload: HoloKeyManagerConfigSchema }),
 	z.object({ action: z.literal(SIGN_UP_SUCCESS), payload: SignUpSuccessPayloadSchema }),
-	z.object({ action: z.literal(UNKNOWN_ACTION) }),
-	z.object({ action: z.literal(SIGN_IN_SUCCESS) }),
-	z.object({ action: z.literal(BACKGROUND_SCRIPT_RECEIVED_FORM_DATA) })
+	z.object({ action: z.literal(UNKNOWN_ACTION) })
 ]);
 
 export type ActionPayload = z.infer<typeof ActionPayloadSchema>;

@@ -9,10 +9,16 @@ type HoloKeyManagerConfig = {
 type SignUpSuccessPayload = {
 	email?: string;
 	registrationCode?: string;
+	pubKey: string;
+};
+
+type SignInSuccessPayload = {
+	pubKey: string;
 };
 
 type IHoloKeyManager = {
 	signUp(): Promise<SignUpSuccessPayload>;
-	signIn(): Promise<void>;
+	signIn(): Promise<SignInSuccessPayload>;
+	signOut(): Promise<void>;
 };
 export type { HoloKeyManagerConfig, IHoloKeyManager };

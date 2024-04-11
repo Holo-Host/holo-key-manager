@@ -1,6 +1,14 @@
 import { z } from 'zod';
 
-import type { APPS_LIST, DEVICE_KEY, LOCAL, PASSWORD, SESSION, SESSION_DATA } from '../const';
+import type {
+	APPS_LIST,
+	AUTHENTICATED_APPS_LIST,
+	DEVICE_KEY,
+	LOCAL,
+	PASSWORD,
+	SESSION,
+	SESSION_STORAGE_KEY
+} from '../const';
 
 export const EncryptedDeviceKeySchema = z.string();
 
@@ -22,6 +30,10 @@ export const AppsListSchema = z.array(
 );
 
 export type AppsList = z.infer<typeof AppsListSchema>;
+
+export const AuthenticatedAppsListSchema = z.record(z.string(), z.number());
+
+export type AuthenticatedAppsList = z.infer<typeof AuthenticatedAppsListSchema>;
 
 export type AreaName = typeof SESSION | typeof LOCAL | 'sync' | 'managed';
 
@@ -45,13 +57,15 @@ type GetAction<T, A = typeof SESSION | typeof LOCAL> = {
 };
 
 type StorageSetItem =
-	| SetAction<typeof SESSION_DATA, string | null, typeof SESSION>
+	| SetAction<typeof SESSION_STORAGE_KEY, string | null, typeof SESSION>
+	| SetAction<typeof AUTHENTICATED_APPS_LIST, AuthenticatedAppsList, typeof SESSION>
 	| SetAction<typeof PASSWORD, HashSalt, typeof LOCAL>
 	| SetAction<typeof APPS_LIST, AppsList, typeof LOCAL>
 	| SetAction<typeof DEVICE_KEY, string, typeof LOCAL>;
 
 type StorageGetItem =
-	| GetAction<typeof SESSION_DATA, typeof SESSION>
+	| GetAction<typeof SESSION_STORAGE_KEY, typeof SESSION>
+	| GetAction<typeof AUTHENTICATED_APPS_LIST, typeof SESSION>
 	| GetAction<typeof APPS_LIST, typeof LOCAL>
 	| GetAction<typeof PASSWORD, typeof LOCAL>
 	| GetAction<typeof DEVICE_KEY, typeof LOCAL>;

@@ -1,4 +1,12 @@
-import { SENDER_WEBAPP, SIGN_IN, SIGN_IN_SUCCESS, SIGN_UP, SIGN_UP_SUCCESS } from '@shared/const';
+import {
+	SENDER_WEBAPP,
+	SIGN_IN,
+	SIGN_IN_SUCCESS,
+	SIGN_OUT,
+	SIGN_OUT_SUCCESS,
+	SIGN_UP,
+	SIGN_UP_SUCCESS
+} from '@shared/const';
 import { parseMessageSchema } from '@shared/helpers';
 import { type MessageWithId, type SignUpSuccessPayload } from '@shared/types';
 
@@ -13,20 +21,20 @@ const createHoloKeyManager = ({
 	requireRegistrationCode,
 	requireEmail
 }: HoloKeyManagerConfig): IHoloKeyManager => {
-	const handleSignUpResponse = (response: MessageWithId): SignUpSuccessPayload => {
+	const handleResponseWithData = <T>(response: MessageWithId, action: string): T => {
 		const parsedMessageSchema = parseMessageSchema(response);
 
-		if (parsedMessageSchema.data.action === SIGN_UP_SUCCESS) {
-			return parsedMessageSchema.data.payload as SignUpSuccessPayload;
+		if ('payload' in parsedMessageSchema.data && parsedMessageSchema.data.action === action) {
+			return parsedMessageSchema.data.payload as T;
 		} else {
 			throw new Error(parsedMessageSchema.data.action);
 		}
 	};
 
-	const handleSignInResponse = (response: MessageWithId): void => {
+	const handleResponse = (response: MessageWithId, expectedAction: string): void => {
 		const parsedMessageSchema = parseMessageSchema(response);
 
-		if (parsedMessageSchema.data.action !== SIGN_IN_SUCCESS) {
+		if (parsedMessageSchema.data.action !== expectedAction) {
 			throw new Error(parsedMessageSchema.data.action);
 		}
 	};
@@ -45,10 +53,10 @@ const createHoloKeyManager = ({
 			},
 			sender: SENDER_WEBAPP
 		});
-		return handleSignUpResponse(response);
+		return handleResponseWithData(response, SIGN_UP_SUCCESS);
 	};
 
-	const performSignInAction = async (): Promise<void> => {
+	const performSignInAction = async (): Promise<SignUpSuccessPayload> => {
 		checkContentScriptAndBrowser();
 		const response = await sendMessage({
 			action: SIGN_IN,
@@ -57,9 +65,25 @@ const createHoloKeyManager = ({
 			},
 			sender: SENDER_WEBAPP
 		});
-		return handleSignInResponse(response);
+		return handleResponseWithData(response, SIGN_IN_SUCCESS);
 	};
 
-	return { signUp: performSignUpAction, signIn: performSignInAction };
+	const performSignOutAction = async (): Promise<void> => {
+		checkContentScriptAndBrowser();
+		const response = await sendMessage({
+			action: SIGN_OUT,
+			payload: {
+				happId
+			},
+			sender: SENDER_WEBAPP
+		});
+		return handleResponse(response, SIGN_OUT_SUCCESS);
+	};
+
+	return {
+		signUp: performSignUpAction,
+		signIn: performSignInAction,
+		signOut: performSignOutAction
+	};
 };
 export default createHoloKeyManager;

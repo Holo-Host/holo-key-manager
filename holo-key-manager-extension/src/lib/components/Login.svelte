@@ -1,16 +1,18 @@
 <script lang="ts">
+	import clsx from 'clsx';
+
 	import { AppParagraph, Button, Input } from '$components';
 	import { dismissWindow } from '$lib/helpers';
-	import { sessionStorageQueries } from '$queries';
+	import { appQueries } from '$queries';
 
 	let password = '';
 
 	export let outerWindow = false;
 
-	const { signInMutation } = sessionStorageQueries();
+	const { signInMutation } = appQueries();
 </script>
 
-<div class="m-8">
+<div class={clsx(!outerWindow && 'm-8')}>
 	{#if !outerWindow}
 		<div class="mb-4 flex items-center justify-end">
 			<button on:click={dismissWindow} class="border-none bg-transparent">

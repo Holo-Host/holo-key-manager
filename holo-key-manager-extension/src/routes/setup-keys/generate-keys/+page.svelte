@@ -3,10 +3,10 @@
 
 	import { goto } from '$app/navigation';
 	import { AppParagraph, Button, Title } from '$components';
-	import { sessionStorageQueries } from '$queries';
+	import { appQueries } from '$queries';
 	import { keysStore, passphraseStore, passwordStore } from '$stores';
 
-	const { storeDeviceKey } = sessionStorageQueries();
+	const { storeDeviceKey } = appQueries();
 
 	onMount(() => {
 		if ($passphraseStore === '') {

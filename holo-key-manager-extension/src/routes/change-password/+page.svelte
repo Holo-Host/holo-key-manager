@@ -4,10 +4,10 @@
 	import { goto } from '$app/navigation';
 	import { AppContainer, Button, Input, Title } from '$components';
 	import { dismissWindow } from '$helpers';
-	import { sessionStorageQueries } from '$queries';
+	import { appQueries } from '$queries';
 	import { passwordStore } from '$stores';
 
-	const { changePasswordWithDeviceKeyMutation } = sessionStorageQueries();
+	const { changePasswordWithDeviceKeyMutation } = appQueries();
 
 	let oldPassword = '';
 	let confirmPassword = '';

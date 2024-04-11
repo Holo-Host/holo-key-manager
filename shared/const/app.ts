@@ -4,3 +4,10 @@ export const SENDER_EXTENSION = 'extension';
 export const SENDER_BACKGROUND_SCRIPT = 'background-script';
 
 export const HOLO_KEY_MANAGER_EXTENSION_MARKER_ID = 'user-holo-key-manager-extension-marker';
+
+export const relevantKeys = [
+	'happId',
+	'happName',
+	'requireEmail',
+	'requireRegistrationCode'
+] as const;

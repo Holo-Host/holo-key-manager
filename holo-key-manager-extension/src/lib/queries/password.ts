@@ -8,8 +8,8 @@ import {
 	LOCAL,
 	PASSWORD,
 	SESSION,
-	SESSION_DATA,
 	SESSION_DATA_KEY,
+	SESSION_STORAGE_KEY,
 	SETUP_KEY,
 	SETUP_PASSWORD
 } from '$shared/const';
@@ -62,7 +62,7 @@ export function createPasswordAndStoreDeviceKeyMutation(queryClient: QueryClient
 			deviceKeyContentStore.clean();
 			passphraseStore.clean();
 			passwordStore.reset();
-			storageService.set({ key: SESSION_DATA, value: null, area: SESSION });
+			storageService.set({ key: SESSION_STORAGE_KEY, value: null, area: SESSION });
 		},
 		onSuccess: handleSuccess(queryClient, [SETUP_KEY])
 	});
@@ -83,13 +83,14 @@ export function createSignInMutation(queryClient: QueryClient) {
 			if (!parsedDeviceKey.success) throw new Error('Invalid device key');
 
 			const decryptedKey = await unlockKey(parsedDeviceKey.data, password);
-			decryptedKey.zero();
 
-			return storageService.set({
-				key: SESSION_DATA,
+			storageService.set({
+				key: SESSION_STORAGE_KEY,
 				value: await lockKey(decryptedKey, SESSION),
 				area: SESSION
 			});
+
+			return decryptedKey.zero();
 		},
 		onSuccess: handleSuccess(queryClient, [SESSION_DATA_KEY])
 	});
@@ -129,7 +130,7 @@ export function createChangePasswordWithDeviceKeyMutation(queryClient: QueryClie
 			});
 			decryptedKey.zero();
 			storageService.set({
-				key: SESSION_DATA,
+				key: SESSION_STORAGE_KEY,
 				value: null,
 				area: SESSION
 			});

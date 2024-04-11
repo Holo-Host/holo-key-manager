@@ -15,6 +15,7 @@ export default {
 				'light-gray': '#262A3333',
 				'primary-border': '#C8BBFA',
 				'primary-background': '#FBFAFF',
+				'row-background': '#F9F9FB',
 				alert: '#D92D20',
 				'alert-background': '#FDA29B'
 			}

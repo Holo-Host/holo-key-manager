@@ -73,8 +73,8 @@ importers:
         specifier: ^2.0.5
         version: 2.0.5
       hcSeedBundle:
-        specifier: github:mrruby/hcSeedBundle
-        version: github.com/mrruby/hcSeedBundle/e0f66f5d102b82cae7fe8ecc8f6ce4e77677d3f1
+        specifier: github:mrruby/hcSeedBundle#v0.0.4
+        version: github.com/mrruby/hcSeedBundle/83ecfec35a1ec3b2980fc34add8c249f1a0511ff
       jszip:
         specifier: ^3.10.1
         version: 3.10.1
@@ -3489,10 +3489,10 @@ packages:
     resolution: {integrity: sha512-iC+8Io04lddc+mVqQ9AZ7OQ2MrUKGN+oIQyq1vemgt46jwCwLfhq7/pwnBnNXXXZb8VTVLKwp9EDkx+ryxIWmg==}
     dev: false
 
-  github.com/mrruby/hcSeedBundle/e0f66f5d102b82cae7fe8ecc8f6ce4e77677d3f1:
-    resolution: {tarball: https://codeload.github.com/mrruby/hcSeedBundle/tar.gz/e0f66f5d102b82cae7fe8ecc8f6ce4e77677d3f1}
+  github.com/mrruby/hcSeedBundle/83ecfec35a1ec3b2980fc34add8c249f1a0511ff:
+    resolution: {tarball: https://codeload.github.com/mrruby/hcSeedBundle/tar.gz/83ecfec35a1ec3b2980fc34add8c249f1a0511ff}
     name: '@holochain/hc-seed-bundle'
-    version: 0.0.3
+    version: 0.0.4
     dependencies:
       libsodium-wrappers-sumo: 0.7.13
       tiny-msgpack: 2.2.0
