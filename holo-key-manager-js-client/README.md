@@ -27,7 +27,7 @@ To use the library, import and initialize the Holo Key Manager JS Client with yo
 
 ### Basic Setup
 
-```javascript
+```typescript
 import createHoloKeyManager from 'holo-key-manager-js-client';
 
 const holoKeyManagerConfig = {
@@ -74,11 +74,21 @@ const initiateSignOut = async () => {
 		handleError(error);
 	}
 };
+
+const initiateSignMessage = async (message: string) => {
+	const { signMessage } = createHoloKeyManager(holoKeyManagerConfig);
+	try {
+		const signedMessage = await signMessage(message);
+		console.log('Message signed successfully:', signedMessage);
+	} catch (error) {
+		handleError(error);
+	}
+};
 ```
 
 ### Error Handling
 
-```javascript
+```typescript
 const handleError = (error) => {
 	const errorMessage = getGenericErrorMessage(error);
 	console.error(errorMessage);
