@@ -1,11 +1,11 @@
 <script lang="ts">
+	import { encodeHashToBase64 } from '@holochain/client';
 	import fileSaver from 'file-saver';
 	import JSZip from 'jszip';
 	import { onMount } from 'svelte';
 
 	import { goto } from '$app/navigation';
 	import { AppParagraph, Button, Title } from '$components';
-	import { uint8ArrayToBase64 } from '$services';
 	import { keysStore } from '$stores';
 
 	onMount(() => {
@@ -25,15 +25,15 @@
 			const files = [
 				{
 					name: 'master.txt',
-					data: uint8ArrayToBase64(keys.encodedMaster)
+					data: encodeHashToBase64(keys.encodedMaster)
 				},
 				{
 					name: 'device.txt',
-					data: uint8ArrayToBase64(keys.encodedDevice)
+					data: encodeHashToBase64(keys.encodedDevice)
 				},
 				{
 					name: 'revocation.txt',
-					data: uint8ArrayToBase64(keys.encodedRevocation)
+					data: encodeHashToBase64(keys.encodedRevocation)
 				}
 			];
 			const zip = new JSZip();

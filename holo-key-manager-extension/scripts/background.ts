@@ -3,16 +3,18 @@ import {
 	GENERIC_ERROR,
 	NEEDS_SETUP,
 	NO_KEY_FOR_HAPP,
+	NOT_AUTHENTICATED,
 	SENDER_BACKGROUND_SCRIPT,
 	SENDER_EXTENSION,
 	SIGN_IN,
+	SIGN_MESSAGE,
 	SIGN_OUT,
 	SIGN_OUT_SUCCESS,
 	SIGN_UP,
 	UNKNOWN_ACTION
 } from '@shared/const';
 import { createQueryParams } from '@shared/helpers';
-import { isAppSignUpComplete, isSetupComplete, signOut } from '@shared/services';
+import { isAppSignUpComplete, isAuthenticated, isSetupComplete, signOut } from '@shared/services';
 import {
 	type ActionPayload,
 	type Message,
@@ -146,6 +148,13 @@ const processMessage = async (message: Message, sendResponse: SendResponse) => {
 							payload: parsedMessage.data.payload
 						})
 					: sendResponseWithSender({ action: NO_KEY_FOR_HAPP });
+			case SIGN_MESSAGE:
+				return (await isAuthenticated(parsedMessage.data.payload.happId))
+					? createOrUpdateDataResponseWindow(sendResponseWithSender, {
+							action: parsedMessage.data.action,
+							payload: parsedMessage.data.payload
+						})
+					: sendResponseWithSender({ action: NOT_AUTHENTICATED });
 			case SIGN_OUT:
 				signOut(parsedMessage.data.payload.happId);
 				return sendResponseWithSender({ action: SIGN_OUT_SUCCESS });

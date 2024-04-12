@@ -6,11 +6,14 @@ import {
 	HOLO_KEY_MANAGER_APP_ID,
 	NEEDS_SETUP,
 	NO_KEY_FOR_HAPP,
+	NOT_AUTHENTICATED,
 	SENDER_BACKGROUND_SCRIPT,
 	SENDER_EXTENSION,
 	SENDER_WEBAPP,
 	SIGN_IN,
 	SIGN_IN_SUCCESS,
+	SIGN_MESSAGE,
+	SIGN_MESSAGE_SUCCESS,
 	SIGN_OUT,
 	SIGN_OUT_SUCCESS,
 	SIGN_UP,
@@ -21,6 +24,12 @@ import {
 const HappIdSchema = z.object({
 	happId: z.string()
 });
+
+export const SuccessMessageSignedSchema = z.object({
+	message: z.string()
+});
+
+export const MessageToSignSchema = SuccessMessageSignedSchema.merge(HappIdSchema);
 
 export const PubKeySchema = z.object({
 	pubKey: z.string()
@@ -58,6 +67,9 @@ const ActionPayloadSchema = z.union([
 	z.object({ action: z.literal(GENERIC_ERROR) }),
 	z.object({ action: z.literal(NEEDS_SETUP) }),
 	z.object({ action: z.literal(NO_KEY_FOR_HAPP) }),
+	z.object({ action: z.literal(NOT_AUTHENTICATED) }),
+	z.object({ action: z.literal(SIGN_MESSAGE), payload: MessageToSignSchema }),
+	z.object({ action: z.literal(SIGN_MESSAGE_SUCCESS), payload: SuccessMessageSignedSchema }),
 	z.object({ action: z.literal(SIGN_IN), payload: HappIdSchema }),
 	z.object({ action: z.literal(SIGN_IN_SUCCESS), payload: PubKeySchema }),
 	z.object({ action: z.literal(SIGN_OUT), payload: HappIdSchema }),

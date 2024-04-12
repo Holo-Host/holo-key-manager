@@ -9,5 +9,6 @@ export const relevantKeys = [
 	'happId',
 	'happName',
 	'requireEmail',
-	'requireRegistrationCode'
+	'requireRegistrationCode',
+	'message'
 ] as const;

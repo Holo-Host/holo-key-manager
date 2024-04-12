@@ -5,7 +5,8 @@ import {
 	fetchAndParseAppsList,
 	fetchAuthenticatedAppsList,
 	handleSuccess,
-	sendMessageAndHandleResponse
+	sendMessageAndHandleResponse,
+	signMessage
 } from '$helpers';
 import {
 	APPLICATION_KEYS,
@@ -16,6 +17,7 @@ import {
 	SENDER_EXTENSION,
 	SESSION,
 	SIGN_IN_SUCCESS,
+	SIGN_MESSAGE_SUCCESS,
 	SIGN_UP_SUCCESS
 } from '$shared/const';
 import { storageService } from '$shared/services';
@@ -49,7 +51,7 @@ export function createApplicationKeyMutation(queryClient: QueryClient) {
 
 			const currentParsedAuthenticatedAppsListData = await fetchAuthenticatedAppsList();
 
-			const newIndex = currentAppsList.length + 1;
+			const newIndex = currentAppsList.length;
 
 			const updatedAppsList = {
 				...currentParsedAuthenticatedAppsListData,
@@ -119,16 +121,24 @@ export function createSignInWithKeyMutation(queryClient: QueryClient) {
 	});
 }
 
-export function createApplicationKeysQuery() {
-	return (happId: string) => {
-		return createQuery({
-			queryKey: [APPLICATION_KEYS, happId],
-			queryFn: async () => {
-				const currentAppsList = await fetchAndParseAppsList();
-				return currentAppsList.filter((app) => app.happId === happId);
-			}
-		});
-	};
+export function createMessageMutation() {
+	return createMutation({
+		mutationFn: async (signMessageData: { happId: string; message: string }) => {
+			const { happId, message } = signMessageData;
+
+			const currentAuthenticatedAppsList = await fetchAuthenticatedAppsList(happId);
+
+			const index = currentAuthenticatedAppsList[happId];
+
+			const signedMessage = await signMessage(message, index);
+
+			await sendMessageAndHandleResponse({
+				sender: SENDER_EXTENSION,
+				action: SIGN_MESSAGE_SUCCESS,
+				payload: signedMessage
+			});
+		}
+	});
 }
 
 export function createSignedInApplicationKeysIndexQuery() {
@@ -136,12 +146,21 @@ export function createSignedInApplicationKeysIndexQuery() {
 		return createQuery({
 			queryKey: [APPLICATION_SIGNED_IN_KEY, happId],
 			queryFn: async () => {
-				const authenticatedAppsListData = await fetchAuthenticatedAppsList();
-				if (!authenticatedAppsListData[happId]) {
-					throw new Error('Not signed in');
-				}
+				const authenticatedAppsListData = await fetchAuthenticatedAppsList(happId);
 
 				return authenticatedAppsListData[happId];
+			}
+		});
+	};
+}
+
+export function createApplicationKeysQuery() {
+	return (happId: string) => {
+		return createQuery({
+			queryKey: [APPLICATION_KEYS, happId],
+			queryFn: async () => {
+				const currentAppsList = await fetchAndParseAppsList();
+				return currentAppsList.filter((app) => app.happId === happId);
 			}
 		});
 	};

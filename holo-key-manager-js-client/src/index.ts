@@ -2,6 +2,8 @@ import {
 	SENDER_WEBAPP,
 	SIGN_IN,
 	SIGN_IN_SUCCESS,
+	SIGN_MESSAGE,
+	SIGN_MESSAGE_SUCCESS,
 	SIGN_OUT,
 	SIGN_OUT_SUCCESS,
 	SIGN_UP,
@@ -80,10 +82,24 @@ const createHoloKeyManager = ({
 		return handleResponse(response, SIGN_OUT_SUCCESS);
 	};
 
+	const performSignMessageAction = async (message: string): Promise<string> => {
+		checkContentScriptAndBrowser();
+		const response = await sendMessage({
+			action: SIGN_MESSAGE,
+			payload: {
+				message,
+				happId
+			},
+			sender: SENDER_WEBAPP
+		});
+		return handleResponseWithData(response, SIGN_MESSAGE_SUCCESS);
+	};
+
 	return {
 		signUp: performSignUpAction,
 		signIn: performSignInAction,
-		signOut: performSignOutAction
+		signOut: performSignOutAction,
+		signMessage: performSignMessageAction
 	};
 };
 export default createHoloKeyManager;

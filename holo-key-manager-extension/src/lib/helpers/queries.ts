@@ -1,3 +1,4 @@
+import { encodeHashToBase64 } from '@holochain/client';
 import type { QueryClient } from '@tanstack/svelte-query';
 
 import { unlockKey } from '$services';
@@ -18,7 +19,8 @@ import {
 	HashSaltSchema,
 	type Message,
 	PubKeySchema,
-	SessionStateSchema
+	SessionStateSchema,
+	SuccessMessageSignedSchema
 } from '$shared/types';
 
 export const handleSuccess = (queryClient: QueryClient, queryKey: string[]) => () =>
@@ -51,7 +53,7 @@ export const fetchAndParseAppsList = async () => {
 	return parsedAppsListData.success ? parsedAppsListData.data : [];
 };
 
-export const fetchAuthenticatedAppsList = async () => {
+export const fetchAuthenticatedAppsList = async (happId?: string) => {
 	const authenticatedAppsListData = await storageService.getWithoutCallback({
 		key: AUTHENTICATED_APPS_LIST,
 		area: SESSION
@@ -60,7 +62,15 @@ export const fetchAuthenticatedAppsList = async () => {
 	const parsedAuthenticatedAppsListData =
 		AuthenticatedAppsListSchema.safeParse(authenticatedAppsListData);
 
-	return parsedAuthenticatedAppsListData.success ? parsedAuthenticatedAppsListData.data : {};
+	if (!parsedAuthenticatedAppsListData.success) {
+		return {};
+	}
+
+	if (happId && !(happId in parsedAuthenticatedAppsListData.data)) {
+		throw new Error('Not authenticated');
+	}
+
+	return parsedAuthenticatedAppsListData.data;
 };
 
 export const sendMessageAndHandleResponse = async (message: Message) => {
@@ -89,6 +99,34 @@ export const deriveSignPubKey = async (newIndex: number) => {
 
 	if (!validatedSchema.success) {
 		throw new Error('Invalid key');
+	}
+
+	return validatedSchema.data;
+};
+
+export const signMessage = async (message: string, index: number) => {
+	const sessionKey = await getSessionKey();
+
+	if (!sessionKey.success) {
+		throw new Error('Session data not found');
+	}
+
+	const keyUnlocked = await unlockKey(sessionKey.data, SESSION);
+	const appKey = keyUnlocked.derive(index);
+
+	const signedMessage = appKey.sign(message);
+
+	keyUnlocked.zero();
+	appKey.zero();
+
+	const encodedMessage = encodeHashToBase64(signedMessage);
+
+	const validatedSchema = SuccessMessageSignedSchema.safeParse({
+		message: encodedMessage
+	});
+
+	if (!validatedSchema.success) {
+		throw new Error('Invalid message');
 	}
 
 	return validatedSchema.data;

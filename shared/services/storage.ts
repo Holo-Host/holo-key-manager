@@ -68,6 +68,17 @@ export const isAppSignUpComplete = async (happId: string) => {
 	return parsedData.success && parsedData.data.some((app) => app.happId === happId);
 };
 
+export const isAuthenticated = async (happId: string) => {
+	const data = await storageService.getWithoutCallback({
+		key: AUTHENTICATED_APPS_LIST,
+		area: SESSION
+	});
+
+	const parsedData = AuthenticatedAppsListSchema.safeParse(data);
+
+	return parsedData.success && happId in parsedData.data;
+};
+
 export const signOut = async (happId: string) => {
 	const data = await storageService.getWithoutCallback({
 		key: AUTHENTICATED_APPS_LIST,

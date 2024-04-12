@@ -11,6 +11,7 @@ export const extractDetailsFromUrl = derived(page, ($page) => {
 		action: 'Unknown Action',
 		happName: 'Unknown App',
 		happId: 'Unknown ID',
+		message: 'Unknown Message',
 		requireEmail: false,
 		requireRegistrationCode: false
 	};

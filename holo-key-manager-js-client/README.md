@@ -89,7 +89,8 @@ const getGenericErrorMessage = (error) => {
 		'not installed': 'Install the Holo Key Manager extension in Chrome/Edge to proceed.',
 		NeedsSetup:
 			'Instruct the user to set up the extension, grant necessary permissions, and then reload the page.',
-		NoKeyForHapp: 'No existing key found for this happ; initiate the signup flow.'
+		NoKeyForHapp: 'No existing key found for this happ; initiate the signup flow.',
+		NotAuthenticated: 'User is not authenticated. Please sign in.'
 	};
 
 	return (

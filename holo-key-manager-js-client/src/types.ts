@@ -19,6 +19,7 @@ type SignInSuccessPayload = {
 type IHoloKeyManager = {
 	signUp(): Promise<SignUpSuccessPayload>;
 	signIn(): Promise<SignInSuccessPayload>;
+	signMessage: (message: string) => Promise<string>;
 	signOut(): Promise<void>;
 };
 export type { HoloKeyManagerConfig, IHoloKeyManager };
