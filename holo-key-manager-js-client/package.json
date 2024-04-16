@@ -1,12 +1,13 @@
 {
   "name": "holo-key-manager-js-client",
-  "version": "1.0.0",
+  "version": "0.0.1",
   "description": "A JavaScript client API for managing Holo keys",
   "main": "lib/index.js",
   "types": "lib/holo-key-manager-js-client/src/index.d.ts",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "buildPack": "rm -rf lib/* && rollup -c && npm pack"
+    "build": "rm -rf lib/* && rollup -c",
+    "buildPack": "npm run build && npm pack"
   },
   "keywords": [
     "holo",

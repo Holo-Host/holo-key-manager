@@ -1,0 +1,31 @@
+name: 'client'
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'holo-key-manager-js-client/package.json'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    environment:
+      name: Client
+
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup Node.js environment
+        uses: actions/setup-node@v4
+      - name: Install pnpm
+        run: npm install -g pnpm
+      - name: Install dependencies
+        run: pnpm install
+        working-directory: holo-key-manager-js-client
+      - name: Build and pack
+        run: pnpm buildPack
+        working-directory: holo-key-manager-js-client
+      - name: Publish to npm
+        run: npm publish
+        working-directory: holo-key-manager-js-client
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}

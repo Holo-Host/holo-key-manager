@@ -1,7 +1,7 @@
 {
 	"name": "Holo key manager",
 	"description": "A browser extension to manage holo keys",
-	"version": "0.0.45",
+	"version": "0.0.46",
 	"manifest_version": 3,
 	"action": {
 		"default_title": "Holo key manager",
@@ -18,7 +18,7 @@
 	"permissions": ["activeTab", "storage", "tabs", "nativeMessaging"],
 	"content_scripts": [
 		{
-			"matches": ["*://localhost/*"],
+			"matches": ["<all_urls>"],
 			"js": ["scripts/content.js"],
 			"all_frames": true
 		}

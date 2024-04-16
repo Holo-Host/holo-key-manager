@@ -25,7 +25,7 @@
 
 	const requestPermission = async () => {
 		if (isChromePermissionsSafe()) {
-			const granted = await chrome.permissions.request({ origins: ['*://localhost/*'] });
+			const granted = await chrome.permissions.request({ origins: ['<all_urls>'] });
 			permissionGranted = granted;
 		}
 	};

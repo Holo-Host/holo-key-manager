@@ -9,10 +9,15 @@ import {
 	SIGN_UP,
 	SIGN_UP_SUCCESS
 } from '@shared/const';
-import { parseMessageSchema } from '@shared/helpers';
-import { type MessageWithId, type SignUpSuccessPayload } from '@shared/types';
+import { base64ToUint8Array, uint8ArrayToBase64 } from '@shared/helpers';
+import { type PubKey, type SignUpSuccessPayload, type SuccessMessageSigned } from '@shared/types';
 
-import { checkContentScriptAndBrowser, sendMessage } from './helpers';
+import {
+	checkContentScriptAndBrowser,
+	parseMessageAndCheckAction,
+	parseMessagePayload,
+	sendMessage
+} from './helpers';
 import type { HoloKeyManagerConfig, IHoloKeyManager } from './types';
 
 const createHoloKeyManager = ({
@@ -23,25 +28,7 @@ const createHoloKeyManager = ({
 	requireRegistrationCode,
 	requireEmail
 }: HoloKeyManagerConfig): IHoloKeyManager => {
-	const handleResponseWithData = <T>(response: MessageWithId, action: string): T => {
-		const parsedMessageSchema = parseMessageSchema(response);
-
-		if ('payload' in parsedMessageSchema.data && parsedMessageSchema.data.action === action) {
-			return parsedMessageSchema.data.payload as T;
-		} else {
-			throw new Error(parsedMessageSchema.data.action);
-		}
-	};
-
-	const handleResponse = (response: MessageWithId, expectedAction: string): void => {
-		const parsedMessageSchema = parseMessageSchema(response);
-
-		if (parsedMessageSchema.data.action !== expectedAction) {
-			throw new Error(parsedMessageSchema.data.action);
-		}
-	};
-
-	const performSignUpAction = async (): Promise<SignUpSuccessPayload> => {
+	const performSignUpAction = async () => {
 		checkContentScriptAndBrowser();
 		const response = await sendMessage({
 			action: SIGN_UP,
@@ -55,10 +42,18 @@ const createHoloKeyManager = ({
 			},
 			sender: SENDER_WEBAPP
 		});
-		return handleResponseWithData(response, SIGN_UP_SUCCESS);
+		const { pubKey, email, registrationCode } = parseMessagePayload<SignUpSuccessPayload>(
+			response,
+			SIGN_UP_SUCCESS
+		);
+		return {
+			pubKey: base64ToUint8Array(pubKey),
+			email,
+			registrationCode
+		};
 	};
 
-	const performSignInAction = async (): Promise<SignUpSuccessPayload> => {
+	const performSignInAction = async () => {
 		checkContentScriptAndBrowser();
 		const response = await sendMessage({
 			action: SIGN_IN,
@@ -67,10 +62,34 @@ const createHoloKeyManager = ({
 			},
 			sender: SENDER_WEBAPP
 		});
-		return handleResponseWithData(response, SIGN_IN_SUCCESS);
+
+		const { pubKey } = parseMessagePayload<PubKey>(response, SIGN_IN_SUCCESS);
+
+		return {
+			pubKey: base64ToUint8Array(pubKey)
+		};
 	};
 
-	const performSignOutAction = async (): Promise<void> => {
+	const performSignMessageAction = async (messageToSign: Uint8Array) => {
+		checkContentScriptAndBrowser();
+		const encodedMessage = uint8ArrayToBase64(messageToSign);
+		const response = await sendMessage({
+			action: SIGN_MESSAGE,
+			payload: {
+				message: encodedMessage,
+				happId
+			},
+			sender: SENDER_WEBAPP
+		});
+
+		const { message } = parseMessagePayload<SuccessMessageSigned>(response, SIGN_MESSAGE_SUCCESS);
+
+		return {
+			message: base64ToUint8Array(message)
+		};
+	};
+
+	const performSignOutAction = async () => {
 		checkContentScriptAndBrowser();
 		const response = await sendMessage({
 			action: SIGN_OUT,
@@ -79,20 +98,8 @@ const createHoloKeyManager = ({
 			},
 			sender: SENDER_WEBAPP
 		});
-		return handleResponse(response, SIGN_OUT_SUCCESS);
-	};
 
-	const performSignMessageAction = async (message: string): Promise<string> => {
-		checkContentScriptAndBrowser();
-		const response = await sendMessage({
-			action: SIGN_MESSAGE,
-			payload: {
-				message,
-				happId
-			},
-			sender: SENDER_WEBAPP
-		});
-		return handleResponseWithData(response, SIGN_MESSAGE_SUCCESS);
+		parseMessageAndCheckAction(response, SIGN_OUT_SUCCESS);
 	};
 
 	return {

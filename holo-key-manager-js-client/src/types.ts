@@ -9,17 +9,33 @@ type HoloKeyManagerConfig = {
 type SignUpSuccessPayload = {
 	email?: string;
 	registrationCode?: string;
-	pubKey: string;
+	pubKey: Uint8Array;
 };
 
 type SignInSuccessPayload = {
-	pubKey: string;
+	pubKey: Uint8Array;
 };
+
+type SignMessageSuccessPayload = {
+	message: Uint8Array;
+};
+
+type RawPayload =
+	| { pubKey: string; email: string; registrationCode: string }
+	| { pubKey: string }
+	| { message: string };
 
 type IHoloKeyManager = {
 	signUp(): Promise<SignUpSuccessPayload>;
 	signIn(): Promise<SignInSuccessPayload>;
-	signMessage: (message: string) => Promise<string>;
+	signMessage: (message: Uint8Array) => Promise<SignMessageSuccessPayload>;
 	signOut(): Promise<void>;
 };
-export type { HoloKeyManagerConfig, IHoloKeyManager };
+export type {
+	HoloKeyManagerConfig,
+	IHoloKeyManager,
+	RawPayload,
+	SignInSuccessPayload,
+	SignMessageSuccessPayload,
+	SignUpSuccessPayload
+};

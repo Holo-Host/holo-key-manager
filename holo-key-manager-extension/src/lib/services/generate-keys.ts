@@ -1,8 +1,8 @@
 // eslint-disable-next-line
 // @ts-nocheck
-import { decodeHashFromBase64, encodeHashToBase64 } from '@holochain/client';
 import * as hcSeedBundle from 'hcSeedBundle';
 
+import { base64ToUint8Array, uint8ArrayToBase64 } from '$shared/helpers';
 import type { GeneratedKeys } from '$types';
 
 const lock = (root: never, password: string) =>
@@ -57,7 +57,7 @@ export async function generateKeys(
 
 	return {
 		encodedMaster: encodedMasterBytes,
-		encodedDeviceWithExtensionPassword: encodeHashToBase64(encodedDeviceBytesWithExtensionPassword),
+		encodedDeviceWithExtensionPassword: uint8ArrayToBase64(encodedDeviceBytesWithExtensionPassword),
 		encodedDevice: encodedDeviceBytes,
 		encodedRevocation: encodedRevocationBytes
 	};
@@ -73,14 +73,14 @@ export const lockKey = async (key: unknown, password: string) => {
 
 	key.zero();
 
-	return encodeHashToBase64(encodedBytes);
+	return uint8ArrayToBase64(encodedBytes);
 };
 
 export const unlockKey = async (encodedBytesString: string, password: string) => {
 	await hcSeedBundle.seedBundleReady;
 
 	const cipherList = hcSeedBundle.UnlockedSeedBundle.fromLocked(
-		decodeHashFromBase64(encodedBytesString)
+		base64ToUint8Array(encodedBytesString)
 	);
 
 	if (!(cipherList[0] instanceof hcSeedBundle.LockedSeedCipherPwHash)) {

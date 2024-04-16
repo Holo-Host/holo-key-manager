@@ -1,4 +1,3 @@
-import { encodeHashToBase64 } from '@holochain/client';
 import type { QueryClient } from '@tanstack/svelte-query';
 
 import { unlockKey } from '$services';
@@ -11,7 +10,7 @@ import {
 	SESSION,
 	SESSION_STORAGE_KEY
 } from '$shared/const';
-import { parseMessageSchema } from '$shared/helpers';
+import { parseMessageSchema, uint8ArrayToBase64 } from '$shared/helpers';
 import { sendMessage, storageService } from '$shared/services';
 import {
 	AppsListSchema,
@@ -91,10 +90,11 @@ export const deriveSignPubKey = async (newIndex: number) => {
 
 	const keyUnlocked = await unlockKey(sessionKey.data, SESSION);
 	const { signPubKey } = keyUnlocked.derive(newIndex);
+
 	keyUnlocked.zero();
 
 	const validatedSchema = PubKeySchema.safeParse({
-		pubKey: signPubKey
+		pubKey: uint8ArrayToBase64(signPubKey)
 	});
 
 	if (!validatedSchema.success) {
@@ -119,10 +119,8 @@ export const signMessage = async (message: string, index: number) => {
 	keyUnlocked.zero();
 	appKey.zero();
 
-	const encodedMessage = encodeHashToBase64(signedMessage);
-
 	const validatedSchema = SuccessMessageSignedSchema.safeParse({
-		message: encodedMessage
+		message: uint8ArrayToBase64(signedMessage)
 	});
 
 	if (!validatedSchema.success) {

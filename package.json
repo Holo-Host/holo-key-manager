@@ -18,7 +18,6 @@
 		"prepare": "husky install"
 	},
 	"devDependencies": {
-		"@holochain/client": "0.17.0-dev.8",
 		"@rollup/plugin-node-resolve": "^15.2.3",
 		"@types/chrome": "^0.0.263",
 		"@typescript-eslint/eslint-plugin": "^7.3.1",

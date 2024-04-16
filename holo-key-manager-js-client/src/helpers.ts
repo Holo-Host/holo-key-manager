@@ -1,10 +1,36 @@
 import { HOLO_KEY_MANAGER_EXTENSION_MARKER_ID, SENDER_WEBAPP } from '@shared/const';
+import { parseMessageSchema } from '@shared/helpers';
 import { createMessageWithId } from '@shared/services';
 import { type Message, type MessageWithId, MessageWithIdSchema } from '@shared/types';
 
 let timeoutId: number | null = null;
 
 const isWindowDefined = () => typeof window !== 'undefined';
+
+const isExpectedPayload = <T>(payload: unknown): payload is T => {
+	return typeof payload === 'object' && payload !== null;
+};
+
+export const parseMessageAndCheckAction = (response: MessageWithId, expectedAction: string) => {
+	const parsedMessageSchema = parseMessageSchema(response);
+	const { action } = parsedMessageSchema.data;
+
+	if (action !== expectedAction) {
+		throw new Error(parsedMessageSchema.data.action);
+	}
+
+	return parsedMessageSchema.data;
+};
+
+export const parseMessagePayload = <T>(response: MessageWithId, expectedAction: string): T => {
+	const data = parseMessageAndCheckAction(response, expectedAction);
+
+	if ('payload' in data && isExpectedPayload<T>(data.payload)) {
+		return data.payload;
+	}
+
+	throw new Error(data.action);
+};
 
 export const sendMessage = (message: Message): Promise<MessageWithId> =>
 	new Promise((resolve, reject) => {

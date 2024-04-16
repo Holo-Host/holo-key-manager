@@ -29,11 +29,15 @@ export const SuccessMessageSignedSchema = z.object({
 	message: z.string()
 });
 
+export type SuccessMessageSigned = z.infer<typeof SuccessMessageSignedSchema>;
+
 export const MessageToSignSchema = SuccessMessageSignedSchema.merge(HappIdSchema);
 
 export const PubKeySchema = z.object({
 	pubKey: z.string()
 });
+
+export type PubKey = z.infer<typeof PubKeySchema>;
 
 const HoloKeyManagerConfigSchema = HappIdSchema.extend({
 	happName: z.string(),
