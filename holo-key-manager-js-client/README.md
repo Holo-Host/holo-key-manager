@@ -85,7 +85,7 @@ const initiateSignOut = async () => {
 	}
 };
 
-const initiateSignMessage = async (message: string) => {
+const initiateSignMessage = async (message: Uint8Array) => {
 	const { signMessage } = createHoloKeyManager(holoKeyManagerConfig);
 	try {
 		const signedMessage = await signMessage(message);
