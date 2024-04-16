@@ -84,9 +84,7 @@ const createHoloKeyManager = ({
 
 		const { message } = parseMessagePayload<SuccessMessageSigned>(response, SIGN_MESSAGE_SUCCESS);
 
-		return {
-			message: base64ToUint8Array(message)
-		};
+		return base64ToUint8Array(message);
 	};
 
 	const performSignOutAction = async () => {
