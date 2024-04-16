@@ -1,6 +1,6 @@
 {
   "name": "@holo-host/holo-key-manager-js-client",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "A JavaScript client API for managing Holo keys",
   "main": "lib/index.js",
   "types": "lib/holo-key-manager-js-client/src/index.d.ts",
@@ -19,8 +19,5 @@
   ],
   "author": "",
   "license": "ISC",
-  "dependencies": {
-    "dotenv": "^16.4.5"
-  },
   "type": "module"
 }

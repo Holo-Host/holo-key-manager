@@ -12,14 +12,24 @@ Before using this library, install the Holo Key Manager extension for your brows
 
 ## Installation
 
-1. Download the `tgz` file provided by the developer.
-2. Include the library in your project by adding the following to your `package.json`:
+To install the Holo Key Manager JS Client, you can use npm, yarn, or pnpm as follows:
 
-   ```json
-   "dependencies": {
-     "holo-key-manager-js-client": "file:<path_to_downloaded_tgz_file>"
-   }
-   ```
+- Using npm:
+
+  ```
+  npm install @holo-host/holo-key-manager-js-client
+  ```
+
+- Using yarn:
+
+  ```
+  yarn add @holo-host/holo-key-manager-js-client
+  ```
+
+- Using pnpm:
+  ```
+  pnpm add @holo-host/holo-key-manager-js-client
+  ```
 
 ## Usage
 
@@ -28,7 +38,7 @@ To use the library, import and initialize the Holo Key Manager JS Client with yo
 ### Basic Setup
 
 ```typescript
-import createHoloKeyManager from 'holo-key-manager-js-client';
+import createHoloKeyManager from '@holo-host/holo-key-manager-js-client';
 
 const holoKeyManagerConfig = {
 	happId: 'your-happId',

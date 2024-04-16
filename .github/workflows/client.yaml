@@ -2,9 +2,9 @@ name: 'client'
 on:
   push:
     branches: [main]
-    # paths:
-    #   - 'holo-key-manager-js-client/package.json'
-    #   - '.github/workflows/client.yaml'
+    paths:
+      - 'holo-key-manager-js-client/package.json'
+      - '.github/workflows/client.yaml'
 
 jobs:
   build:
