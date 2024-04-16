@@ -1,5 +1,5 @@
 {
-  "name": "holo-key-manager-js-client",
+  "name": "@holo-host/holo-key-manager-js-client",
   "version": "0.0.1",
   "description": "A JavaScript client API for managing Holo keys",
   "main": "lib/index.js",
