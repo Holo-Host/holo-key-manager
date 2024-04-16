@@ -1,7 +1,8 @@
 name: 'extension'
 on:
   push:
-    branches: [main]
+    # branches: [main]
+    branches: [no-run]
 
 jobs:
   build:
