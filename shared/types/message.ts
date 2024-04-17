@@ -26,12 +26,14 @@ const HappIdSchema = z.object({
 });
 
 export const SuccessMessageSignedSchema = z.object({
-	message: z.string()
+	signature: z.string()
 });
 
 export type SuccessMessageSigned = z.infer<typeof SuccessMessageSignedSchema>;
 
-export const MessageToSignSchema = SuccessMessageSignedSchema.merge(HappIdSchema);
+export const MessageToSignSchema = HappIdSchema.extend({
+	message: z.string()
+});
 
 export const PubKeySchema = z.object({
 	pubKey: z.string()
