@@ -1,9 +1,8 @@
 
 node_modules/
 /src/
-types/
-prebuild.cjs
 index.ts
 *.tgz
 tsconfig.json
+config.js
 

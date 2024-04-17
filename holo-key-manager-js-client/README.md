@@ -119,3 +119,23 @@ const getGenericErrorMessage = (error) => {
 	);
 };
 ```
+
+## API reference
+
+```typescript
+class HoloKeyManagerExtensionClient {
+    constructor({happId: string, happName: String, happLogo: Url, happUiUrl: Url, requireRegistrationCode: boolean, requireEmail:boolean})
+
+    async signIn(): Promise<pubKey: Uint8Array> {} // throws errors
+
+    async signUp(): Promise<{ email?: string, registration_code?: string, pubkey: Uint8Array }> {} // returns Promise of email and registration code if required in constructor, throws errors
+    async logOut() {} // throws errors
+
+    async signMessage(payload: Uint8Array): Promise<Uint8Array> {} // returns Promise of signature, throws errors
+
+    on('authorized', (Uint8Array, boolean) => void): UnsubscribeFunction {}
+    on('rejected', () => void): UnsubscribeFunction {}
+}
+
+type UnsubscribeFunction = () => void;
+```

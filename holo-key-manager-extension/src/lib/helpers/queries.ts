@@ -120,7 +120,7 @@ export const signMessage = async (message: string, index: number) => {
 	appKey.zero();
 
 	const validatedSchema = SuccessMessageSignedSchema.safeParse({
-		message: uint8ArrayToBase64(signedMessage)
+		signature: uint8ArrayToBase64(signedMessage)
 	});
 
 	if (!validatedSchema.success) {

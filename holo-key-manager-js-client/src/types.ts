@@ -16,9 +16,7 @@ type SignInSuccessPayload = {
 	pubKey: Uint8Array;
 };
 
-type SignMessageSuccessPayload = {
-	message: Uint8Array;
-};
+type SignMessageSuccessPayload = Uint8Array;
 
 type RawPayload =
 	| { pubKey: string; email: string; registrationCode: string }
@@ -28,7 +26,7 @@ type RawPayload =
 type IHoloKeyManager = {
 	signUp(): Promise<SignUpSuccessPayload>;
 	signIn(): Promise<SignInSuccessPayload>;
-	signMessage: (message: Uint8Array) => Promise<SignMessageSuccessPayload>;
+	signMessage: (message: Uint8Array) => Promise<Uint8Array>;
 	signOut(): Promise<void>;
 };
 export type {
