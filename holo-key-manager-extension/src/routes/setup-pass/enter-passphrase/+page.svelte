@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
-	import type { SetSecret } from '$lib/types';
 	import { appQueries } from '$queries';
+	import type { SetSecret } from '$shared/types';
 	import { passphraseStore } from '$stores';
 
 	import EnterSecretComponent from './EnterSecretComponent.svelte';

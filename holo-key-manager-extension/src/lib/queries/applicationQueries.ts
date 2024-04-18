@@ -5,8 +5,7 @@ import {
 	fetchAndParseAppsList,
 	fetchAuthenticatedAppsList,
 	handleSuccess,
-	sendMessageAndHandleResponse,
-	signMessage
+	sendMessageAndHandleResponse
 } from '$helpers';
 import {
 	APPLICATION_KEYS,
@@ -17,7 +16,6 @@ import {
 	SENDER_EXTENSION,
 	SESSION,
 	SIGN_IN_SUCCESS,
-	SIGN_MESSAGE_SUCCESS,
 	SIGN_UP_SUCCESS
 } from '$shared/const';
 import { storageService } from '$shared/services';
@@ -118,26 +116,6 @@ export function createSignInWithKeyMutation(queryClient: QueryClient) {
 			});
 		},
 		onSuccess: handleSuccess(queryClient, [APPLICATION_SIGNED_IN_KEY])
-	});
-}
-
-export function createMessageMutation() {
-	return createMutation({
-		mutationFn: async (signMessageData: { happId: string; message: string }) => {
-			const { happId, message } = signMessageData;
-
-			const currentAuthenticatedAppsList = await fetchAuthenticatedAppsList(happId);
-
-			const index = currentAuthenticatedAppsList[happId];
-
-			const signedMessage = await signMessage(message, index);
-
-			await sendMessageAndHandleResponse({
-				sender: SENDER_EXTENSION,
-				action: SIGN_MESSAGE_SUCCESS,
-				payload: signedMessage
-			});
-		}
 	});
 }
 

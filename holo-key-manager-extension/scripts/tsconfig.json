@@ -3,5 +3,5 @@
 	"compilerOptions": {
 		"outDir": "../build"
 	},
-	"include": ["background.ts", "content.ts"]
+	"include": ["background.ts", "content.ts", "helpers.ts"]
 }

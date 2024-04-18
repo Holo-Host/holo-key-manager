@@ -1,8 +1,7 @@
 import { writable } from 'svelte/store';
 
-import type { KeysState } from '$types';
-
-import { generateKeys } from '../services/generate-keys';
+import { generateKeys } from '$services';
+import type { KeysState } from '$shared/types';
 
 const initKeysStore = () => {
 	const initialState: KeysState = {

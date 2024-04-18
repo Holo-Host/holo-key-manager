@@ -1,3 +1,5 @@
+/* eslint-disable simple-import-sort/imports */
+import { signMessageLogic } from './helpers';
 import {
 	BACKGROUND_SCRIPT_RECEIVED_DATA,
 	GENERIC_ERROR,
@@ -8,6 +10,7 @@ import {
 	SENDER_EXTENSION,
 	SIGN_IN,
 	SIGN_MESSAGE,
+	SIGN_MESSAGE_SUCCESS,
 	SIGN_OUT,
 	SIGN_OUT_SUCCESS,
 	SIGN_UP,
@@ -149,12 +152,19 @@ const processMessage = async (message: Message, sendResponse: SendResponse) => {
 						})
 					: sendResponseWithSender({ action: NO_KEY_FOR_HAPP });
 			case SIGN_MESSAGE:
-				return (await isAuthenticated(parsedMessage.data.payload.happId))
-					? createOrUpdateDataResponseWindow(sendResponseWithSender, {
-							action: parsedMessage.data.action,
-							payload: parsedMessage.data.payload
-						})
-					: sendResponseWithSender({ action: NOT_AUTHENTICATED });
+				if (await isAuthenticated(parsedMessage.data.payload.happId)) {
+					console.log('parsedMessage.data.payload:', parsedMessage.data.payload);
+					try {
+						const signedMessage = await signMessageLogic(parsedMessage.data.payload);
+						return sendResponseWithSender({
+							action: SIGN_MESSAGE_SUCCESS,
+							payload: signedMessage
+						});
+					} catch (error) {
+						console.log('error:', error);
+					}
+				}
+				return sendResponseWithSender({ action: NOT_AUTHENTICATED });
 			case SIGN_OUT:
 				signOut(parsedMessage.data.payload.happId);
 				return sendResponseWithSender({ action: SIGN_OUT_SUCCESS });

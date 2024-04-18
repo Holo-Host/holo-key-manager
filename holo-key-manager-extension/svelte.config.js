@@ -15,9 +15,8 @@ const config = {
 			$shared: path.resolve('../shared'),
 			$helpers: path.resolve('./src/lib/helpers'),
 			$stores: path.resolve('./src/lib/stores'),
-			$types: path.resolve('./src/lib/types'),
-			$queries: path.resolve('./src/lib/queries'),
-			$services: path.resolve('./src/lib/services')
+			$services: path.resolve('./src/lib/services'),
+			$queries: path.resolve('./src/lib/queries')
 		}
 	}
 };

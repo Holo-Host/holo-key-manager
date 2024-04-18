@@ -35,6 +35,8 @@ export const MessageToSignSchema = HappIdSchema.extend({
 	message: z.string()
 });
 
+export type MessageToSignWithHapp = z.infer<typeof MessageToSignSchema>;
+
 export const PubKeySchema = z.object({
 	pubKey: z.string()
 });

@@ -1,17 +1,30 @@
-import resolve from '@rollup/plugin-node-resolve';
+import commonjs from '@rollup/plugin-commonjs';
+import { nodeResolve } from '@rollup/plugin-node-resolve';
+import nodePolyfills from 'rollup-plugin-node-polyfills';
 import tscAlias from 'rollup-plugin-tsc-alias';
 import typescript from 'rollup-plugin-typescript2';
 
-const createConfig = (input, file) => ({
-	input,
-	output: {
-		file,
-		format: 'esm'
-	},
-	plugins: [tscAlias(), typescript(), resolve()]
-});
-
 export default [
-	createConfig('background.ts', '../build/scripts/background.js'),
-	createConfig('content.ts', '../build/scripts/content.js')
+	{
+		input: 'background.ts',
+		output: {
+			file: '../build/scripts/background.js',
+			format: 'esm'
+		},
+		plugins: [
+			tscAlias(),
+			typescript(),
+			nodePolyfills(),
+			nodeResolve({ preferBuiltins: false }),
+			commonjs()
+		]
+	},
+	{
+		input: 'content.ts',
+		output: {
+			file: '../build/scripts/content.js',
+			format: 'esm'
+		},
+		plugins: [tscAlias(), typescript(), nodeResolve()]
+	}
 ];
