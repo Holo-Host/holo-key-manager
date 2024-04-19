@@ -2,15 +2,22 @@
   "name": "holo-key-manager-extension-scripts",
   "version": "1.0.0",
   "private": true,
-  "type": "module",
   "scripts": {
-    "build": "rollup -c"
+    "build": "webpack --config webpack.config.js"
   },
   "devDependencies": {
+    "@holo-host/cryptolib": "^0.3.2",
     "@rollup/plugin-commonjs": "^25.0.7",
     "@rollup/plugin-wasm": "^6.2.2",
     "@wasm-tool/rollup-plugin-rust": "^2.4.5",
-    "rollup-plugin-polyfill-node": "^0.13.0"
+    "buffer": "^6.0.3",
+    "crypto-browserify": "^3.12.0",
+    "rollup-plugin-polyfill-node": "^0.13.0",
+    "stream-browserify": "^3.0.0",
+    "ts-loader": "^9.5.1",
+    "util": "^0.12.5",
+    "webpack": "^5.91.0",
+    "webpack-cli": "^5.1.4"
   },
   "dependencies": {
     "@holo-host/wasm-key-manager": "^1.1.1"

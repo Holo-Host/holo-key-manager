@@ -1,3 +1,5 @@
+// @ts-expect-error - ignore
+const { KeyManager } = await import('@holo-host/cryptolib');
 import { AUTHENTICATED_APPS_LIST, SESSION } from '@shared/const';
 import { base64ToUint8Array, uint8ArrayToBase64 } from '@shared/helpers';
 import { storageService } from '@shared/services';
@@ -28,7 +30,6 @@ export const signMessageLogic = async ({ message, happId }: MessageToSignWithHap
 
 	console.log('uint8ArrayKey', uint8ArrayKey);
 
-	// @ts-expect-error - ignore
 	const keyManager = new KeyManager(uint8ArrayKey);
 
 	console.log('keyManager', keyManager);

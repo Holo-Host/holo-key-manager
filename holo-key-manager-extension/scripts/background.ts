@@ -1,8 +1,3 @@
-/* eslint-disable simple-import-sort/imports */
-import './bootstrap.js';
-/* eslint-disable simple-import-sort/imports */
-import { signMessageLogic } from './helpers';
-
 import {
 	BACKGROUND_SCRIPT_RECEIVED_DATA,
 	GENERIC_ERROR,
@@ -27,6 +22,8 @@ import {
 	MessageWithIdSchema,
 	type WindowProperties
 } from '@shared/types';
+
+import { signMessageLogic } from './helpers';
 
 let windowId: number | undefined;
 
