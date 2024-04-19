@@ -1,6 +1,7 @@
 import commonjs from '@rollup/plugin-commonjs';
 import { nodeResolve } from '@rollup/plugin-node-resolve';
-import nodePolyfills from 'rollup-plugin-node-polyfills';
+import wasm from '@rollup/plugin-wasm';
+import nodePolyfills from 'rollup-plugin-polyfill-node';
 import tscAlias from 'rollup-plugin-tsc-alias';
 import typescript from 'rollup-plugin-typescript2';
 
@@ -8,15 +9,16 @@ export default [
 	{
 		input: 'background.ts',
 		output: {
-			file: '../build/scripts/background.js',
+			dir: '../build/scripts/',
 			format: 'esm'
 		},
 		plugins: [
+			nodePolyfills(),
 			tscAlias(),
 			typescript(),
-			nodePolyfills(),
 			nodeResolve({ preferBuiltins: false }),
-			commonjs()
+			commonjs(),
+			wasm()
 		]
 	},
 	{

@@ -15,6 +15,7 @@ import {
 	AppsListSchema,
 	AuthenticatedAppsListSchema,
 	HashSaltSchema,
+	keyAsAStringSchema,
 	type Message,
 	PubKeySchema
 } from '$shared/types';
@@ -70,7 +71,7 @@ export const sendMessageAndHandleResponse = async (message: Message) => {
 		throw new Error('Error sending data to webapp');
 };
 
-export const deriveSignPubKey = async (newIndex: number) => {
+export const deriveSignKeyAndPubKey = async (newIndex: number) => {
 	const sessionKey = await getSessionKey();
 
 	if (!sessionKey.success) {
@@ -78,17 +79,23 @@ export const deriveSignPubKey = async (newIndex: number) => {
 	}
 
 	const keyUnlocked = await unlockKey(sessionKey.data, SESSION);
-	const { signPubKey } = keyUnlocked.derive(newIndex);
+
+	const { publicKey, key } = keyUnlocked.deriveAppKey(newIndex);
 
 	keyUnlocked.zero();
 
-	const validatedSchema = PubKeySchema.safeParse({
-		pubKey: uint8ArrayToBase64(signPubKey)
+	const validatedPubKeySchema = PubKeySchema.safeParse({
+		pubKey: uint8ArrayToBase64(publicKey)
 	});
 
-	if (!validatedSchema.success) {
+	const validatedKeySchema = keyAsAStringSchema.safeParse(uint8ArrayToBase64(key));
+
+	if (!validatedPubKeySchema.success || !validatedKeySchema.success) {
 		throw new Error('Invalid key');
 	}
 
-	return validatedSchema.data;
+	return {
+		pubKeyObject: validatedPubKeySchema.data,
+		key: validatedKeySchema.data
+	};
 };

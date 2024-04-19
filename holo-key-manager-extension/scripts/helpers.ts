@@ -1,14 +1,6 @@
-/* eslint-disable simple-import-sort/imports */
-import {
-	LockedSeedCipherPwHash,
-	parseSecret,
-	seedBundleReady,
-	UnlockedSeedBundle
-	// @ts-expect-error no types for hcSeedBundle
-} from 'hcSeedBundle';
 import { AUTHENTICATED_APPS_LIST, SESSION } from '@shared/const';
 import { base64ToUint8Array, uint8ArrayToBase64 } from '@shared/helpers';
-import { getSessionKey, storageService } from '@shared/services';
+import { storageService } from '@shared/services';
 import {
 	AuthenticatedAppsListSchema,
 	type MessageToSignWithHapp,
@@ -28,30 +20,22 @@ export const signMessageLogic = async ({ message, happId }: MessageToSignWithHap
 		throw new Error('Failed to parse authenticated apps list data');
 	}
 
-	const index = parsedAuthenticatedAppsListData.data[happId];
-	const sessionKey = await getSessionKey();
+	const key = parsedAuthenticatedAppsListData.data[happId];
 
-	if (!sessionKey.success) {
-		throw new Error('Session data not found');
-	}
+	console.log('key', key);
 
-	await seedBundleReady;
+	const uint8ArrayKey = base64ToUint8Array(key);
 
-	const cipherList = UnlockedSeedBundle.fromLocked(base64ToUint8Array(sessionKey.data));
+	console.log('uint8ArrayKey', uint8ArrayKey);
 
-	if (!(cipherList[0] instanceof LockedSeedCipherPwHash)) {
-		throw new Error('Expecting PwHash');
-	}
+	// @ts-expect-error - ignore
+	const keyManager = new KeyManager(uint8ArrayKey);
 
-	const pw = new TextEncoder().encode(SESSION);
-	const keyUnlocked = cipherList[0].unlock(parseSecret(pw));
+	console.log('keyManager', keyManager);
 
-	const appKey = keyUnlocked.derive(index);
+	const uint8ArrayMessage = base64ToUint8Array(message);
 
-	const signedMessage = appKey.sign(message);
-
-	keyUnlocked.zero();
-	appKey.zero();
+	const signedMessage = keyManager.sign(uint8ArrayMessage);
 
 	const validatedSchema = SuccessMessageSignedSchema.safeParse({
 		signature: uint8ArrayToBase64(signedMessage)

@@ -51,6 +51,10 @@ const HoloKeyManagerConfigSchema = HappIdSchema.extend({
 	requireEmail: z.boolean()
 });
 
+export const keyAsAStringSchema = z.string();
+
+export type KeyAsAString = z.infer<typeof keyAsAStringSchema>;
+
 export type HoloKeyManagerConfig = z.infer<typeof HoloKeyManagerConfigSchema>;
 
 const SignUpSuccessPayloadSchema = z

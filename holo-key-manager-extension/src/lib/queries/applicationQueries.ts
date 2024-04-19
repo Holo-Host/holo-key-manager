@@ -1,7 +1,7 @@
 import { createMutation, createQuery, QueryClient } from '@tanstack/svelte-query';
 
 import {
-	deriveSignPubKey,
+	deriveSignKeyAndPubKey,
 	fetchAndParseAppsList,
 	fetchAuthenticatedAppsList,
 	handleSuccess,
@@ -51,12 +51,12 @@ export function createApplicationKeyMutation(queryClient: QueryClient) {
 
 			const newIndex = currentAppsList.length;
 
+			const pubKeyStructure = await deriveSignKeyAndPubKey(newIndex);
+
 			const updatedAppsList = {
 				...currentParsedAuthenticatedAppsListData,
-				[mutationData.happId]: newIndex
+				[mutationData.happId]: pubKeyStructure.key
 			};
-
-			const pubKeyObject = await deriveSignPubKey(newIndex);
 
 			storageService.set({
 				key: AUTHENTICATED_APPS_LIST,
@@ -68,9 +68,11 @@ export function createApplicationKeyMutation(queryClient: QueryClient) {
 				sender: SENDER_EXTENSION,
 				action: SIGN_UP_SUCCESS,
 				payload: {
-					pubKey: pubKeyObject.pubKey,
+					pubKey: pubKeyStructure.pubKeyObject.pubKey,
 					...(mutationData.email && { email: mutationData.email }),
-					...(mutationData.registrationCode && { registrationCode: mutationData.registrationCode })
+					...(mutationData.registrationCode && {
+						registrationCode: mutationData.registrationCode
+					})
 				}
 			});
 		},
@@ -98,13 +100,13 @@ export function createSignInWithKeyMutation(queryClient: QueryClient) {
 				(app) => app.happId === happId && app.keyName === keyName
 			);
 
-			const pubKey = await deriveSignPubKey(newIndex);
+			const pubKeyStructure = await deriveSignKeyAndPubKey(newIndex);
 
 			storageService.set({
 				key: AUTHENTICATED_APPS_LIST,
 				value: {
 					...currentAuthenticatedAppsListData,
-					[happId]: newIndex
+					[happId]: pubKeyStructure.key
 				},
 				area: SESSION
 			});
@@ -112,7 +114,7 @@ export function createSignInWithKeyMutation(queryClient: QueryClient) {
 			await sendMessageAndHandleResponse({
 				sender: SENDER_EXTENSION,
 				action: SIGN_IN_SUCCESS,
-				payload: pubKey
+				payload: pubKeyStructure.pubKeyObject
 			});
 		},
 		onSuccess: handleSuccess(queryClient, [APPLICATION_SIGNED_IN_KEY])
