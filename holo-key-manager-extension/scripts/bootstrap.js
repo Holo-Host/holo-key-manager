@@ -1,11 +1,12 @@
 // eslint-disable-next-line
-const { KeyManager, deriveSeedFrom } = require('@holo-host/wasm-key-manager');
+const init = require('@holo-host/wasm-key-manager/wasm-key-manager.js');
 // eslint-disable-next-line
-const wasm = require('@holo-host/wasm-key-manager/wasm-key-manager_bg.wasm');
+const wasmKeyManager = require('@holo-host/wasm-key-manager/wasm-key-manager_bg.wasm');
 
-// Initialize the WebAssembly module
-wasm().then(() => {
-	// The functions are now available on the global scope
-	self.KeyManager = KeyManager;
-	self.deriveSeedFrom = deriveSeedFrom;
-});
+wasmKeyManager()
+	.then(({ instance }) => init(instance))
+	.then(() => {
+		// The functions are now available on the global scope
+		self.KeyManager = init.KeyManager;
+		self.deriveSeedFrom = init.deriveSeedFrom;
+	});

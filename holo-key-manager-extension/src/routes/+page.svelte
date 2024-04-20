@@ -19,7 +19,6 @@
 	onMount(async () => {
 		if (isChromePermissionsSafe()) {
 			const permissions = await chrome.permissions.getAll();
-			console.log(permissions);
 			permissionGranted = permissions.origins?.includes('<all_urls>') ?? false;
 		}
 	});

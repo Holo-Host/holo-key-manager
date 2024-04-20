@@ -1,4 +1,5 @@
 import commonjs from '@rollup/plugin-commonjs';
+import inject from '@rollup/plugin-inject';
 import { nodeResolve } from '@rollup/plugin-node-resolve';
 import wasm from '@rollup/plugin-wasm';
 import nodePolyfills from 'rollup-plugin-polyfill-node';
@@ -13,10 +14,15 @@ export default [
 			format: 'esm'
 		},
 		plugins: [
+			inject({
+				Buffer: ['buffer', 'Buffer']
+			}),
 			nodePolyfills(),
 			tscAlias(),
 			typescript(),
-			nodeResolve({ preferBuiltins: false }),
+			nodeResolve({
+				preferBuiltins: false
+			}),
 			commonjs(),
 			wasm()
 		]
