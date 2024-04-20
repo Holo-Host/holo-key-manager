@@ -1,1 +1,1 @@
-export * from './generate-keys';
+export * from './manage-keys';

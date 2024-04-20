@@ -3,13 +3,15 @@
 	"version": "0.0.3",
 	"private": true,
 	"scripts": {
-		"build": "pnpm build:vite && pnpm build:script && pnpm build:removeInline",
-		"buildDev": "pnpm build:vite && pnpm build:script && pnpm build:removeInline && pnpm build:buildForFirefoxDev",
+		"buildCommon": "pnpm build:vite && pnpm build:script && pnpm build:fixBackgroundScriptForSigning && pnpm build:removeInline",
+		"build": "pnpm buildCommon",
+		"buildDev": "pnpm buildCommon && pnpm build:buildForFirefoxDev",
 		"build:vite": "vite build",
 		"build:script": "cd scripts && pnpm build && cd ..",
 		"build:removeInline": "node build-scripts/removeInlineScript.cjs",
 		"build:replaceForFirefox": "node build-scripts/replaceForFirefox.cjs",
 		"build:buildForFirefoxDev": "node build-scripts/devFirefox.cjs",
+		"build:fixBackgroundScriptForSigning": "node build-scripts/fixBackgroundScriptForSigning.cjs",
 		"preview": "vite preview",
 		"check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
 		"check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch"

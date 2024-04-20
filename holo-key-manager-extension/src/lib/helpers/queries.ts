@@ -7,19 +7,16 @@ import {
 	BACKGROUND_SCRIPT_RECEIVED_DATA,
 	LOCAL,
 	PASSWORD,
-	SESSION,
-	SESSION_STORAGE_KEY
+	SESSION
 } from '$shared/const';
 import { parseMessageSchema, uint8ArrayToBase64 } from '$shared/helpers';
-import { sendMessage, storageService } from '$shared/services';
+import { getSessionKey, sendMessage, storageService } from '$shared/services';
 import {
 	AppsListSchema,
 	AuthenticatedAppsListSchema,
 	HashSaltSchema,
 	type Message,
-	PubKeySchema,
-	SessionStateSchema,
-	SuccessMessageSignedSchema
+	PubKeySchema
 } from '$shared/types';
 
 export const handleSuccess = (queryClient: QueryClient, queryKey: string[]) => () =>
@@ -31,14 +28,6 @@ export const getPassword = async () => {
 		area: LOCAL
 	});
 	return HashSaltSchema.safeParse(data);
-};
-
-export const getSessionKey = async () => {
-	const data = await storageService.getWithoutCallback({
-		key: SESSION_STORAGE_KEY,
-		area: SESSION
-	});
-	return SessionStateSchema.safeParse(data);
 };
 
 export const fetchAndParseAppsList = async () => {
@@ -99,32 +88,6 @@ export const deriveSignPubKey = async (newIndex: number) => {
 
 	if (!validatedSchema.success) {
 		throw new Error('Invalid key');
-	}
-
-	return validatedSchema.data;
-};
-
-export const signMessage = async (message: string, index: number) => {
-	const sessionKey = await getSessionKey();
-
-	if (!sessionKey.success) {
-		throw new Error('Session data not found');
-	}
-
-	const keyUnlocked = await unlockKey(sessionKey.data, SESSION);
-	const appKey = keyUnlocked.derive(index);
-
-	const signedMessage = appKey.sign(message);
-
-	keyUnlocked.zero();
-	appKey.zero();
-
-	const validatedSchema = SuccessMessageSignedSchema.safeParse({
-		signature: uint8ArrayToBase64(signedMessage)
-	});
-
-	if (!validatedSchema.success) {
-		throw new Error('Invalid message');
 	}
 
 	return validatedSchema.data;

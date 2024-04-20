@@ -8,6 +8,7 @@ import {
 	SENDER_EXTENSION,
 	SIGN_IN,
 	SIGN_MESSAGE,
+	SIGN_MESSAGE_SUCCESS,
 	SIGN_OUT,
 	SIGN_OUT_SUCCESS,
 	SIGN_UP,
@@ -21,6 +22,12 @@ import {
 	MessageWithIdSchema,
 	type WindowProperties
 } from '@shared/types';
+
+import { signMessageLogic } from './helpers';
+
+// Important: This script is modified by a
+// post-build script (build-scripts/fixBackgroundScriptForSigning.cjs)
+// which may alter some of its intended behavior.
 
 let windowId: number | undefined;
 
@@ -149,12 +156,14 @@ const processMessage = async (message: Message, sendResponse: SendResponse) => {
 						})
 					: sendResponseWithSender({ action: NO_KEY_FOR_HAPP });
 			case SIGN_MESSAGE:
-				return (await isAuthenticated(parsedMessage.data.payload.happId))
-					? createOrUpdateDataResponseWindow(sendResponseWithSender, {
-							action: parsedMessage.data.action,
-							payload: parsedMessage.data.payload
-						})
-					: sendResponseWithSender({ action: NOT_AUTHENTICATED });
+				if (await isAuthenticated(parsedMessage.data.payload.happId)) {
+					const signedMessage = await signMessageLogic(parsedMessage.data.payload);
+					return sendResponseWithSender({
+						action: SIGN_MESSAGE_SUCCESS,
+						payload: signedMessage
+					});
+				}
+				return sendResponseWithSender({ action: NOT_AUTHENTICATED });
 			case SIGN_OUT:
 				signOut(parsedMessage.data.payload.happId);
 				return sendResponseWithSender({ action: SIGN_OUT_SUCCESS });
