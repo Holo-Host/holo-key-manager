@@ -1,5 +1,5 @@
 packages:
   - 'holo-key-manager-js-client'
   - 'holo-key-manager-extension'
-  - 'holo-key-manager-extension-scripts'
+  - './holo-key-manager-extension/scripts'
   - 'shared'
