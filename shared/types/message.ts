@@ -1,15 +1,19 @@
 import { z } from 'zod';
 
 import {
+	APP_NOT_AUTHENTICATED,
 	BACKGROUND_SCRIPT_RECEIVED_DATA,
+	EXTENSION_NOT_AUTHENTICATED,
 	GENERIC_ERROR,
 	HOLO_KEY_MANAGER_APP_ID,
+	IS_SESSION_SETTLED,
 	NEEDS_SETUP,
 	NO_KEY_FOR_HAPP,
-	NOT_AUTHENTICATED,
 	SENDER_BACKGROUND_SCRIPT,
 	SENDER_EXTENSION,
 	SENDER_WEBAPP,
+	SESSION_STATUS,
+	SETUP_SESSION,
 	SIGN_IN,
 	SIGN_IN_SUCCESS,
 	SIGN_MESSAGE,
@@ -22,19 +26,25 @@ import {
 } from '../const';
 import { HappDetailsSchema, HappIdSchema } from './general';
 
+export const SessionStatusSchema = z.boolean();
+
+const SetupSessionPayload = z.string().optional();
+
 export const SuccessMessageSignedSchema = z.object({
 	signature: z.string()
 });
 
 export type SuccessMessageSigned = z.infer<typeof SuccessMessageSignedSchema>;
 
-export const MessageObjectSchema = z.object({
+export const MessageToSignSchema = HappIdSchema.extend({
 	message: z.string()
 });
 
-export const MessageToSignSchema = z.intersection(MessageObjectSchema, HappIdSchema);
+export const SignMessageSchema = MessageToSignSchema.extend({
+	session: SetupSessionPayload
+});
 
-export type MessageToSign = z.infer<typeof MessageToSignSchema>;
+export type SignMessage = z.infer<typeof SignMessageSchema>;
 
 export const PubKeySchema = z.object({
 	pubKey: z.string()
@@ -71,8 +81,12 @@ const ActionPayloadSchema = z.union([
 	z.object({ action: z.literal(GENERIC_ERROR) }),
 	z.object({ action: z.literal(NEEDS_SETUP) }),
 	z.object({ action: z.literal(NO_KEY_FOR_HAPP) }),
-	z.object({ action: z.literal(NOT_AUTHENTICATED) }),
+	z.object({ action: z.literal(APP_NOT_AUTHENTICATED) }),
+	z.object({ action: z.literal(EXTENSION_NOT_AUTHENTICATED) }),
 	z.object({ action: z.literal(SIGN_MESSAGE), payload: MessageToSignSchema }),
+	z.object({ action: z.literal(SETUP_SESSION), payload: SetupSessionPayload }),
+	z.object({ action: z.literal(IS_SESSION_SETTLED) }),
+	z.object({ action: z.literal(SESSION_STATUS), payload: SessionStatusSchema }),
 	z.object({ action: z.literal(SIGN_MESSAGE_SUCCESS), payload: SuccessMessageSignedSchema }),
 	z.object({ action: z.literal(SIGN_IN), payload: HappIdSchema }),
 	z.object({ action: z.literal(SIGN_IN_SUCCESS), payload: PubKeySchema }),

@@ -1,11 +1,4 @@
-import {
-	APPS_LIST,
-	AUTHENTICATED_APPS_LIST,
-	DEVICE_KEY,
-	LOCAL,
-	SESSION,
-	SESSION_STORAGE_KEY
-} from '../const';
+import { APPS_LIST, AUTHENTICATED_APPS_LIST, DEVICE_KEY, LOCAL, SESSION } from '../const';
 import { isChromeStorageSafe } from '../helpers';
 import {
 	AppsListSchema,
@@ -110,12 +103,4 @@ export const signOut = async (happId: string) => {
 			area: SESSION
 		});
 	}
-};
-
-export const getSessionKey = async () => {
-	const data = await storageService.getWithoutCallback({
-		key: SESSION_STORAGE_KEY,
-		area: SESSION
-	});
-	return SessionStateSchema.safeParse(data);
 };

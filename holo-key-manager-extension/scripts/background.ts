@@ -1,11 +1,15 @@
 import {
+	APP_NOT_AUTHENTICATED,
 	BACKGROUND_SCRIPT_RECEIVED_DATA,
+	EXTENSION_NOT_AUTHENTICATED,
 	GENERIC_ERROR,
+	IS_SESSION_SETTLED,
 	NEEDS_SETUP,
 	NO_KEY_FOR_HAPP,
-	NOT_AUTHENTICATED,
 	SENDER_BACKGROUND_SCRIPT,
 	SENDER_EXTENSION,
+	SESSION_STATUS,
+	SETUP_SESSION,
 	SIGN_IN,
 	SIGN_MESSAGE,
 	SIGN_MESSAGE_SUCCESS,
@@ -30,6 +34,8 @@ import { signMessageLogic } from './helpers';
 // which may alter some of its intended behavior.
 
 let windowId: number | undefined;
+
+let session: string | undefined;
 
 type SendResponse = (response?: Message) => void;
 type SendResponseWithSender = (response: ActionPayload) => void;
@@ -141,6 +147,9 @@ const processMessage = async (message: Message, sendResponse: SendResponse) => {
 		if (!(await isSetupComplete())) {
 			return updateOrCreateWindow(NEEDS_SETUP, sendResponseWithSender);
 		}
+		if (!session && parsedMessage.data.sender !== SENDER_EXTENSION) {
+			return sendResponseWithSender({ action: EXTENSION_NOT_AUTHENTICATED });
+		}
 
 		switch (parsedMessage.data.action) {
 			case SIGN_UP:
@@ -156,17 +165,35 @@ const processMessage = async (message: Message, sendResponse: SendResponse) => {
 						})
 					: sendResponseWithSender({ action: NO_KEY_FOR_HAPP });
 			case SIGN_MESSAGE:
+				if (!session) {
+					return sendResponseWithSender({ action: EXTENSION_NOT_AUTHENTICATED });
+				}
 				if (await isAuthenticated(parsedMessage.data.payload.happId)) {
-					const signedMessage = await signMessageLogic(parsedMessage.data.payload);
+					const signature = await signMessageLogic({ ...parsedMessage.data.payload, session });
 					return sendResponseWithSender({
 						action: SIGN_MESSAGE_SUCCESS,
-						payload: signedMessage
+						payload: signature
 					});
 				}
-				return sendResponseWithSender({ action: NOT_AUTHENTICATED });
+				return sendResponseWithSender({ action: APP_NOT_AUTHENTICATED });
 			case SIGN_OUT:
 				signOut(parsedMessage.data.payload.happId);
 				return sendResponseWithSender({ action: SIGN_OUT_SUCCESS });
+			case SETUP_SESSION:
+				if (parsedMessage.data.sender === SENDER_EXTENSION) {
+					session = parsedMessage.data.payload;
+				}
+				return sendResponseWithSender({
+					action: BACKGROUND_SCRIPT_RECEIVED_DATA
+				});
+			case IS_SESSION_SETTLED:
+				if (parsedMessage.data.sender === SENDER_EXTENSION) {
+					return sendResponseWithSender({
+						action: SESSION_STATUS,
+						payload: session !== undefined && session !== ''
+					});
+				}
+				return;
 			default:
 				return sendResponseWithSender({ action: UNKNOWN_ACTION });
 		}
