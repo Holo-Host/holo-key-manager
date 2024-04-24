@@ -1,8 +1,8 @@
 type HoloKeyManagerConfig = {
 	happId: string;
 	happName: string;
-	happLogo: string;
-	happUiUrl: string;
+	happLogo?: string;
+	happUiUrl?: string;
 	requireRegistrationCode: boolean;
 	requireEmail: boolean;
 };

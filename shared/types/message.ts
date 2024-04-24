@@ -45,8 +45,8 @@ export type PubKey = z.infer<typeof PubKeySchema>;
 
 const HoloKeyManagerConfigSchema = HappIdSchema.extend({
 	happName: z.string(),
-	happLogo: z.string(),
-	happUiUrl: z.string(),
+	happLogo: z.string().optional(),
+	happUiUrl: z.string().optional(),
 	requireRegistrationCode: z.boolean(),
 	requireEmail: z.boolean()
 });
