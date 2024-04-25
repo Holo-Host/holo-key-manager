@@ -44,7 +44,9 @@ export const signMessageLogic = async ({ message, happId }: MessageToSign) => {
 
 	const appKey = keyUnlocked.derive(index);
 
-	const signedMessage = appKey.sign(message);
+	const uIntArrayMessage = base64ToUint8Array(message);
+
+	const signedMessage = appKey.sign(uIntArrayMessage);
 
 	keyUnlocked.zero();
 	appKey.zero();
