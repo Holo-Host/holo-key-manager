@@ -3,8 +3,6 @@ import { parseMessageSchema } from '@shared/helpers';
 import { createMessageWithId } from '@shared/services';
 import { type Message, type MessageWithId, MessageWithIdSchema } from '@shared/types';
 
-let timeoutId: number | null = null;
-
 const isWindowDefined = () => typeof window !== 'undefined';
 
 const isExpectedPayload = <T>(payload: unknown): payload is T => {
@@ -39,14 +37,8 @@ export const sendMessage = (message: Message): Promise<MessageWithId> =>
 			return;
 		}
 
-		if (timeoutId) {
-			clearTimeout(timeoutId);
-			timeoutId = null;
-		}
-
 		const messageWithId = createMessageWithId(message);
 
-		const removeListener = () => window.removeEventListener('message', responseHandler);
 		const responseHandler = (event: MessageEvent) => {
 			const parseResult = MessageWithIdSchema.safeParse(event.data);
 			if (!parseResult.success) {
@@ -57,16 +49,11 @@ export const sendMessage = (message: Message): Promise<MessageWithId> =>
 				return;
 			}
 			resolve(responseData);
-			removeListener();
+			window.removeEventListener('message', responseHandler);
 		};
 
 		window.postMessage(messageWithId, '*');
 		window.addEventListener('message', responseHandler);
-
-		timeoutId = setTimeout(() => {
-			removeListener();
-			reject(new Error('Response timeout'));
-		}, 300000);
 	});
 
 export const checkContentScriptAndBrowser = () => {
