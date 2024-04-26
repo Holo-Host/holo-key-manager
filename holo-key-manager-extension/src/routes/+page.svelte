@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
 
-	import { ActionPage, Login, LogoCloseBar } from '$components';
+	import { ActionPage, Login } from '$components';
 	import { appQueries } from '$queries';
 	import { isChromePermissionsSafe } from '$shared/helpers';
 
@@ -13,6 +13,7 @@
 	const openInNewTab = (url: string) => () => window.open(url, '_blank');
 	const redirectToChangePassword = openInNewTab('change-password.html');
 	const redirectToSetup = openInNewTab('/setup-pass/start.html');
+	const redirectToListOfHapps = openInNewTab('/list-of/happs.html');
 
 	let permissionGranted = false;
 
@@ -41,13 +42,14 @@
 		subTitle="Holo Key Manager needs additional permissions. Click “Request Permissions” to proceed."
 	/>
 {:else if hasSessionData}
-	<div class="m-8">
-		<LogoCloseBar />
-		<h1 class="mt-4 text-2xl font-bold">Holo Key Manager</h1>
-		<button on:click={redirectToChangePassword} class="text-blue-500 hover:text-blue-800">
-			Change Password
-		</button>
-	</div>
+	<ActionPage
+		mainAction={redirectToListOfHapps}
+		mainActionLabel="List of hApps"
+		secondaryAction={redirectToChangePassword}
+		secondaryActionLabel="Change Password"
+		title="Holo Key Manager"
+		subTitle=""
+	/>
 {:else if hasSetupData}
 	<Login />
 {:else}

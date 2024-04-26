@@ -8,6 +8,8 @@ export const HOLO_KEY_MANAGER_EXTENSION_MARKER_ID = 'user-holo-key-manager-exten
 export const relevantKeys = [
 	'happId',
 	'happName',
+	'happUiUrl',
+	'happLogo',
 	'requireEmail',
 	'requireRegistrationCode',
 	'message'

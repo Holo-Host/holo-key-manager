@@ -3,10 +3,13 @@
 	import { dismissWindow } from '$lib/helpers';
 
 	import LogoCloseBar from './LogoCloseBar.svelte';
+	import Title from './Title.svelte';
 
 	export let outerWindow = false;
 	export let mainAction: () => void;
+	export let secondaryAction = dismissWindow;
 	export let mainActionLabel: string;
+	export let secondaryActionLabel = 'Cancel';
 	export let title: string;
 	export let subTitle: string;
 </script>
@@ -20,12 +23,12 @@
 		<img
 			src={mainActionLabel === 'Setup' ? '/img/setup.svg' : '/img/holo_logo.svg'}
 			alt={mainActionLabel}
-			class="max-w-[48px]"
+			class="mb-4 max-w-[48px]"
 		/>
-		<h1 class="mt-4 text-2xl font-bold">{title}</h1>
+		<Title small>{title}</Title>
 		<AppParagraph extraProps="my-4 max-w-xs text-center" text={subTitle} />
 	</div>
 
 	<Button label={mainActionLabel} onClick={mainAction} extraBottomMargin />
-	<Button label="Cancel" onClick={dismissWindow} color="secondary" />
+	<Button label={secondaryActionLabel} onClick={secondaryAction} color="secondary" />
 </div>

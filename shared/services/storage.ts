@@ -65,15 +65,21 @@ export const isSetupComplete = async () => {
 	return parsedData.success;
 };
 
-export const isAppSignUpComplete = async (happId: string) => {
-	const data = await storageService.getWithoutCallback({
+export const fetchAndParseAppsList = async () => {
+	const appsListData = await storageService.getWithoutCallback({
 		key: APPS_LIST,
 		area: LOCAL
 	});
 
-	const parsedData = AppsListSchema.safeParse(data);
+	const parsedAppsListData = AppsListSchema.safeParse(appsListData);
 
-	return parsedData.success && parsedData.data.some((app) => app.happId === happId);
+	return parsedAppsListData.success ? parsedAppsListData.data : [];
+};
+
+export const isAppSignUpComplete = async (happId: string) => {
+	const parsedData = await fetchAndParseAppsList();
+
+	return parsedData.some((app) => app.happId === happId);
 };
 
 export const isAuthenticated = async (happId: string) => {

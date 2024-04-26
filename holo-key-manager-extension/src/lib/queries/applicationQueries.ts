@@ -2,7 +2,6 @@ import { createMutation, createQuery, QueryClient } from '@tanstack/svelte-query
 
 import {
 	deriveSignPubKey,
-	fetchAndParseAppsList,
 	fetchAuthenticatedAppsList,
 	handleSuccess,
 	sendMessageAndHandleResponse
@@ -18,13 +17,16 @@ import {
 	SIGN_IN_SUCCESS,
 	SIGN_UP_SUCCESS
 } from '$shared/const';
-import { storageService } from '$shared/services';
+import { fetchAndParseAppsList, storageService } from '$shared/services';
 
 export function createApplicationKeyMutation(queryClient: QueryClient) {
 	return createMutation({
 		mutationFn: async (mutationData: {
 			app_key_name: string;
 			happId: string;
+			happName: string;
+			happLogo: string;
+			happUiUrl: string;
 			email?: string;
 			registrationCode?: string;
 		}) => {
@@ -41,7 +43,10 @@ export function createApplicationKeyMutation(queryClient: QueryClient) {
 					{
 						keyName: mutationData.app_key_name,
 						happId: mutationData.happId,
-						isDeleted: false
+						happName: mutationData.happName,
+						isDeleted: false,
+						happLogo: mutationData.happLogo,
+						happUiUrl: mutationData.happUiUrl
 					}
 				],
 				area: LOCAL
@@ -142,4 +147,26 @@ export function createApplicationKeysQuery() {
 			}
 		});
 	};
+}
+
+export function createAllApplicationsQuery() {
+	return createQuery({
+		queryKey: [APPLICATION_KEYS],
+		queryFn: async () => {
+			const currentAppsList = await fetchAndParseAppsList();
+
+			const appsDetails = currentAppsList.map((app) => ({
+				happId: app.happId,
+				happName: app.happName,
+				happLogo: app.happLogo,
+				happUiUrl: app.happUiUrl
+			}));
+
+			const uniqueApps = appsDetails.filter(
+				(app, index, self) => index === self.findIndex((t) => t.happId === app.happId)
+			);
+
+			return uniqueApps;
+		}
+	});
 }

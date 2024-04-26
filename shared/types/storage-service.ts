@@ -9,6 +9,7 @@ import type {
 	SESSION,
 	SESSION_STORAGE_KEY
 } from '../const';
+import { HappDetailsSchema } from './general';
 
 export const EncryptedDeviceKeySchema = z.string();
 
@@ -22,9 +23,8 @@ export const HashSaltSchema = z.object({
 export type HashSalt = z.infer<typeof HashSaltSchema>;
 
 export const AppsListSchema = z.array(
-	z.object({
+	HappDetailsSchema.extend({
 		keyName: z.string(),
-		happId: z.string(),
 		isDeleted: z.boolean()
 	})
 );

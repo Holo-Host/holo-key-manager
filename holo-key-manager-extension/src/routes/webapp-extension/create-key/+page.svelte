@@ -63,6 +63,9 @@
 				{
 					app_key_name: keyName,
 					happId: $extractDetailsFromUrl.happId,
+					happName: $extractDetailsFromUrl.happName,
+					happLogo: $extractDetailsFromUrl.happLogo,
+					happUiUrl: $extractDetailsFromUrl.happUiUrl,
 					email,
 					registrationCode
 				},

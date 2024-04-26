@@ -2,7 +2,6 @@ import type { QueryClient } from '@tanstack/svelte-query';
 
 import { unlockKey } from '$services';
 import {
-	APPS_LIST,
 	AUTHENTICATED_APPS_LIST,
 	BACKGROUND_SCRIPT_RECEIVED_DATA,
 	LOCAL,
@@ -12,7 +11,6 @@ import {
 import { parseMessageSchema, uint8ArrayToBase64 } from '$shared/helpers';
 import { getSessionKey, sendMessage, storageService } from '$shared/services';
 import {
-	AppsListSchema,
 	AuthenticatedAppsListSchema,
 	HashSaltSchema,
 	type Message,
@@ -28,17 +26,6 @@ export const getPassword = async () => {
 		area: LOCAL
 	});
 	return HashSaltSchema.safeParse(data);
-};
-
-export const fetchAndParseAppsList = async () => {
-	const appsListData = await storageService.getWithoutCallback({
-		key: APPS_LIST,
-		area: LOCAL
-	});
-
-	const parsedAppsListData = AppsListSchema.safeParse(appsListData);
-
-	return parsedAppsListData.success ? parsedAppsListData.data : [];
 };
 
 export const fetchAuthenticatedAppsList = async (happId?: string) => {

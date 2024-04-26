@@ -20,10 +20,7 @@ import {
 	SIGN_UP_SUCCESS,
 	UNKNOWN_ACTION
 } from '../const';
-
-const HappIdSchema = z.object({
-	happId: z.string()
-});
+import { HappDetailsSchema, HappIdSchema } from './general';
 
 export const SuccessMessageSignedSchema = z.object({
 	signature: z.string()
@@ -31,9 +28,11 @@ export const SuccessMessageSignedSchema = z.object({
 
 export type SuccessMessageSigned = z.infer<typeof SuccessMessageSignedSchema>;
 
-export const MessageToSignSchema = HappIdSchema.extend({
+export const MessageObjectSchema = z.object({
 	message: z.string()
 });
+
+export const MessageToSignSchema = z.intersection(MessageObjectSchema, HappIdSchema);
 
 export type MessageToSign = z.infer<typeof MessageToSignSchema>;
 
@@ -43,10 +42,7 @@ export const PubKeySchema = z.object({
 
 export type PubKey = z.infer<typeof PubKeySchema>;
 
-const HoloKeyManagerConfigSchema = HappIdSchema.extend({
-	happName: z.string(),
-	happLogo: z.string().optional(),
-	happUiUrl: z.string().optional(),
+const HoloKeyManagerConfigSchema = HappDetailsSchema.extend({
 	requireRegistrationCode: z.boolean(),
 	requireEmail: z.boolean()
 });

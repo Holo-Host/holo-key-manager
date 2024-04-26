@@ -42,10 +42,12 @@ const createHoloKeyManager = ({
 			},
 			sender: SENDER_WEBAPP
 		});
+
 		const { pubKey, email, registrationCode } = parseMessagePayload<SignUpSuccessPayload>(
 			response,
 			SIGN_UP_SUCCESS
 		);
+
 		return {
 			pubKey: base64ToUint8Array(pubKey),
 			email,
