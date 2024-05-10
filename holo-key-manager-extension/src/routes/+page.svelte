@@ -5,9 +5,9 @@
 	import { appQueries } from '$queries';
 	import { isChromePermissionsSafe } from '$shared/helpers';
 
-	const { sessionQuery, setupDeviceKeyQuery } = appQueries();
-	$: isLoading = $sessionQuery.isFetching || $setupDeviceKeyQuery.isFetching;
-	$: hasSessionData = $sessionQuery.data;
+	const { isSignedInToExtensionQuery, setupDeviceKeyQuery } = appQueries();
+	$: isLoading = $isSignedInToExtensionQuery.isFetching || $setupDeviceKeyQuery.isFetching;
+	$: hasSessionData = $isSignedInToExtensionQuery.data;
 	$: hasSetupData = $setupDeviceKeyQuery.data;
 
 	const openInNewTab = (url: string) => () => window.open(url, '_blank');

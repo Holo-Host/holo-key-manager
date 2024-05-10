@@ -4,16 +4,16 @@ import {
 	APP_NOT_AUTHENTICATED,
 	BACKGROUND_SCRIPT_RECEIVED_DATA,
 	EXTENSION_NOT_AUTHENTICATED,
+	EXTENSION_SESSION_INFO,
 	GENERIC_ERROR,
+	GET_EXTENSION_SESSION,
 	HOLO_KEY_MANAGER_APP_ID,
-	IS_SESSION_SETTLED,
 	NEEDS_SETUP,
 	NO_KEY_FOR_HAPP,
 	SENDER_BACKGROUND_SCRIPT,
 	SENDER_EXTENSION,
 	SENDER_WEBAPP,
-	SESSION_STATUS,
-	SETUP_SESSION,
+	SETUP_EXTENSION_SESSION,
 	SIGN_IN,
 	SIGN_IN_SUCCESS,
 	SIGN_MESSAGE,
@@ -26,9 +26,7 @@ import {
 } from '../const';
 import { HappDetailsSchema, HappIdSchema } from './general';
 
-export const SessionStatusSchema = z.boolean();
-
-const SetupSessionPayload = z.string().optional();
+const ExtensionSessionPayload = z.string().optional();
 
 export const SuccessMessageSignedSchema = z.object({
 	signature: z.string()
@@ -41,7 +39,7 @@ export const MessageToSignSchema = HappIdSchema.extend({
 });
 
 export const SignMessageSchema = MessageToSignSchema.extend({
-	session: SetupSessionPayload
+	session: ExtensionSessionPayload
 });
 
 export type SignMessage = z.infer<typeof SignMessageSchema>;
@@ -84,9 +82,9 @@ const ActionPayloadSchema = z.union([
 	z.object({ action: z.literal(APP_NOT_AUTHENTICATED) }),
 	z.object({ action: z.literal(EXTENSION_NOT_AUTHENTICATED) }),
 	z.object({ action: z.literal(SIGN_MESSAGE), payload: MessageToSignSchema }),
-	z.object({ action: z.literal(SETUP_SESSION), payload: SetupSessionPayload }),
-	z.object({ action: z.literal(IS_SESSION_SETTLED) }),
-	z.object({ action: z.literal(SESSION_STATUS), payload: SessionStatusSchema }),
+	z.object({ action: z.literal(SETUP_EXTENSION_SESSION), payload: ExtensionSessionPayload }),
+	z.object({ action: z.literal(GET_EXTENSION_SESSION) }),
+	z.object({ action: z.literal(EXTENSION_SESSION_INFO), payload: ExtensionSessionPayload }),
 	z.object({ action: z.literal(SIGN_MESSAGE_SUCCESS), payload: SuccessMessageSignedSchema }),
 	z.object({ action: z.literal(SIGN_IN), payload: HappIdSchema }),
 	z.object({ action: z.literal(SIGN_IN_SUCCESS), payload: PubKeySchema }),

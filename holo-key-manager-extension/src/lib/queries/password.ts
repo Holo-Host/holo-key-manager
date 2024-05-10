@@ -2,6 +2,8 @@ import { createMutation, createQuery, type QueryClient } from '@tanstack/svelte-
 import { get } from 'svelte/store';
 
 import {
+	getDeviceKey,
+	getExtensionSession,
 	getPassword,
 	handleSuccess,
 	hashPassword,
@@ -11,17 +13,15 @@ import {
 import { lockKey, unlockKey } from '$services';
 import {
 	DEVICE_KEY,
-	IS_SESSION_SETTLED,
+	EXTENSION_SESSION,
 	LOCAL,
 	PASSWORD,
 	SENDER_EXTENSION,
-	SESSION,
+	SETUP_EXTENSION_SESSION,
 	SETUP_KEY,
-	SETUP_PASSWORD,
-	SETUP_SESSION
+	SETUP_PASSWORD
 } from '$shared/const';
-import { sendMessage, storageService } from '$shared/services';
-import { EncryptedDeviceKeySchema, SessionStatusSchema } from '$shared/types';
+import { storageService } from '$shared/services';
 import { deviceKeyContentStore, passphraseStore, passwordStore } from '$stores';
 
 const storePassword = async (password: string) => {
@@ -43,17 +43,16 @@ export function createSetupPasswordQuery() {
 	});
 }
 
-export function isSignedInToExtensionQuery() {
+export function createIsSignedInToExtensionQuery() {
 	return createQuery({
-		queryKey: [SESSION],
+		queryKey: [EXTENSION_SESSION],
 		queryFn: async () => {
-			const response = await sendMessage({
-				sender: SENDER_EXTENSION,
-				action: IS_SESSION_SETTLED
-			});
-
-			const parsedResult = SessionStatusSchema.safeParse(response);
-			return parsedResult.success && parsedResult.data;
+			try {
+				const session = await getExtensionSession();
+				return !!session;
+			} catch (e) {
+				return false;
+			}
 		}
 	});
 }
@@ -86,7 +85,7 @@ export function createPasswordAndStoreDeviceKeyMutation(queryClient: QueryClient
 			passwordStore.reset();
 			await sendMessageAndHandleResponse({
 				sender: SENDER_EXTENSION,
-				action: SETUP_SESSION,
+				action: SETUP_EXTENSION_SESSION,
 				payload: undefined
 			});
 		},
@@ -103,11 +102,11 @@ export function createSignInMutation(queryClient: QueryClient) {
 
 			await sendMessageAndHandleResponse({
 				sender: SENDER_EXTENSION,
-				action: SETUP_SESSION,
+				action: SETUP_EXTENSION_SESSION,
 				payload: password
 			});
 		},
-		onSuccess: handleSuccess(queryClient, [SESSION])
+		onSuccess: handleSuccess(queryClient, [EXTENSION_SESSION])
 	});
 }
 
@@ -123,18 +122,9 @@ export function createChangePasswordWithDeviceKeyMutation(queryClient: QueryClie
 				throw new Error('Invalid password');
 			}
 
-			const deviceKey = await storageService.getWithoutCallback({
-				key: DEVICE_KEY,
-				area: LOCAL
-			});
+			const deviceKey = await getDeviceKey();
 
-			const parsedDeviceKey = EncryptedDeviceKeySchema.safeParse(deviceKey);
-
-			if (!parsedDeviceKey.success) {
-				throw new Error('Invalid device key');
-			}
-
-			const decryptedKey = await unlockKey(parsedDeviceKey.data, mutationData.oldPassword);
+			const decryptedKey = await unlockKey(deviceKey, mutationData.oldPassword);
 
 			await storePassword(mutationData.newPassword);
 
@@ -147,11 +137,11 @@ export function createChangePasswordWithDeviceKeyMutation(queryClient: QueryClie
 
 			await sendMessageAndHandleResponse({
 				sender: SENDER_EXTENSION,
-				action: SETUP_SESSION,
+				action: SETUP_EXTENSION_SESSION,
 				payload: undefined
 			});
 		},
 
-		onSuccess: handleSuccess(queryClient, [SESSION])
+		onSuccess: handleSuccess(queryClient, [EXTENSION_SESSION])
 	});
 }

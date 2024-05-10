@@ -6,7 +6,6 @@ import {
 	AuthenticatedAppsListSchema,
 	type ChangesType,
 	EncryptedDeviceKeySchema,
-	SessionStateSchema,
 	type StorageService
 } from '../types';
 

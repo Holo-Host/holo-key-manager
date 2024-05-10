@@ -2,14 +2,14 @@ import {
 	APP_NOT_AUTHENTICATED,
 	BACKGROUND_SCRIPT_RECEIVED_DATA,
 	EXTENSION_NOT_AUTHENTICATED,
+	EXTENSION_SESSION_INFO,
 	GENERIC_ERROR,
-	IS_SESSION_SETTLED,
+	GET_EXTENSION_SESSION,
 	NEEDS_SETUP,
 	NO_KEY_FOR_HAPP,
 	SENDER_BACKGROUND_SCRIPT,
 	SENDER_EXTENSION,
-	SESSION_STATUS,
-	SETUP_SESSION,
+	SETUP_EXTENSION_SESSION,
 	SIGN_IN,
 	SIGN_MESSAGE,
 	SIGN_MESSAGE_SUCCESS,
@@ -179,18 +179,18 @@ const processMessage = async (message: Message, sendResponse: SendResponse) => {
 			case SIGN_OUT:
 				signOut(parsedMessage.data.payload.happId);
 				return sendResponseWithSender({ action: SIGN_OUT_SUCCESS });
-			case SETUP_SESSION:
+			case SETUP_EXTENSION_SESSION:
 				if (parsedMessage.data.sender === SENDER_EXTENSION) {
 					session = parsedMessage.data.payload;
 				}
 				return sendResponseWithSender({
 					action: BACKGROUND_SCRIPT_RECEIVED_DATA
 				});
-			case IS_SESSION_SETTLED:
+			case GET_EXTENSION_SESSION:
 				if (parsedMessage.data.sender === SENDER_EXTENSION) {
 					return sendResponseWithSender({
-						action: SESSION_STATUS,
-						payload: session !== undefined && session !== ''
+						action: EXTENSION_SESSION_INFO,
+						payload: session
 					});
 				}
 				return;

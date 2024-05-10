@@ -4,14 +4,19 @@ import { unlockKey } from '$services';
 import {
 	AUTHENTICATED_APPS_LIST,
 	BACKGROUND_SCRIPT_RECEIVED_DATA,
+	DEVICE_KEY,
+	EXTENSION_SESSION_INFO,
+	GET_EXTENSION_SESSION,
 	LOCAL,
 	PASSWORD,
+	SENDER_EXTENSION,
 	SESSION
 } from '$shared/const';
 import { parseMessageSchema, uint8ArrayToBase64 } from '$shared/helpers';
-import { getSessionKey, sendMessage, storageService } from '$shared/services';
+import { sendMessage, storageService } from '$shared/services';
 import {
 	AuthenticatedAppsListSchema,
+	EncryptedDeviceKeySchema,
 	HashSaltSchema,
 	type Message,
 	PubKeySchema
@@ -57,14 +62,47 @@ export const sendMessageAndHandleResponse = async (message: Message) => {
 		throw new Error('Error sending data to webapp');
 };
 
-export const deriveSignPubKey = async (newIndex: number) => {
-	const sessionKey = await getSessionKey();
+export const getExtensionSession = async () => {
+	const response = await sendMessage({
+		sender: SENDER_EXTENSION,
+		action: GET_EXTENSION_SESSION
+	});
 
-	if (!sessionKey.success) {
+	const parsedResponse = parseMessageSchema(response);
+
+	if (!parsedResponse.success || parsedResponse.data.action !== EXTENSION_SESSION_INFO) {
+		throw new Error('Error getting extension session');
+	}
+
+	return parsedResponse.data.payload;
+};
+
+export const getDeviceKey = async () => {
+	const deviceKey = await storageService.getWithoutCallback({
+		key: DEVICE_KEY,
+		area: LOCAL
+	});
+
+	const parsedDeviceKey = EncryptedDeviceKeySchema.safeParse(deviceKey);
+
+	if (!parsedDeviceKey.success) {
+		throw new Error('Invalid device key');
+	}
+
+	return parsedDeviceKey.data;
+};
+
+export const deriveSignPubKey = async (newIndex: number) => {
+	const session = await getExtensionSession();
+
+	if (!session) {
 		throw new Error('Session data not found');
 	}
 
-	const keyUnlocked = await unlockKey(sessionKey.data, SESSION);
+	const encryptedDeviceKey = await getDeviceKey();
+
+	const keyUnlocked = await unlockKey(encryptedDeviceKey, session);
+
 	const { signPubKey } = keyUnlocked.derive(newIndex);
 
 	keyUnlocked.zero();

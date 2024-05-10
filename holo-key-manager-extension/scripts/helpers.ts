@@ -18,8 +18,8 @@ export const signMessageLogic = async ({ message, happId, session }: SignMessage
 	const parsedAuthenticatedAppsListData =
 		AuthenticatedAppsListSchema.safeParse(authenticatedAppsListData);
 
-	if (!parsedAuthenticatedAppsListData.success) {
-		throw new Error('Failed to parse authenticated apps list data');
+	if (!parsedAuthenticatedAppsListData.success || !session) {
+		throw new Error('Authentication failed: Unable to parse apps list or session missing');
 	}
 
 	const index = parsedAuthenticatedAppsListData.data[happId];

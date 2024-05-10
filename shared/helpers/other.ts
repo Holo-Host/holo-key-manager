@@ -17,7 +17,12 @@ export const isChromePermissionsSafe = () =>
 export const createQueryParams = (params: ActionPayload) => {
 	const additionalParams = relevantKeys.reduce(
 		(acc, key) => {
-			if ('payload' in params && params.payload && key in params.payload) {
+			if (
+				'payload' in params &&
+				params.payload &&
+				typeof params.payload === 'object' &&
+				key in params.payload
+			) {
 				return { ...acc, [key]: String(params.payload[key as keyof typeof params.payload]) };
 			}
 			return acc;

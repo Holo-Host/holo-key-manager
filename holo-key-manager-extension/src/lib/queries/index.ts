@@ -8,12 +8,12 @@ import {
 } from './applicationQueries';
 import {
 	createRecoverDeviceKeyMutation,
-	createSessionQuery,
 	createSetupDeviceKeyQuery,
 	createStoreDeviceKey
 } from './extensionQueries';
 import {
 	createChangePasswordWithDeviceKeyMutation,
+	createIsSignedInToExtensionQuery,
 	createPasswordAndStoreDeviceKeyMutation,
 	createPasswordMutation,
 	createSetupPasswordQuery,
@@ -26,7 +26,7 @@ export function appQueries() {
 		createChangePasswordWithDeviceKeyMutation(queryClient);
 	const createPassword = createPasswordMutation(queryClient);
 	const signInWithKeyMutation = createSignInWithKeyMutation(queryClient);
-	const sessionQuery = createSessionQuery();
+	const isSignedInToExtensionQuery = createIsSignedInToExtensionQuery();
 	const setupDeviceKeyQuery = createSetupDeviceKeyQuery();
 	const setupPasswordQuery = createSetupPasswordQuery();
 	const applicationKeysQueryFunction = createApplicationKeysQuery();
@@ -40,7 +40,7 @@ export function appQueries() {
 	return {
 		changePasswordWithDeviceKeyMutation,
 		createPassword,
-		sessionQuery,
+		isSignedInToExtensionQuery,
 		setupDeviceKeyQuery,
 		setupPasswordQuery,
 		signInMutation,
