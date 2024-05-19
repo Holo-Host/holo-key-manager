@@ -6,8 +6,7 @@ import type {
 	DEVICE_KEY,
 	LOCAL,
 	PASSWORD,
-	SESSION,
-	SESSION_STORAGE_KEY
+	SESSION
 } from '../const';
 import { HappDetailsSchema } from './general';
 
@@ -37,10 +36,6 @@ export type AuthenticatedAppsList = z.infer<typeof AuthenticatedAppsListSchema>;
 
 export type AreaName = typeof SESSION | typeof LOCAL | 'sync' | 'managed';
 
-export const SessionStateSchema = z.string();
-
-export type SessionState = z.infer<typeof SessionStateSchema>;
-
 export type ChangesType = {
 	[key: string]: unknown;
 };
@@ -57,14 +52,12 @@ type GetAction<T, A = typeof SESSION | typeof LOCAL> = {
 };
 
 type StorageSetItem =
-	| SetAction<typeof SESSION_STORAGE_KEY, string | null, typeof SESSION>
 	| SetAction<typeof AUTHENTICATED_APPS_LIST, AuthenticatedAppsList, typeof SESSION>
 	| SetAction<typeof PASSWORD, HashSalt, typeof LOCAL>
 	| SetAction<typeof APPS_LIST, AppsList, typeof LOCAL>
 	| SetAction<typeof DEVICE_KEY, string, typeof LOCAL>;
 
 type StorageGetItem =
-	| GetAction<typeof SESSION_STORAGE_KEY, typeof SESSION>
 	| GetAction<typeof AUTHENTICATED_APPS_LIST, typeof SESSION>
 	| GetAction<typeof APPS_LIST, typeof LOCAL>
 	| GetAction<typeof PASSWORD, typeof LOCAL>

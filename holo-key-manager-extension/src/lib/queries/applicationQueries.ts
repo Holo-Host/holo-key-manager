@@ -27,6 +27,7 @@ export function createApplicationKeyMutation(queryClient: QueryClient) {
 			happName: string;
 			happLogo: string;
 			happUiUrl: string;
+			messageId: string;
 			email?: string;
 			registrationCode?: string;
 		}) => {
@@ -69,15 +70,20 @@ export function createApplicationKeyMutation(queryClient: QueryClient) {
 				area: SESSION
 			});
 
-			await sendMessageAndHandleResponse({
-				sender: SENDER_EXTENSION,
-				action: SIGN_UP_SUCCESS,
-				payload: {
-					pubKey: pubKeyObject.pubKey,
-					...(mutationData.email && { email: mutationData.email }),
-					...(mutationData.registrationCode && { registrationCode: mutationData.registrationCode })
-				}
-			});
+			await sendMessageAndHandleResponse(
+				{
+					sender: SENDER_EXTENSION,
+					action: SIGN_UP_SUCCESS,
+					payload: {
+						pubKey: pubKeyObject.pubKey,
+						...(mutationData.email && { email: mutationData.email }),
+						...(mutationData.registrationCode && {
+							registrationCode: mutationData.registrationCode
+						})
+					}
+				},
+				mutationData.messageId
+			);
 		},
 		onSuccess: handleSuccess(queryClient, [APPLICATION_KEYS])
 	});
@@ -85,8 +91,8 @@ export function createApplicationKeyMutation(queryClient: QueryClient) {
 
 export function createSignInWithKeyMutation(queryClient: QueryClient) {
 	return createMutation({
-		mutationFn: async (signInData: { keyName: string; happId: string }) => {
-			const { keyName, happId } = signInData;
+		mutationFn: async (signInData: { keyName: string; happId: string; messageId: string }) => {
+			const { keyName, happId, messageId } = signInData;
 			const currentAppsList = await fetchAndParseAppsList();
 
 			const appData = currentAppsList.find(
@@ -114,11 +120,14 @@ export function createSignInWithKeyMutation(queryClient: QueryClient) {
 				area: SESSION
 			});
 
-			await sendMessageAndHandleResponse({
-				sender: SENDER_EXTENSION,
-				action: SIGN_IN_SUCCESS,
-				payload: pubKey
-			});
+			await sendMessageAndHandleResponse(
+				{
+					sender: SENDER_EXTENSION,
+					action: SIGN_IN_SUCCESS,
+					payload: pubKey
+				},
+				messageId
+			);
 		},
 		onSuccess: handleSuccess(queryClient, [APPLICATION_SIGNED_IN_KEY])
 	});

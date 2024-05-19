@@ -3,9 +3,9 @@
 	import { dismissWindow } from '$helpers';
 	import { appQueries } from '$queries';
 
-	const { sessionQuery, setupDeviceKeyQuery } = appQueries();
-	$: isLoading = $sessionQuery.isFetching || $setupDeviceKeyQuery.isFetching;
-	$: hasSessionData = $sessionQuery.data;
+	const { isSignedInToExtensionQuery, setupDeviceKeyQuery } = appQueries();
+	$: isLoading = $isSignedInToExtensionQuery.isFetching || $setupDeviceKeyQuery.isFetching;
+	$: hasSessionData = $isSignedInToExtensionQuery.data;
 	$: hasSetupData = $setupDeviceKeyQuery.data;
 </script>
 

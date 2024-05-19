@@ -27,7 +27,10 @@ const deriveAndLock = (
 		generate_by: 'keymanager-v1.0'
 	});
 
-	return lock(root, passphrase);
+	const encodedBytes = lock(root, passphrase);
+	root.zero();
+
+	return encodedBytes;
 };
 
 export async function generateKeys(

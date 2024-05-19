@@ -1,20 +1,26 @@
 import { createMutation, createQuery, type QueryClient } from '@tanstack/svelte-query';
 import { get } from 'svelte/store';
 
-import { getPassword, handleSuccess, hashPassword, verifyPassword } from '$helpers';
+import {
+	getExtensionSession,
+	getPassword,
+	handleSuccess,
+	hashPassword,
+	sendMessageAndHandleResponse,
+	verifyPassword
+} from '$helpers';
 import { lockKey, unlockKey } from '$services';
 import {
 	DEVICE_KEY,
+	EXTENSION_SESSION,
 	LOCAL,
 	PASSWORD,
-	SESSION,
-	SESSION_DATA_KEY,
-	SESSION_STORAGE_KEY,
+	SENDER_EXTENSION,
+	SETUP_EXTENSION_SESSION,
 	SETUP_KEY,
 	SETUP_PASSWORD
 } from '$shared/const';
-import { storageService } from '$shared/services';
-import { EncryptedDeviceKeySchema } from '$shared/types';
+import { getDeviceKey, storageService } from '$shared/services';
 import { deviceKeyContentStore, passphraseStore, passwordStore } from '$stores';
 
 const storePassword = async (password: string) => {
@@ -32,6 +38,20 @@ export function createSetupPasswordQuery() {
 		queryFn: async () => {
 			const parsedResult = await getPassword();
 			return parsedResult.success;
+		}
+	});
+}
+
+export function createIsSignedInToExtensionQuery() {
+	return createQuery({
+		queryKey: [EXTENSION_SESSION],
+		queryFn: async () => {
+			try {
+				const session = await getExtensionSession();
+				return !!session;
+			} catch (e) {
+				return false;
+			}
 		}
 	});
 }
@@ -62,7 +82,11 @@ export function createPasswordAndStoreDeviceKeyMutation(queryClient: QueryClient
 			deviceKeyContentStore.clean();
 			passphraseStore.clean();
 			passwordStore.reset();
-			storageService.set({ key: SESSION_STORAGE_KEY, value: null, area: SESSION });
+			await sendMessageAndHandleResponse({
+				sender: SENDER_EXTENSION,
+				action: SETUP_EXTENSION_SESSION,
+				payload: undefined
+			});
 		},
 		onSuccess: handleSuccess(queryClient, [SETUP_KEY])
 	});
@@ -75,24 +99,13 @@ export function createSignInMutation(queryClient: QueryClient) {
 			if (!parsedResult.success || !(await verifyPassword(password, parsedResult.data)))
 				throw new Error('Invalid password or data');
 
-			const deviceKey = await storageService.getWithoutCallback({
-				key: DEVICE_KEY,
-				area: LOCAL
+			await sendMessageAndHandleResponse({
+				sender: SENDER_EXTENSION,
+				action: SETUP_EXTENSION_SESSION,
+				payload: password
 			});
-			const parsedDeviceKey = EncryptedDeviceKeySchema.safeParse(deviceKey);
-			if (!parsedDeviceKey.success) throw new Error('Invalid device key');
-
-			const decryptedKey = await unlockKey(parsedDeviceKey.data, password);
-
-			storageService.set({
-				key: SESSION_STORAGE_KEY,
-				value: await lockKey(decryptedKey, SESSION),
-				area: SESSION
-			});
-
-			return decryptedKey.zero();
 		},
-		onSuccess: handleSuccess(queryClient, [SESSION_DATA_KEY])
+		onSuccess: handleSuccess(queryClient, [EXTENSION_SESSION])
 	});
 }
 
@@ -108,18 +121,9 @@ export function createChangePasswordWithDeviceKeyMutation(queryClient: QueryClie
 				throw new Error('Invalid password');
 			}
 
-			const deviceKey = await storageService.getWithoutCallback({
-				key: DEVICE_KEY,
-				area: LOCAL
-			});
+			const deviceKey = await getDeviceKey();
 
-			const parsedDeviceKey = EncryptedDeviceKeySchema.safeParse(deviceKey);
-
-			if (!parsedDeviceKey.success) {
-				throw new Error('Invalid device key');
-			}
-
-			const decryptedKey = await unlockKey(parsedDeviceKey.data, mutationData.oldPassword);
+			const decryptedKey = await unlockKey(deviceKey, mutationData.oldPassword);
 
 			await storePassword(mutationData.newPassword);
 
@@ -129,13 +133,14 @@ export function createChangePasswordWithDeviceKeyMutation(queryClient: QueryClie
 				area: LOCAL
 			});
 			decryptedKey.zero();
-			storageService.set({
-				key: SESSION_STORAGE_KEY,
-				value: null,
-				area: SESSION
+
+			await sendMessageAndHandleResponse({
+				sender: SENDER_EXTENSION,
+				action: SETUP_EXTENSION_SESSION,
+				payload: undefined
 			});
 		},
 
-		onSuccess: handleSuccess(queryClient, [SESSION_DATA_KEY])
+		onSuccess: handleSuccess(queryClient, [EXTENSION_SESSION])
 	});
 }

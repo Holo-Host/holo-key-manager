@@ -1,11 +1,4 @@
-import {
-	APPS_LIST,
-	AUTHENTICATED_APPS_LIST,
-	DEVICE_KEY,
-	LOCAL,
-	SESSION,
-	SESSION_STORAGE_KEY
-} from '../const';
+import { APPS_LIST, AUTHENTICATED_APPS_LIST, DEVICE_KEY, LOCAL, SESSION } from '../const';
 import { isChromeStorageSafe } from '../helpers';
 import {
 	AppsListSchema,
@@ -13,7 +6,6 @@ import {
 	AuthenticatedAppsListSchema,
 	type ChangesType,
 	EncryptedDeviceKeySchema,
-	SessionStateSchema,
 	type StorageService
 } from '../types';
 
@@ -112,10 +104,17 @@ export const signOut = async (happId: string) => {
 	}
 };
 
-export const getSessionKey = async () => {
-	const data = await storageService.getWithoutCallback({
-		key: SESSION_STORAGE_KEY,
-		area: SESSION
+export const getDeviceKey = async () => {
+	const deviceKey = await storageService.getWithoutCallback({
+		key: DEVICE_KEY,
+		area: LOCAL
 	});
-	return SessionStateSchema.safeParse(data);
+
+	const parsedDeviceKey = EncryptedDeviceKeySchema.safeParse(deviceKey);
+
+	if (!parsedDeviceKey.success) {
+		throw new Error('Invalid device key');
+	}
+
+	return parsedDeviceKey.data;
 };

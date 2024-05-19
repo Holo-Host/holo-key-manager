@@ -1,5 +1,5 @@
 import { relevantKeys } from '../const';
-import { type ActionPayload, MessageSchema, type MessageWithId } from '../types';
+import { MessageSchema, type MessageWithId } from '../types';
 
 export const isChromeDefined = () => typeof chrome !== 'undefined';
 export const isChromeStorageSafe = () =>
@@ -14,15 +14,23 @@ export const isChromePermissionsSafe = () =>
 	typeof chrome.permissions.request === 'function' &&
 	typeof chrome.permissions.getAll === 'function';
 
-export const createQueryParams = (params: ActionPayload) => {
+export const createQueryParams = (parsedMessage: MessageWithId) => {
 	const additionalParams = relevantKeys.reduce(
 		(acc, key) => {
-			if ('payload' in params && params.payload && key in params.payload) {
-				return { ...acc, [key]: String(params.payload[key as keyof typeof params.payload]) };
+			if (
+				'payload' in parsedMessage &&
+				parsedMessage.payload &&
+				typeof parsedMessage.payload === 'object' &&
+				key in parsedMessage.payload
+			) {
+				return {
+					...acc,
+					[key]: String(parsedMessage.payload[key as keyof typeof parsedMessage.payload])
+				};
 			}
 			return acc;
 		},
-		{ action: params.action }
+		{ action: parsedMessage.action, messageId: parsedMessage.id }
 	);
 
 	return new URLSearchParams(additionalParams).toString();
