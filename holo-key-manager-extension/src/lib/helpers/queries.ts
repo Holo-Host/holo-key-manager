@@ -4,7 +4,6 @@ import { unlockKey } from '$services';
 import {
 	AUTHENTICATED_APPS_LIST,
 	BACKGROUND_SCRIPT_RECEIVED_DATA,
-	DEVICE_KEY,
 	EXTENSION_SESSION_INFO,
 	GET_EXTENSION_SESSION,
 	LOCAL,
@@ -13,10 +12,15 @@ import {
 	SESSION
 } from '$shared/const';
 import { parseMessageSchema, uint8ArrayToBase64 } from '$shared/helpers';
-import { sendMessage, storageService } from '$shared/services';
+import {
+	createMessageWithId,
+	getDeviceKey,
+	responseToMessage,
+	sendMessage,
+	storageService
+} from '$shared/services';
 import {
 	AuthenticatedAppsListSchema,
-	EncryptedDeviceKeySchema,
 	HashSaltSchema,
 	type Message,
 	PubKeySchema
@@ -53,8 +57,10 @@ export const fetchAuthenticatedAppsList = async (happId?: string) => {
 	return parsedAuthenticatedAppsListData.data;
 };
 
-export const sendMessageAndHandleResponse = async (message: Message) => {
-	const response = await sendMessage(message);
+export const sendMessageAndHandleResponse = async (message: Message, id?: string) => {
+	const messageWithId = id ? responseToMessage(message, id) : createMessageWithId(message);
+
+	const response = await sendMessage(messageWithId);
 
 	const parsedResponse = parseMessageSchema(response);
 
@@ -63,10 +69,12 @@ export const sendMessageAndHandleResponse = async (message: Message) => {
 };
 
 export const getExtensionSession = async () => {
-	const response = await sendMessage({
+	const messageWithId = createMessageWithId({
 		sender: SENDER_EXTENSION,
 		action: GET_EXTENSION_SESSION
 	});
+
+	const response = await sendMessage(messageWithId);
 
 	const parsedResponse = parseMessageSchema(response);
 
@@ -75,21 +83,6 @@ export const getExtensionSession = async () => {
 	}
 
 	return parsedResponse.data.payload;
-};
-
-export const getDeviceKey = async () => {
-	const deviceKey = await storageService.getWithoutCallback({
-		key: DEVICE_KEY,
-		area: LOCAL
-	});
-
-	const parsedDeviceKey = EncryptedDeviceKeySchema.safeParse(deviceKey);
-
-	if (!parsedDeviceKey.success) {
-		throw new Error('Invalid device key');
-	}
-
-	return parsedDeviceKey.data;
 };
 
 export const deriveSignPubKey = async (newIndex: number) => {

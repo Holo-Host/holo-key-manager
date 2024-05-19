@@ -13,7 +13,8 @@ export const extractDetailsFromUrl = derived(page, ($page) => {
 		happUiUrl: '',
 		message: 'Unknown Message',
 		requireEmail: false,
-		requireRegistrationCode: false
+		requireRegistrationCode: false,
+		messageId: ''
 	};
 
 	const params = new URLSearchParams(new URL($page.url.href).search);

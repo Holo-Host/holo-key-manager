@@ -103,3 +103,18 @@ export const signOut = async (happId: string) => {
 		});
 	}
 };
+
+export const getDeviceKey = async () => {
+	const deviceKey = await storageService.getWithoutCallback({
+		key: DEVICE_KEY,
+		area: LOCAL
+	});
+
+	const parsedDeviceKey = EncryptedDeviceKeySchema.safeParse(deviceKey);
+
+	if (!parsedDeviceKey.success) {
+		throw new Error('Invalid device key');
+	}
+
+	return parsedDeviceKey.data;
+};

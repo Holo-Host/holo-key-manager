@@ -66,6 +66,7 @@
 					happName: $extractDetailsFromUrl.happName,
 					happLogo: $extractDetailsFromUrl.happLogo,
 					happUiUrl: $extractDetailsFromUrl.happUiUrl,
+					messageId: $extractDetailsFromUrl.messageId,
 					email,
 					registrationCode
 				},

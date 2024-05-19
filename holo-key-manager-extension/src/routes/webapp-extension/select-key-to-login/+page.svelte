@@ -56,7 +56,8 @@
 				$signInWithKeyMutation.mutate(
 					{
 						happId: $extractDetailsFromUrl.happId,
-						keyName: selectedKey
+						keyName: selectedKey,
+						messageId: $extractDetailsFromUrl.messageId
 					},
 					{
 						onSuccess: dismissWindow

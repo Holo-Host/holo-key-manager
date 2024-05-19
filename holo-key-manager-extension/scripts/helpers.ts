@@ -1,6 +1,6 @@
 import { AUTHENTICATED_APPS_LIST, SESSION } from '@shared/const';
 import { base64ToUint8Array, uint8ArrayToBase64 } from '@shared/helpers';
-import { storageService } from '@shared/services';
+import { getDeviceKey, storageService } from '@shared/services';
 import {
 	AuthenticatedAppsListSchema,
 	type SignMessage,
@@ -10,6 +10,8 @@ import {
 import * as hcSeedBundle from 'hcSeedBundle';
 
 export const signMessageLogic = async ({ message, happId, session }: SignMessage) => {
+	const encryptedDeviceKey = await getDeviceKey();
+
 	const authenticatedAppsListData = await storageService.getWithoutCallback({
 		key: AUTHENTICATED_APPS_LIST,
 		area: SESSION
@@ -26,13 +28,15 @@ export const signMessageLogic = async ({ message, happId, session }: SignMessage
 
 	await hcSeedBundle.seedBundleReady;
 
-	const cipherList = hcSeedBundle.UnlockedSeedBundle.fromLocked(base64ToUint8Array(session));
+	const cipherList = hcSeedBundle.UnlockedSeedBundle.fromLocked(
+		base64ToUint8Array(encryptedDeviceKey)
+	);
 
 	if (!(cipherList[0] instanceof hcSeedBundle.LockedSeedCipherPwHash)) {
 		throw new Error('Expecting PwHash');
 	}
 
-	const pw = new TextEncoder().encode(SESSION);
+	const pw = new TextEncoder().encode(session);
 	const keyUnlocked = cipherList[0].unlock(hcSeedBundle.parseSecret(pw));
 
 	const appKey = keyUnlocked.derive(index);

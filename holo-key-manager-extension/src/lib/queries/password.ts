@@ -2,7 +2,6 @@ import { createMutation, createQuery, type QueryClient } from '@tanstack/svelte-
 import { get } from 'svelte/store';
 
 import {
-	getDeviceKey,
 	getExtensionSession,
 	getPassword,
 	handleSuccess,
@@ -21,7 +20,7 @@ import {
 	SETUP_KEY,
 	SETUP_PASSWORD
 } from '$shared/const';
-import { storageService } from '$shared/services';
+import { getDeviceKey, storageService } from '$shared/services';
 import { deviceKeyContentStore, passphraseStore, passwordStore } from '$stores';
 
 const storePassword = async (password: string) => {

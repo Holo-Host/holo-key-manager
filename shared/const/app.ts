@@ -12,5 +12,6 @@ export const relevantKeys = [
 	'happLogo',
 	'requireEmail',
 	'requireRegistrationCode',
-	'message'
+	'message',
+	'messageId'
 ] as const;
