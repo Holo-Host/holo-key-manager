@@ -62,7 +62,7 @@ export const lockKey = async (key: hcSeedBundle.UnlockedSeedBundle, password: st
 
 	const pw = new TextEncoder().encode(password);
 	const encodedBytes = key.lock([
-		new hcSeedBundle.SeedCipherPwHash(hcSeedBundle.parseSecret(pw), 'minimum')
+		new hcSeedBundle.SeedCipherPwHash(hcSeedBundle.parseSecret(pw), 'moderate')
 	]);
 
 	key.zero();
