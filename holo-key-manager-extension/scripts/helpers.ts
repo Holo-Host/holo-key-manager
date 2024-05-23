@@ -1,3 +1,4 @@
+import * as hcSeedBundle from '@holochain/hc-seed-bundle';
 import { AUTHENTICATED_APPS_LIST, SESSION } from '@shared/const';
 import { base64ToUint8Array, uint8ArrayToBase64 } from '@shared/helpers';
 import { getDeviceKey, storageService } from '@shared/services';
@@ -6,8 +7,6 @@ import {
 	type SignMessage,
 	SuccessMessageSignedSchema
 } from '@shared/types';
-// @ts-expect-error no types for hcSeedBundle
-import * as hcSeedBundle from 'hcSeedBundle';
 
 export const signMessageLogic = async ({ message, happId, session }: SignMessage) => {
 	const encryptedDeviceKey = await getDeviceKey();

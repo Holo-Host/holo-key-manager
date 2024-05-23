@@ -1,11 +1,9 @@
-// eslint-disable-next-line
-// @ts-nocheck
-import * as hcSeedBundle from 'hcSeedBundle';
+import * as hcSeedBundle from '@holochain/hc-seed-bundle';
 
 import { base64ToUint8Array, uint8ArrayToBase64 } from '$shared/helpers';
 import type { GeneratedKeys } from '$types';
 
-const lock = (root: never, password: string) =>
+const lock = (root: hcSeedBundle.UnlockedSeedBundle, password: string) =>
 	root.lock([
 		new hcSeedBundle.SeedCipherPwHash(
 			hcSeedBundle.parseSecret(new TextEncoder().encode(password)),
@@ -14,17 +12,13 @@ const lock = (root: never, password: string) =>
 	]);
 
 const deriveAndLock = (
-	master: never,
+	master: hcSeedBundle.UnlockedSeedBundle,
 	derivationPath: number,
 	bundleType: string,
 	passphrase: string
 ) => {
 	const root = master.derive(derivationPath, {
 		bundle_type: bundleType
-	});
-	root.setAppData({
-		device_number: derivationPath,
-		generate_by: 'keymanager-v1.0'
 	});
 
 	const encodedBytes = lock(root, passphrase);
@@ -41,9 +35,6 @@ export async function generateKeys(
 
 	const master = hcSeedBundle.UnlockedSeedBundle.newRandom({
 		bundle_type: 'master'
-	});
-	master.setAppData({
-		generate_by: 'keymanager-v1.0'
 	});
 
 	const encodedMasterBytes: Uint8Array = lock(master, passphrase);
@@ -66,7 +57,7 @@ export async function generateKeys(
 	};
 }
 
-export const lockKey = async (key: unknown, password: string) => {
+export const lockKey = async (key: hcSeedBundle.UnlockedSeedBundle, password: string) => {
 	await hcSeedBundle.seedBundleReady;
 
 	const pw = new TextEncoder().encode(password);

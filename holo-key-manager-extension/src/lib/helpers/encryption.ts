@@ -1,3 +1,4 @@
+import { PBKDF2_ITERATIONS } from '$shared/const';
 import type { HashSalt } from '$shared/types';
 
 const hexStringToArrayBuffer = (hexString: string) => {
@@ -32,7 +33,7 @@ const deriveBits = async (password: string, salt: Uint8Array, iterations: number
 
 export const hashPassword = async (password: string): Promise<HashSalt> => {
 	const salt = crypto.getRandomValues(new Uint8Array(16));
-	const derivedBits = await deriveBits(password, salt, 100000);
+	const derivedBits = await deriveBits(password, salt, PBKDF2_ITERATIONS);
 	return {
 		hash: arrayBufferToHexString(derivedBits),
 		salt: arrayBufferToHexString(salt)
@@ -44,6 +45,10 @@ export const verifyPassword = async (
 	storedHashSalt: HashSalt
 ): Promise<boolean> => {
 	const saltBuffer = hexStringToArrayBuffer(storedHashSalt.salt);
-	const derivedBits = await deriveBits(inputPassword, new Uint8Array(saltBuffer), 100000);
+	const derivedBits = await deriveBits(
+		inputPassword,
+		new Uint8Array(saltBuffer),
+		PBKDF2_ITERATIONS
+	);
 	return arrayBufferToHexString(derivedBits) === storedHashSalt.hash;
 };
