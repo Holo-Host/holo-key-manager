@@ -14,5 +14,6 @@ export const relevantKeys = [
 	'requireEmail',
 	'requireRegistrationCode',
 	'message',
-	'messageId'
+	'messageId',
+	'origin'
 ] as const;

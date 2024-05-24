@@ -14,7 +14,8 @@ export const extractDetailsFromUrl = derived(page, ($page) => {
 		message: 'Unknown Message',
 		requireEmail: false,
 		requireRegistrationCode: false,
-		messageId: ''
+		messageId: '',
+		origin: ''
 	};
 
 	const params = new URLSearchParams(new URL($page.url.href).search);

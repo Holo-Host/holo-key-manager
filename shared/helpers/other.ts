@@ -30,7 +30,11 @@ export const createQueryParams = (parsedMessage: MessageWithId) => {
 			}
 			return acc;
 		},
-		{ action: parsedMessage.action, messageId: parsedMessage.id }
+		{
+			action: parsedMessage.action,
+			messageId: parsedMessage.id,
+			origin: parsedMessage.origin || ''
+		}
 	);
 
 	return new URLSearchParams(additionalParams).toString();

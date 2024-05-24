@@ -159,7 +159,7 @@ const processMessageWebApp = async (
 				if (!session) {
 					return sendResponseWithSender({ action: EXTENSION_NOT_AUTHENTICATED });
 				}
-				if (await isAuthenticated(parsedMessage.payload.happId)) {
+				if (await isAuthenticated(parsedMessage.payload.happId, parsedMessage.origin)) {
 					const signature = await signMessageLogic({ ...parsedMessage.payload, session });
 					return sendResponseWithSender({
 						action: SIGN_MESSAGE_SUCCESS,

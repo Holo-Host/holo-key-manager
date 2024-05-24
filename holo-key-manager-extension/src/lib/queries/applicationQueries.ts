@@ -28,6 +28,7 @@ export function createApplicationKeyMutation(queryClient: QueryClient) {
 			happLogo: string;
 			happUiUrl: string;
 			messageId: string;
+			origin: string;
 			email?: string;
 			registrationCode?: string;
 		}) => {
@@ -59,7 +60,10 @@ export function createApplicationKeyMutation(queryClient: QueryClient) {
 
 			const updatedAppsList = {
 				...currentParsedAuthenticatedAppsListData,
-				[mutationData.happId]: newIndex
+				[mutationData.happId]: {
+					index: newIndex,
+					origin: mutationData.origin
+				}
 			};
 
 			const pubKeyObject = await deriveSignPubKey(newIndex);
@@ -91,8 +95,13 @@ export function createApplicationKeyMutation(queryClient: QueryClient) {
 
 export function createSignInWithKeyMutation(queryClient: QueryClient) {
 	return createMutation({
-		mutationFn: async (signInData: { keyName: string; happId: string; messageId: string }) => {
-			const { keyName, happId, messageId } = signInData;
+		mutationFn: async (signInData: {
+			keyName: string;
+			happId: string;
+			messageId: string;
+			origin: string;
+		}) => {
+			const { keyName, happId, messageId, origin } = signInData;
 			const currentAppsList = await fetchAndParseAppsList();
 
 			const appData = currentAppsList.find(
@@ -115,7 +124,10 @@ export function createSignInWithKeyMutation(queryClient: QueryClient) {
 				key: AUTHENTICATED_APPS_LIST,
 				value: {
 					...currentAuthenticatedAppsListData,
-					[happId]: newIndex
+					[happId]: {
+						index: newIndex,
+						origin
+					}
 				},
 				area: SESSION
 			});
@@ -131,19 +143,6 @@ export function createSignInWithKeyMutation(queryClient: QueryClient) {
 		},
 		onSuccess: handleSuccess(queryClient, [APPLICATION_SIGNED_IN_KEY])
 	});
-}
-
-export function createSignedInApplicationKeysIndexQuery() {
-	return (happId: string) => {
-		return createQuery({
-			queryKey: [APPLICATION_SIGNED_IN_KEY, happId],
-			queryFn: async () => {
-				const authenticatedAppsListData = await fetchAuthenticatedAppsList(happId);
-
-				return authenticatedAppsListData[happId];
-			}
-		});
-	};
 }
 
 export function createApplicationKeysQuery() {

@@ -23,7 +23,7 @@ export const signMessageLogic = async ({ message, happId, session }: SignMessage
 		throw new Error('Authentication failed: Unable to parse apps list or session missing');
 	}
 
-	const index = parsedAuthenticatedAppsListData.data[happId];
+	const { index } = parsedAuthenticatedAppsListData.data[happId];
 
 	await hcSeedBundle.seedBundleReady;
 

@@ -105,7 +105,8 @@ export const MessageWithIdSchema = z.intersection(
 	MessageSchema,
 	z.object({
 		id: z.string(),
-		appId: z.literal(HOLO_KEY_MANAGER_APP_ID)
+		appId: z.literal(HOLO_KEY_MANAGER_APP_ID),
+		origin: z.string().optional()
 	})
 );
 

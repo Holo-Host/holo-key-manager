@@ -30,7 +30,13 @@ export const AppsListSchema = z.array(
 
 export type AppsList = z.infer<typeof AppsListSchema>;
 
-export const AuthenticatedAppsListSchema = z.record(z.string(), z.number());
+export const AuthenticatedAppsListSchema = z.record(
+	z.string(),
+	z.object({
+		index: z.number(),
+		origin: z.string()
+	})
+);
 
 export type AuthenticatedAppsList = z.infer<typeof AuthenticatedAppsListSchema>;
 

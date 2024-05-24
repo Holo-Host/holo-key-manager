@@ -74,7 +74,9 @@ export const isAppSignUpComplete = async (happId: string) => {
 	return parsedData.some((app) => app.happId === happId);
 };
 
-export const isAuthenticated = async (happId: string) => {
+export const isAuthenticated = async (happId: string, origin?: string) => {
+	if (!origin) return false;
+
 	const data = await storageService.getWithoutCallback({
 		key: AUTHENTICATED_APPS_LIST,
 		area: SESSION
@@ -82,7 +84,9 @@ export const isAuthenticated = async (happId: string) => {
 
 	const parsedData = AuthenticatedAppsListSchema.safeParse(data);
 
-	return parsedData.success && happId in parsedData.data;
+	return (
+		parsedData.success && happId in parsedData.data && parsedData.data[happId].origin === origin
+	);
 };
 
 export const signOut = async (happId: string) => {
