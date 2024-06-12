@@ -25,6 +25,7 @@ import {
 	AuthenticatedAppsListSchema,
 	HashSaltSchema,
 	type Message,
+	type PubKey,
 	PubKeySchema,
 	SuccessMessageSignedSchema
 } from '$shared/types';
@@ -98,9 +99,9 @@ const getSessionAndKey = async () => {
 	return keyUnlocked;
 };
 
-const validatePubKey = (signPubKey: Uint8Array) => {
+const validatePubKey = (signPubKey: Uint8Array, encoder: (key: Uint8Array) => string) => {
 	const validatedSchema = PubKeySchema.safeParse({
-		pubKey: uint8ArrayToBase64(signPubKey)
+		pubKey: encoder(signPubKey)
 	});
 	if (!validatedSchema.success) {
 		throw new Error('Invalid key');
@@ -108,11 +109,16 @@ const validatePubKey = (signPubKey: Uint8Array) => {
 	return validatedSchema.data;
 };
 
-export const getDevicePubKey = async () => {
+const validatePubKeyWithBase64 = (signPubKey: Uint8Array) =>
+	validatePubKey(signPubKey, uint8ArrayToBase64);
+const validatePubKeyWithExternalEncoding = (signPubKey: Uint8Array) =>
+	validatePubKey(signPubKey, encodeHashToBase64);
+
+export const getDevicePubKeyWithExternalEncoding = async () => {
 	const keyUnlocked = await getSessionAndKey();
 	const { signPubKey } = keyUnlocked;
 	keyUnlocked.zero();
-	return validatePubKey(signPubKey);
+	return validatePubKeyWithExternalEncoding(signPubKey);
 };
 
 export const signWithDevicePubKey = async (payload: object) => {
@@ -120,6 +126,8 @@ export const signWithDevicePubKey = async (payload: object) => {
 
 	const encodedPayload = encode(payload, { useBigInt64: true });
 	const signature = keyUnlocked.sign(encodedPayload);
+
+	console.log(keyUnlocked.signPubKey);
 
 	keyUnlocked.zero();
 	console.log(signature);
@@ -135,9 +143,14 @@ export const signWithDevicePubKey = async (payload: object) => {
 	return validatedSchema.data;
 };
 
-export const deriveSignPubKey = async (newIndex: number) => {
+const deriveSignPubKeyBase = async (newIndex: number, validator: (key: Uint8Array) => PubKey) => {
 	const keyUnlocked = await getSessionAndKey();
 	const { signPubKey } = keyUnlocked.derive(newIndex);
 	keyUnlocked.zero();
-	return validatePubKey(signPubKey);
+	return validator(signPubKey);
 };
+
+export const deriveSignPubKey = async (newIndex: number) =>
+	deriveSignPubKeyBase(newIndex, validatePubKeyWithBase64);
+export const deriveSignPubKeyWithExternalEncoding = async (newIndex: number) =>
+	deriveSignPubKeyBase(newIndex, validatePubKeyWithExternalEncoding);

@@ -2,8 +2,9 @@ import { createMutation, createQuery, QueryClient } from '@tanstack/svelte-query
 
 import {
 	deriveSignPubKey,
+	deriveSignPubKeyWithExternalEncoding,
 	fetchAuthenticatedAppsList,
-	getDevicePubKey,
+	getDevicePubKeyWithExternalEncoding,
 	handleSuccess,
 	sendMessageAndHandleResponse,
 	signWithDevicePubKey
@@ -69,9 +70,9 @@ export function createApplicationKeyMutation(queryClient: QueryClient) {
 				}
 			};
 
-			const devicePubKey = await getDevicePubKey();
+			const devicePubKey = await getDevicePubKeyWithExternalEncoding();
 
-			const pubKeyObject = await deriveSignPubKey(newIndex);
+			const pubKeyObject = await deriveSignPubKeyWithExternalEncoding(newIndex);
 
 			const registerKeyBody = createRegisterKeyBody({
 				deepkeyAgent: devicePubKey.pubKey,
