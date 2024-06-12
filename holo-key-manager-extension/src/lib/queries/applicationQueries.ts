@@ -3,9 +3,12 @@ import { createMutation, createQuery, QueryClient } from '@tanstack/svelte-query
 import {
 	deriveSignPubKey,
 	fetchAuthenticatedAppsList,
+	getDevicePubKey,
 	handleSuccess,
-	sendMessageAndHandleResponse
+	sendMessageAndHandleResponse,
+	signWithDevicePubKey
 } from '$helpers';
+import { createGetKeysObjectParams, createRegisterKeyBody, getKeys, registerKey } from '$services';
 import {
 	APPLICATION_KEYS,
 	APPLICATION_SIGNED_IN_KEY,
@@ -66,7 +69,36 @@ export function createApplicationKeyMutation(queryClient: QueryClient) {
 				}
 			};
 
+			const devicePubKey = await getDevicePubKey();
+
 			const pubKeyObject = await deriveSignPubKey(newIndex);
+
+			const registerKeyBody = createRegisterKeyBody({
+				deepkeyAgent: devicePubKey.pubKey,
+				newKey: pubKeyObject.pubKey,
+				appName: mutationData.happName,
+				installedAppId: mutationData.happId,
+				appIndex: newIndex,
+				dnaHashes: [''],
+				keyName: mutationData.app_key_name
+			});
+
+			const signedPostMessage = await signWithDevicePubKey(registerKeyBody);
+
+			await registerKey(registerKeyBody, signedPostMessage.signature);
+
+			const getKeysParams = createGetKeysObjectParams({
+				deepkeyAgent: devicePubKey.pubKey,
+				timestamp: Date.now()
+			});
+
+			const signedGetMessage = await signWithDevicePubKey(getKeysParams);
+
+			const fetchedKeys = await getKeys(getKeysParams, signedGetMessage.signature);
+
+			console.log(fetchedKeys);
+
+			await new Promise((resolve) => setTimeout(resolve, 100000));
 
 			storageService.set({
 				key: AUTHENTICATED_APPS_LIST,

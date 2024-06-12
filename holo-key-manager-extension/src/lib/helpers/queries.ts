@@ -1,3 +1,5 @@
+import { encodeHashToBase64 } from '@holochain/client';
+import { encode } from '@msgpack/msgpack';
 import type { QueryClient } from '@tanstack/svelte-query';
 
 import { unlockKey } from '$services';
@@ -23,7 +25,8 @@ import {
 	AuthenticatedAppsListSchema,
 	HashSaltSchema,
 	type Message,
-	PubKeySchema
+	PubKeySchema,
+	SuccessMessageSignedSchema
 } from '$shared/types';
 
 export const handleSuccess = (queryClient: QueryClient, queryKey: string[]) => () =>
@@ -85,28 +88,56 @@ export const getExtensionSession = async () => {
 	return parsedResponse.data.payload;
 };
 
-export const deriveSignPubKey = async (newIndex: number) => {
+const getSessionAndKey = async () => {
 	const session = await getExtensionSession();
-
 	if (!session) {
 		throw new Error('Session data not found');
 	}
-
 	const encryptedDeviceKey = await getDeviceKey();
-
 	const keyUnlocked = await unlockKey(encryptedDeviceKey, session);
+	return keyUnlocked;
+};
 
-	const { signPubKey } = keyUnlocked.derive(newIndex);
-
-	keyUnlocked.zero();
-
+const validatePubKey = (signPubKey: Uint8Array) => {
 	const validatedSchema = PubKeySchema.safeParse({
 		pubKey: uint8ArrayToBase64(signPubKey)
 	});
-
 	if (!validatedSchema.success) {
 		throw new Error('Invalid key');
 	}
+	return validatedSchema.data;
+};
+
+export const getDevicePubKey = async () => {
+	const keyUnlocked = await getSessionAndKey();
+	const { signPubKey } = keyUnlocked;
+	keyUnlocked.zero();
+	return validatePubKey(signPubKey);
+};
+
+export const signWithDevicePubKey = async (payload: object) => {
+	const keyUnlocked = await getSessionAndKey();
+
+	const encodedPayload = encode(payload, { useBigInt64: true });
+	const signature = keyUnlocked.sign(encodedPayload);
+
+	keyUnlocked.zero();
+	console.log(signature);
+	const validatedSchema = SuccessMessageSignedSchema.safeParse({
+		signature: encodeHashToBase64(signature)
+	});
+	console.log(encodeHashToBase64(signature));
+
+	if (!validatedSchema.success) {
+		throw new Error('Invalid message');
+	}
 
 	return validatedSchema.data;
+};
+
+export const deriveSignPubKey = async (newIndex: number) => {
+	const keyUnlocked = await getSessionAndKey();
+	const { signPubKey } = keyUnlocked.derive(newIndex);
+	keyUnlocked.zero();
+	return validatePubKey(signPubKey);
 };
