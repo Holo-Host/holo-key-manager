@@ -73,8 +73,11 @@ importers:
         specifier: 3.0.0-beta2
         version: 3.0.0-beta2
       '@tanstack/svelte-query':
-        specifier: ^5.40.3
+        specifier: ^5.37.1
         version: 5.44.0(svelte@4.2.17)
+      blakejs:
+        specifier: ^1.2.1
+        version: 1.2.1
       clsx:
         specifier: ^2.1.1
         version: 2.1.1
@@ -1220,6 +1223,10 @@ packages:
   /binary-extensions@2.3.0:
     resolution: {integrity: sha512-Ceh+7ox5qe7LJuLHoY0feh3pHuUDHAcRUeyL2VYghZwfpkNIy/+8Ocg0a3UuSoYzavmylwuLWQOf3hl0jjMMIw==}
     engines: {node: '>=8'}
+
+  /blakejs@1.2.1:
+    resolution: {integrity: sha512-QXUSXI3QVc/gJME0dBpXrag1kbzOqCjCX8/b54ntNyW6sjtoqxqRk3LTmXzaJoh71zMsDCjM+47jS7XiwN/+fQ==}
+    dev: false
 
   /brace-expansion@1.1.11:
     resolution: {integrity: sha512-iCuPHDFgrHX7H2vEI/5xpz07zSHB00TpugqhmYtVmMO6518mCuRMoOYFldEBl0g187ufozdaHgWKcYFb61qGiA==}

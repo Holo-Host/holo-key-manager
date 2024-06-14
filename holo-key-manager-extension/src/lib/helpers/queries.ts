@@ -30,6 +30,8 @@ import {
 	SuccessMessageSignedSchema
 } from '$shared/types';
 
+import { extendUint8Array } from './encryption';
+
 export const handleSuccess = (queryClient: QueryClient, queryKey: string[]) => () =>
 	queryClient.invalidateQueries({ queryKey });
 
@@ -111,8 +113,11 @@ const validatePubKey = (signPubKey: Uint8Array, encoder: (key: Uint8Array) => st
 
 const validatePubKeyWithBase64 = (signPubKey: Uint8Array) =>
 	validatePubKey(signPubKey, uint8ArrayToBase64);
-const validatePubKeyWithExternalEncoding = (signPubKey: Uint8Array) =>
-	validatePubKey(signPubKey, encodeHashToBase64);
+const validatePubKeyWithExternalEncoding = (signPubKey: Uint8Array) => {
+	const extendedSignPubKey = extendUint8Array(signPubKey);
+	console.log(extendedSignPubKey);
+	return validatePubKey(extendedSignPubKey, encodeHashToBase64);
+};
 
 export const getDevicePubKeyWithExternalEncoding = async () => {
 	const keyUnlocked = await getSessionAndKey();

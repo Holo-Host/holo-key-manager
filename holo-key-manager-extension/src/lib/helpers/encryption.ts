@@ -1,3 +1,5 @@
+import { blake2b } from 'blakejs';
+
 import { PBKDF2_ITERATIONS } from '$shared/const';
 import type { HashSalt } from '$shared/types';
 
@@ -51,4 +53,27 @@ export const verifyPassword = async (
 		PBKDF2_ITERATIONS
 	);
 	return arrayBufferToHexString(derivedBits) === storedHashSalt.hash;
+};
+
+const calcDhtBytes = (data: Uint8Array): Uint8Array => {
+	const digest = blake2b(data, undefined, 16);
+	const dhtPart = new Uint8Array([digest[0], digest[1], digest[2], digest[3]]);
+
+	for (const i of [4, 8, 12]) {
+		dhtPart[0] ^= digest[i];
+		dhtPart[1] ^= digest[i + 1];
+		dhtPart[2] ^= digest[i + 2];
+		dhtPart[3] ^= digest[i + 3];
+	}
+
+	console.log('DHT Part:', dhtPart);
+	return dhtPart;
+};
+
+export const extendUint8Array = (inputArray: Uint8Array): Uint8Array => {
+	const prefix = new Uint8Array([132, 32, 36]);
+	const combinedArray = new Uint8Array([...prefix, ...inputArray]);
+	const suffix = calcDhtBytes(combinedArray);
+
+	return new Uint8Array([...combinedArray, ...suffix]);
 };
