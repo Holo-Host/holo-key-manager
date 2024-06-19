@@ -2,26 +2,31 @@ import { createMutation, createQuery, QueryClient } from '@tanstack/svelte-query
 
 import {
 	deriveSignPubKey,
+	deriveSignPubKeyWithExternalEncoding,
 	fetchAuthenticatedAppsList,
+	fetchKeys,
+	getDevicePubKeyWithExternalEncoding,
 	handleSuccess,
-	sendMessageAndHandleResponse
+	sendMessageAndHandleResponse,
+	signWithDevicePubKey
 } from '$helpers';
+import { createRegisterKeyBody, registerKey } from '$services';
 import {
 	APPLICATION_KEYS,
 	APPLICATION_SIGNED_IN_KEY,
-	APPS_LIST,
 	AUTHENTICATED_APPS_LIST,
-	LOCAL,
 	SENDER_EXTENSION,
 	SESSION,
 	SIGN_IN_SUCCESS,
 	SIGN_UP_SUCCESS
 } from '$shared/const';
-import { fetchAndParseAppsList, storageService } from '$shared/services';
+import { storageService } from '$shared/services';
+import type { ArrayKeyItem } from '$types';
 
 export function createApplicationKeyMutation(queryClient: QueryClient) {
 	return createMutation({
 		mutationFn: async (mutationData: {
+			currentAppsList: ArrayKeyItem[];
 			app_key_name: string;
 			happId: string;
 			happName: string;
@@ -32,31 +37,31 @@ export function createApplicationKeyMutation(queryClient: QueryClient) {
 			email?: string;
 			registrationCode?: string;
 		}) => {
-			const currentAppsList = await fetchAndParseAppsList();
-
-			if (currentAppsList.some((app) => app.keyName === mutationData.app_key_name)) {
-				throw new Error('There is already a key with that name');
-			}
-
-			storageService.set({
-				key: APPS_LIST,
-				value: [
-					...currentAppsList,
-					{
-						keyName: mutationData.app_key_name,
-						happId: mutationData.happId,
-						happName: mutationData.happName,
-						isDeleted: false,
-						happLogo: mutationData.happLogo,
-						happUiUrl: mutationData.happUiUrl
-					}
-				],
-				area: LOCAL
-			});
-
 			const currentParsedAuthenticatedAppsListData = await fetchAuthenticatedAppsList();
 
-			const newIndex = currentAppsList.length;
+			const newIndex = mutationData.currentAppsList.length;
+
+			const devicePubKeyExternal = await getDevicePubKeyWithExternalEncoding();
+
+			const pubKeyObjectExternal = await deriveSignPubKeyWithExternalEncoding(newIndex);
+
+			const pubKeyObject = await deriveSignPubKey(newIndex);
+
+			const registerKeyBody = createRegisterKeyBody({
+				deepkeyAgent: devicePubKeyExternal.pubKey,
+				newKey: pubKeyObjectExternal.pubKey,
+				appName: mutationData.happName,
+				installedAppId: mutationData.happId,
+				appIndex: newIndex,
+				dnaHashes: [''],
+				keyName: mutationData.app_key_name,
+				happLogo: mutationData.happLogo,
+				happUiUrl: mutationData.happUiUrl
+			});
+
+			const signedPostMessage = await signWithDevicePubKey(registerKeyBody);
+
+			await registerKey(registerKeyBody, signedPostMessage.signature);
 
 			const updatedAppsList = {
 				...currentParsedAuthenticatedAppsListData,
@@ -65,8 +70,6 @@ export function createApplicationKeyMutation(queryClient: QueryClient) {
 					origin: mutationData.origin
 				}
 			};
-
-			const pubKeyObject = await deriveSignPubKey(newIndex);
 
 			storageService.set({
 				key: AUTHENTICATED_APPS_LIST,
@@ -96,13 +99,13 @@ export function createApplicationKeyMutation(queryClient: QueryClient) {
 export function createSignInWithKeyMutation(queryClient: QueryClient) {
 	return createMutation({
 		mutationFn: async (signInData: {
+			currentAppsList: ArrayKeyItem[];
 			keyName: string;
 			happId: string;
 			messageId: string;
 			origin: string;
 		}) => {
-			const { keyName, happId, messageId, origin } = signInData;
-			const currentAppsList = await fetchAndParseAppsList();
+			const { currentAppsList, keyName, happId, messageId, origin } = signInData;
 
 			const appData = currentAppsList.find(
 				(app) => app.happId === happId && app.keyName === keyName
@@ -145,36 +148,9 @@ export function createSignInWithKeyMutation(queryClient: QueryClient) {
 	});
 }
 
-export function createApplicationKeysQuery() {
-	return (happId: string) => {
-		return createQuery({
-			queryKey: [APPLICATION_KEYS, happId],
-			queryFn: async () => {
-				const currentAppsList = await fetchAndParseAppsList();
-				return currentAppsList.filter((app) => app.happId === happId);
-			}
-		});
-	};
-}
-
-export function createAllApplicationsQuery() {
+export function createApplicationsListQuery() {
 	return createQuery({
 		queryKey: [APPLICATION_KEYS],
-		queryFn: async () => {
-			const currentAppsList = await fetchAndParseAppsList();
-
-			const appsDetails = currentAppsList.map((app) => ({
-				happId: app.happId,
-				happName: app.happName,
-				happLogo: app.happLogo,
-				happUiUrl: app.happUiUrl
-			}));
-
-			const uniqueApps = appsDetails.filter(
-				(app, index, self) => index === self.findIndex((t) => t.happId === app.happId)
-			);
-
-			return uniqueApps;
-		}
+		queryFn: fetchKeys
 	});
 }

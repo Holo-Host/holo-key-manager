@@ -1,13 +1,6 @@
 import { z } from 'zod';
 
-import type {
-	APPS_LIST,
-	AUTHENTICATED_APPS_LIST,
-	DEVICE_KEY,
-	LOCAL,
-	PASSWORD,
-	SESSION
-} from '../const';
+import type { AUTHENTICATED_APPS_LIST, DEVICE_KEY, LOCAL, PASSWORD, SESSION } from '../const';
 import { HappDetailsSchema } from './general';
 
 export const EncryptedDeviceKeySchema = z.string();
@@ -20,15 +13,6 @@ export const HashSaltSchema = z.object({
 });
 
 export type HashSalt = z.infer<typeof HashSaltSchema>;
-
-export const AppsListSchema = z.array(
-	HappDetailsSchema.extend({
-		keyName: z.string(),
-		isDeleted: z.boolean()
-	})
-);
-
-export type AppsList = z.infer<typeof AppsListSchema>;
 
 export const AuthenticatedAppsListSchema = z.record(
 	z.string(),
@@ -46,6 +30,15 @@ export type ChangesType = {
 	[key: string]: unknown;
 };
 
+export const AppsListSchema = z.array(
+	HappDetailsSchema.extend({
+		keyName: z.string(),
+		isDeleted: z.boolean()
+	})
+);
+
+export type AppsList = z.infer<typeof AppsListSchema>;
+
 type SetAction<T, V, A = typeof SESSION | typeof LOCAL> = {
 	key: T;
 	value: V;
@@ -60,12 +53,10 @@ type GetAction<T, A = typeof SESSION | typeof LOCAL> = {
 type StorageSetItem =
 	| SetAction<typeof AUTHENTICATED_APPS_LIST, AuthenticatedAppsList, typeof SESSION>
 	| SetAction<typeof PASSWORD, HashSalt, typeof LOCAL>
-	| SetAction<typeof APPS_LIST, AppsList, typeof LOCAL>
 	| SetAction<typeof DEVICE_KEY, string, typeof LOCAL>;
 
 type StorageGetItem =
 	| GetAction<typeof AUTHENTICATED_APPS_LIST, typeof SESSION>
-	| GetAction<typeof APPS_LIST, typeof LOCAL>
 	| GetAction<typeof PASSWORD, typeof LOCAL>
 	| GetAction<typeof DEVICE_KEY, typeof LOCAL>;
 

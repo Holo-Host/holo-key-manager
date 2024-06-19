@@ -1,16 +1,28 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
 	import { appQueries } from '$queries';
+	import type { ArrayKeyItem } from '$types';
 
-	const { allApplicationsQuery } = appQueries();
+	const { applicationsListQuery } = appQueries();
 
 	let searchInput = '';
 
-	$: filteredApplications = $allApplicationsQuery.data?.filter(
-		(applicationKey) =>
-			applicationKey.happId.toLowerCase().includes(searchInput.toLowerCase()) ||
-			applicationKey.happName.toLowerCase().includes(searchInput.toLowerCase())
-	);
+	const isUniqueApp = (app: ArrayKeyItem, index: number, self: ArrayKeyItem[]): boolean =>
+		index === self.findIndex((t) => t.happId === app.happId);
+
+	const getUniqueApps = (apps: ArrayKeyItem[]): ArrayKeyItem[] => apps?.filter(isUniqueApp) ?? [];
+
+	const matchesSearchInput =
+		(searchInput: string) =>
+		({ happId, happName }: ArrayKeyItem): boolean =>
+			[happId, happName].some((field) => field.toLowerCase().includes(searchInput.toLowerCase()));
+
+	const filterApplications = (apps: ArrayKeyItem[], searchInput: string): ArrayKeyItem[] =>
+		apps?.filter(matchesSearchInput(searchInput)) ?? [];
+
+	$: filteredApplications = $applicationsListQuery.data
+		? filterApplications(getUniqueApps($applicationsListQuery.data), searchInput)
+		: [];
 </script>
 
 <div class="mt-4 flex justify-between">
@@ -28,31 +40,37 @@
 		/>
 	</div>
 </div>
-{#each filteredApplications || [] as applicationKey}
-	<div class="flex items-center justify-between border-b border-grey py-2 last:border-b-0">
-		<div class="flex items-center">
-			{#if !!applicationKey.happLogo}
-				<img src={applicationKey.happLogo} alt="hApp Logo" class="mr-2 h-10 w-10" />
-			{/if}
-			<span>{applicationKey.happName}</span>
-		</div>
-		<div class="flex">
-			{#if !!applicationKey.happUiUrl}
-				<a
-					href={applicationKey.happUiUrl}
-					class="mr-2 flex items-center justify-center text-sm text-secondary"
-					target="_blank"
-				>
-					Visit
-					<img src="/img/arrow-outward.svg" alt="Visit page" class="ml-2" />
-				</a>
-			{/if}
-			<button
-				class="rounded-md px-4 py-2 text-sm text-primary"
-				on:click={() => goto(`keys?happId=${applicationKey.happId}`)}
-			>
-				View Keys
-			</button>
-		</div>
+{#if $applicationsListQuery.isFetching || filteredApplications.length === 0}
+	<div class="flex items-center justify-center">
+		<span>{$applicationsListQuery.isFetching ? 'Loading' : 'No keys'}</span>
 	</div>
-{/each}
+{:else}
+	{#each filteredApplications as applicationKey}
+		<div class="flex items-center justify-between border-b border-grey py-2 last:border-b-0">
+			<div class="flex items-center">
+				{#if !!applicationKey.happLogo}
+					<img src={applicationKey.happLogo} alt="hApp Logo" class="mr-2 h-10 w-10" />
+				{/if}
+				<span>{applicationKey.happName}</span>
+			</div>
+			<div class="flex">
+				{#if !!applicationKey.happUiUrl}
+					<a
+						href={applicationKey.happUiUrl}
+						class="mr-2 flex items-center justify-center text-sm text-secondary"
+						target="_blank"
+					>
+						Visit
+						<img src="/img/arrow-outward.svg" alt="Visit page" class="ml-2" />
+					</a>
+				{/if}
+				<button
+					class="rounded-md px-4 py-2 text-sm text-primary"
+					on:click={() => goto(`keys?happId=${applicationKey.happId}`)}
+				>
+					View Keys
+				</button>
+			</div>
+		</div>
+	{/each}
+{/if}

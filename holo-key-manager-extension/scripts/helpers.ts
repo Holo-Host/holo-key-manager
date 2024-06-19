@@ -1,4 +1,9 @@
-import * as hcSeedBundle from '@holochain/hc-seed-bundle';
+import {
+	LockedSeedCipherPwHash,
+	parseSecret,
+	seedBundleReady,
+	UnlockedSeedBundle
+} from '@holochain/hc-seed-bundle';
 import { AUTHENTICATED_APPS_LIST, SESSION } from '@shared/const';
 import { base64ToUint8Array, uint8ArrayToBase64 } from '@shared/helpers';
 import { getDeviceKey, storageService } from '@shared/services';
@@ -25,18 +30,16 @@ export const signMessageLogic = async ({ message, happId, session }: SignMessage
 
 	const { index } = parsedAuthenticatedAppsListData.data[happId];
 
-	await hcSeedBundle.seedBundleReady;
+	await seedBundleReady;
 
-	const cipherList = hcSeedBundle.UnlockedSeedBundle.fromLocked(
-		base64ToUint8Array(encryptedDeviceKey)
-	);
+	const cipherList = UnlockedSeedBundle.fromLocked(base64ToUint8Array(encryptedDeviceKey));
 
-	if (!(cipherList[0] instanceof hcSeedBundle.LockedSeedCipherPwHash)) {
+	if (!(cipherList[0] instanceof LockedSeedCipherPwHash)) {
 		throw new Error('Expecting PwHash');
 	}
 
 	const pw = new TextEncoder().encode(session);
-	const keyUnlocked = cipherList[0].unlock(hcSeedBundle.parseSecret(pw));
+	const keyUnlocked = cipherList[0].unlock(parseSecret(pw));
 
 	const appKey = keyUnlocked.derive(index);
 

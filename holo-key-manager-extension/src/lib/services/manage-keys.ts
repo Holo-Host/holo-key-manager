@@ -1,18 +1,19 @@
-import * as hcSeedBundle from '@holochain/hc-seed-bundle';
+import {
+	LockedSeedCipherPwHash,
+	parseSecret,
+	seedBundleReady,
+	SeedCipherPwHash,
+	UnlockedSeedBundle
+} from '@holochain/hc-seed-bundle';
 
 import { base64ToUint8Array, uint8ArrayToBase64 } from '$shared/helpers';
 import type { GeneratedKeys } from '$types';
 
-const lock = (root: hcSeedBundle.UnlockedSeedBundle, password: string) =>
-	root.lock([
-		new hcSeedBundle.SeedCipherPwHash(
-			hcSeedBundle.parseSecret(new TextEncoder().encode(password)),
-			'minimum'
-		)
-	]);
+const lock = (root: UnlockedSeedBundle, password: string) =>
+	root.lock([new SeedCipherPwHash(parseSecret(new TextEncoder().encode(password)), 'minimum')]);
 
 const deriveAndLock = (
-	master: hcSeedBundle.UnlockedSeedBundle,
+	master: UnlockedSeedBundle,
 	derivationPath: number,
 	bundleType: string,
 	passphrase: string
@@ -31,9 +32,9 @@ export async function generateKeys(
 	passphrase: string,
 	extensionPassword: string
 ): Promise<GeneratedKeys> {
-	await hcSeedBundle.seedBundleReady;
+	await seedBundleReady;
 
-	const master = hcSeedBundle.UnlockedSeedBundle.newRandom({
+	const master = UnlockedSeedBundle.newRandom({
 		bundle_type: 'master'
 	});
 
@@ -57,13 +58,11 @@ export async function generateKeys(
 	};
 }
 
-export const lockKey = async (key: hcSeedBundle.UnlockedSeedBundle, password: string) => {
-	await hcSeedBundle.seedBundleReady;
+export const lockKey = async (key: UnlockedSeedBundle, password: string) => {
+	await seedBundleReady;
 
 	const pw = new TextEncoder().encode(password);
-	const encodedBytes = key.lock([
-		new hcSeedBundle.SeedCipherPwHash(hcSeedBundle.parseSecret(pw), 'moderate')
-	]);
+	const encodedBytes = key.lock([new SeedCipherPwHash(parseSecret(pw), 'moderate')]);
 
 	key.zero();
 
@@ -71,18 +70,16 @@ export const lockKey = async (key: hcSeedBundle.UnlockedSeedBundle, password: st
 };
 
 export const unlockKey = async (encodedBytesString: string, password: string) => {
-	await hcSeedBundle.seedBundleReady;
+	await seedBundleReady;
 
-	const cipherList = hcSeedBundle.UnlockedSeedBundle.fromLocked(
-		base64ToUint8Array(encodedBytesString)
-	);
+	const cipherList = UnlockedSeedBundle.fromLocked(base64ToUint8Array(encodedBytesString));
 
-	if (!(cipherList[0] instanceof hcSeedBundle.LockedSeedCipherPwHash)) {
+	if (!(cipherList[0] instanceof LockedSeedCipherPwHash)) {
 		throw new Error('Expecting PwHash');
 	}
 
 	const pw = new TextEncoder().encode(password);
-	const key = cipherList[0].unlock(hcSeedBundle.parseSecret(pw));
+	const key = cipherList[0].unlock(parseSecret(pw));
 
 	return key;
 };
