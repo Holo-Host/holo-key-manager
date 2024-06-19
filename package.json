@@ -16,7 +16,8 @@
 		"format": "prettier --write '**/*.{js,ts,svelte,json}'",
 		"check": "cd holo-key-manager-extension && pnpm check",
 		"lintAndFormat": "concurrently \"pnpm lint && pnpm format\" \"pnpm check\"",
-		"prepare": "husky install"
+		"prepare": "husky install",
+		"test": "cd holo-key-manager-extension && pnpm test"
 	},
 	"devDependencies": {
 		"@rollup/plugin-node-resolve": "^15.2.3",
