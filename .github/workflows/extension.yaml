@@ -14,28 +14,22 @@ jobs:
       - uses: actions/checkout@v4
       - name: Setup Node.js environment
         uses: actions/setup-node@v4
-      - name: Install Puppeteer
-        run: npm install puppeteer
+      - name: Install chrome-webstore-item-property
+        run: npm install chrome-webstore-item-property
+
       - name: Check version against latest release in Chrome Web Store
         id: check_version
         uses: actions/github-script@v7
         with:
           script: |
             const fs = require('fs/promises');
-            const puppeteer = require('puppeteer');
+            const chromeWebstoreItemProperty = require('chrome-webstore-item-property');
             const fetchVersionInfo = async () => {
               try {
                 const data = await fs.readFile('./holo-key-manager-extension/static/manifest.json', 'utf8');
                 const manifest = JSON.parse(data);
                 const currentVersion = manifest.version;
-                const browser = await puppeteer.launch();
-                const page = await browser.newPage();
-                await page.goto(`https://chromewebstore.google.com/detail/holo-key-manager/${{ vars.CHROME_ID}}`);
-                const versionPattern = /<div[^>]*>Version<\/div><div[^>]*>(\d+\.\d+\.\d+)<\/div>/;
-                const text = await page.content();
-                const versionMatch = text.match(versionPattern);
-                const latestVersion = versionMatch ? versionMatch[1] : null;
-                await browser.close();
+                const latestVersion = await chromeWebstoreItemProperty('version', '${{ vars.CHROME_ID }}');
                 core.setOutput('abort', currentVersion === latestVersion ? 'true' : 'false');
               } catch (error) {
                 core.setFailed(error.message);
