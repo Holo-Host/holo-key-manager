@@ -17,7 +17,7 @@ jobs:
       - name: Install pnpm
         run: npm install -g pnpm
       - name: Install chrome-webstore-item-property
-        run: pnpm add -D chrome-webstore-item-property
+        run: pnpm add -D chrome-webstore-item-property -w
       - name: Check version against latest release in Chrome Web Store
         id: check_version
         uses: actions/github-script@v7
