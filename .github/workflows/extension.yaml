@@ -26,26 +26,23 @@ jobs:
             const fs = require('fs/promises');
             const chromeWebstoreItemProperty = require('chrome-web-store-item-property');
 
-            const getManifestVersion = async (filePath) => {
-              const data = await fs.readFile(filePath, 'utf8');
-              const manifest = JSON.parse(data);
-              return manifest.version;
-            };
+            const getManifestVersion = (filePath) =>
+              fs.readFile(filePath, 'utf8')
+                .then(data => JSON.parse(data).version);
 
-            const checkVersion = async (chromeId) => {
-              const latestVersion = await chromeWebstoreItemProperty(chromeId);
-              return latestVersion.version;
-            };
+            const checkVersion = (chromeId) =>
+              chromeWebstoreItemProperty(chromeId)
+                .then(latestVersion => latestVersion.version);
 
-            const fetchVersionInfo = async () => {
-              try {
-                const currentVersion = await getManifestVersion('./holo-key-manager-extension/static/manifest.json');
-                const latestVersion = await checkVersion('${{ vars.CHROME_ID }}');
+            const fetchVersionInfo = () =>
+              Promise.all([
+                getManifestVersion('./holo-key-manager-extension/static/manifest.json'),
+                checkVersion('${{ vars.CHROME_ID }}')
+              ])
+              .then(([currentVersion, latestVersion]) => {
                 core.setOutput('abort', currentVersion === latestVersion ? 'true' : 'false');
-              } catch (error) {
-                core.setFailed(error.message);
-              }
-            };
+              })
+              .catch(error => core.setFailed(error.message));
 
             fetchVersionInfo();
       - name: Abort build if version matches
