@@ -17,7 +17,7 @@
 		"check": "cd holo-key-manager-extension && pnpm check",
 		"lintAndFormat": "concurrently \"pnpm lint && pnpm format\" \"pnpm check\"",
 		"prepare": "husky install",
-		"test": "cd holo-key-manager-extension && pnpm test"
+		"test": "cd holo-key-manager-extension && pnpm test run"
 	},
 	"devDependencies": {
 		"@rollup/plugin-node-resolve": "^15.2.3",
