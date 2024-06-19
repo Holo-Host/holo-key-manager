@@ -16,33 +16,36 @@ jobs:
         uses: actions/setup-node@v4
       - name: Install pnpm
         run: npm install -g pnpm
-      - name: Install chrome-webstore-item-property
-        run: pnpm add -D chrome-web-store-item-property -w
+      - name: Install webextension-store-meta
+        run: pnpm add -D webextension-store-meta -w
       - name: Check version against latest release in Chrome Web Store
         id: check_version
         uses: actions/github-script@v7
         with:
           script: |
             const fs = require('fs/promises');
-            const chromeWebstoreItemProperty = require('chrome-web-store-item-property');
+            const { ChromeWebStore } = require('webextension-store-meta/lib/chrome-web-store');
 
-            const getManifestVersion = (filePath) =>
-              fs.readFile(filePath, 'utf8')
-                .then(data => JSON.parse(data).version);
+            const getManifestVersion = async (filePath) => {
+              const data = await fs.readFile(filePath, 'utf8');
+              const manifest = JSON.parse(data);
+              return manifest.version;
+            };
 
-            const checkVersion = (chromeId) =>
-              chromeWebstoreItemProperty(chromeId)
-                .then(latestVersion => latestVersion.version);
+            const checkVersion = async (chromeId) => {
+              const chromeWebStore = await ChromeWebStore.load({ id: chromeId, qs: { hl: 'en' } });
+              return chromeWebStore.meta().version;
+            };
 
-            const fetchVersionInfo = () =>
-              Promise.all([
-                getManifestVersion('./holo-key-manager-extension/static/manifest.json'),
-                checkVersion('${{ vars.CHROME_ID }}')
-              ])
-              .then(([currentVersion, latestVersion]) => {
+            const fetchVersionInfo = async () => {
+              try {
+                const currentVersion = await getManifestVersion('./holo-key-manager-extension/static/manifest.json');
+                const latestVersion = await checkVersion('${{ vars.CHROME_ID }}');
                 core.setOutput('abort', currentVersion === latestVersion ? 'true' : 'false');
-              })
-              .catch(error => core.setFailed(error.message));
+              } catch (error) {
+                core.setFailed(error.message);
+              }
+            };
 
             fetchVersionInfo();
       - name: Abort build if version matches
