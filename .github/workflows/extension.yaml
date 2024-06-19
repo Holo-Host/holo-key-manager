@@ -31,7 +31,6 @@ jobs:
               const manifest = JSON.parse(data);
               return manifest.version;
             };
-
             const checkVersion = async (chromeId) => {
               const chromeWebStore = await ChromeWebStore.load({ id: chromeId, qs: { hl: 'en' } });
               return chromeWebStore.meta().version;
