@@ -2,10 +2,9 @@ import { encodeHashToBase64 } from '@holochain/client';
 import { encode } from '@msgpack/msgpack';
 import type { QueryClient } from '@tanstack/svelte-query';
 
-import { unlockKey } from '$services';
+import { createGetKeysObjectParams, getKeys, unlockKey } from '$services';
 import {
 	AUTHENTICATED_APPS_LIST,
-	BACKGROUND_SCRIPT_RECEIVED_DATA,
 	EXTENSION_SESSION_INFO,
 	GET_EXTENSION_SESSION,
 	LOCAL,
@@ -14,17 +13,10 @@ import {
 	SESSION
 } from '$shared/const';
 import { parseMessageSchema, uint8ArrayToBase64 } from '$shared/helpers';
-import {
-	createMessageWithId,
-	getDeviceKey,
-	responseToMessage,
-	sendMessage,
-	storageService
-} from '$shared/services';
+import { createMessageWithId, getDeviceKey, sendMessage, storageService } from '$shared/services';
 import {
 	AuthenticatedAppsListSchema,
 	HashSaltSchema,
-	type Message,
 	type PubKey,
 	PubKeySchema,
 	SuccessMessageSignedSchema
@@ -41,6 +33,17 @@ export const getPassword = async () => {
 		area: LOCAL
 	});
 	return HashSaltSchema.safeParse(data);
+};
+
+export const fetchKeys = async () => {
+	const devicePubKey = await getDevicePubKeyWithExternalEncoding();
+	const getKeysParams = createGetKeysObjectParams({
+		deepkeyAgent: devicePubKey.pubKey,
+		timestamp: Date.now()
+	});
+	const signedMessage = await signWithDevicePubKey(getKeysParams);
+
+	return await getKeys(getKeysParams, signedMessage.signature);
 };
 
 export const fetchAuthenticatedAppsList = async (happId?: string) => {
@@ -61,17 +64,6 @@ export const fetchAuthenticatedAppsList = async (happId?: string) => {
 	}
 
 	return parsedAuthenticatedAppsListData.data;
-};
-
-export const sendMessageAndHandleResponse = async (message: Message, id?: string) => {
-	const messageWithId = id ? responseToMessage(message, id) : createMessageWithId(message);
-
-	const response = await sendMessage(messageWithId);
-
-	const parsedResponse = parseMessageSchema(response);
-
-	if (parsedResponse.data.action !== BACKGROUND_SCRIPT_RECEIVED_DATA)
-		throw new Error('Error sending data to webapp');
 };
 
 export const getExtensionSession = async () => {
@@ -115,7 +107,6 @@ const validatePubKeyWithBase64 = (signPubKey: Uint8Array) =>
 	validatePubKey(signPubKey, uint8ArrayToBase64);
 const validatePubKeyWithExternalEncoding = (signPubKey: Uint8Array) => {
 	const extendedSignPubKey = extendUint8Array(signPubKey);
-	console.log(extendedSignPubKey);
 	return validatePubKey(extendedSignPubKey, encodeHashToBase64);
 };
 
@@ -130,16 +121,14 @@ export const signWithDevicePubKey = async (payload: object) => {
 	const keyUnlocked = await getSessionAndKey();
 
 	const encodedPayload = encode(payload, { useBigInt64: true });
+
 	const signature = keyUnlocked.sign(encodedPayload);
 
-	console.log(keyUnlocked.signPubKey);
-
 	keyUnlocked.zero();
-	console.log(signature);
+
 	const validatedSchema = SuccessMessageSignedSchema.safeParse({
 		signature: encodeHashToBase64(signature)
 	});
-	console.log(encodeHashToBase64(signature));
 
 	if (!validatedSchema.success) {
 		throw new Error('Invalid message');

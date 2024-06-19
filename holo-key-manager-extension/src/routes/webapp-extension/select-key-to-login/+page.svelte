@@ -1,13 +1,23 @@
 <script lang="ts">
 	import clsx from 'clsx';
+	import { derived } from 'svelte/store';
 
 	import { AppParagraph, Button, LogoCloseBar } from '$components';
 	import { dismissWindow, extractDetailsFromUrl } from '$helpers';
 	import { appQueries } from '$queries';
 
-	const { applicationKeysQueryFunction, signInWithKeyMutation } = appQueries();
+	const { applicationsListQuery, signInWithKeyMutation } = appQueries();
 
-	const applicationKeysQuery = applicationKeysQueryFunction($extractDetailsFromUrl.happId);
+	const applicationKeysQuery = derived(
+		[applicationsListQuery, extractDetailsFromUrl],
+		([$applicationsListQuery, $extractDetailsFromUrl]) => {
+			return (
+				$applicationsListQuery?.data?.filter(
+					(app) => app.happId === $extractDetailsFromUrl.happId
+				) || []
+			);
+		}
+	);
 
 	let selectedKey = '';
 
@@ -25,9 +35,9 @@
 			text="Select your preferred key to connect with."
 		/>
 		<p class="my-2 text-base">Keys</p>
-		{#if $applicationKeysQuery.isSuccess}
+		{#if $applicationKeysQuery.length > 0}
 			<div class="max-h-44 overflow-auto">
-				{#each $applicationKeysQuery.data as key, index}
+				{#each $applicationKeysQuery as key, index}
 					{@const selected = selectedKey === key.keyName}
 					<button
 						class={clsx('flex w-full items-center justify-between border p-2', {
@@ -58,7 +68,8 @@
 						happId: $extractDetailsFromUrl.happId,
 						keyName: selectedKey,
 						origin: $extractDetailsFromUrl.origin,
-						messageId: $extractDetailsFromUrl.messageId
+						messageId: $extractDetailsFromUrl.messageId,
+						currentAppsList: $applicationsListQuery.data || []
 					},
 					{
 						onSuccess: dismissWindow

@@ -66,7 +66,6 @@ const calcDhtBytes = (data: Uint8Array): Uint8Array => {
 		dhtPart[3] ^= digest[i + 3];
 	}
 
-	console.log('DHT Part:', dhtPart);
 	return dhtPart;
 };
 

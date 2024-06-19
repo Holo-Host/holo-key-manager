@@ -22,7 +22,7 @@ import {
 	UNKNOWN_ACTION
 } from '@shared/const';
 import { createQueryParams } from '@shared/helpers';
-import { isAppSignUpComplete, isAuthenticated, isSetupComplete, signOut } from '@shared/services';
+import { isAuthenticated, isSetupComplete, signOut } from '@shared/services';
 import {
 	type ActionPayload,
 	type Message,
@@ -150,11 +150,8 @@ const processMessageWebApp = async (
 		}
 		switch (parsedMessage.action) {
 			case SIGN_UP:
-				return createOrUpdateDataResponseWindow(sendResponseWithSender, parsedMessage);
 			case SIGN_IN:
-				return (await isAppSignUpComplete(parsedMessage.payload.happId))
-					? createOrUpdateDataResponseWindow(sendResponseWithSender, parsedMessage)
-					: sendResponseWithSender({ action: NO_KEY_FOR_HAPP });
+				return createOrUpdateDataResponseWindow(sendResponseWithSender, parsedMessage);
 			case SIGN_MESSAGE:
 				if (!session) {
 					return sendResponseWithSender({ action: EXTENSION_NOT_AUTHENTICATED });
@@ -194,6 +191,7 @@ const processMessageExtension = async (
 					action: EXTENSION_SESSION_INFO,
 					payload: session
 				});
+			case NO_KEY_FOR_HAPP:
 			case SIGN_IN_SUCCESS:
 			case SIGN_UP_SUCCESS:
 				break;

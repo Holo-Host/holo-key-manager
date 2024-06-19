@@ -1,9 +1,8 @@
 import { useQueryClient } from '@tanstack/svelte-query';
 
 import {
-	createAllApplicationsQuery,
 	createApplicationKeyMutation,
-	createApplicationKeysQuery,
+	createApplicationsListQuery,
 	createSignInWithKeyMutation
 } from './applicationQueries';
 import {
@@ -29,10 +28,9 @@ export function appQueries() {
 	const isSignedInToExtensionQuery = createIsSignedInToExtensionQuery();
 	const setupDeviceKeyQuery = createSetupDeviceKeyQuery();
 	const setupPasswordQuery = createSetupPasswordQuery();
-	const applicationKeysQueryFunction = createApplicationKeysQuery();
 	const signInMutation = createSignInMutation(queryClient);
+	const applicationsListQuery = createApplicationsListQuery();
 	const storeDeviceKey = createStoreDeviceKey(queryClient);
-	const allApplicationsQuery = createAllApplicationsQuery();
 	const recoverDeviceKeyMutation = createRecoverDeviceKeyMutation();
 	const applicationKeyMutation = createApplicationKeyMutation(queryClient);
 	const passwordAndStoreDeviceKeyMutation = createPasswordAndStoreDeviceKeyMutation(queryClient);
@@ -44,12 +42,11 @@ export function appQueries() {
 		setupDeviceKeyQuery,
 		setupPasswordQuery,
 		signInMutation,
+		applicationsListQuery,
 		storeDeviceKey,
 		applicationKeyMutation,
 		recoverDeviceKeyMutation,
 		passwordAndStoreDeviceKeyMutation,
-		applicationKeysQueryFunction,
-		allApplicationsQuery,
 		signInWithKeyMutation
 	};
 }

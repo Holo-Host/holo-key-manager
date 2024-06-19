@@ -4,7 +4,7 @@
 	import { extractDetailsFromUrl } from '$helpers';
 	import { appQueries } from '$queries';
 
-	const { applicationKeyMutation } = appQueries();
+	const { applicationKeyMutation, applicationsListQuery } = appQueries();
 	let email = '';
 	let registrationCode = '';
 	let keyName = '';
@@ -69,7 +69,8 @@
 					messageId: $extractDetailsFromUrl.messageId,
 					origin: $extractDetailsFromUrl.origin,
 					email,
-					registrationCode
+					registrationCode,
+					currentAppsList: $applicationsListQuery.data || []
 				},
 				{
 					onSuccess: dismissWindow

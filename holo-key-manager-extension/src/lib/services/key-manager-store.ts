@@ -1,16 +1,20 @@
 import { ZodSchema } from 'zod';
 
 import {
+	type ArrayKeyItem,
+	ArrayKeyItemSchema,
 	type GetKeysObjectParams,
 	GetKeysObjectParamsSchema,
+	type GetKeysResponse,
+	GetKeysResponseSchema,
 	type RegisterKeyInput,
 	RegisterKeySchema
 } from '$types';
 
-const validateInput = <T>(schema: ZodSchema<T>, input: unknown): T => {
-	const validationResult = schema.safeParse(input);
+const validateData = <T>(schema: ZodSchema<T>, data: unknown): T => {
+	const validationResult = schema.safeParse(data);
 	if (!validationResult.success) {
-		throw new Error(`Invalid input: ${validationResult.error.message}`);
+		throw new Error(`Invalid data: ${validationResult.error.message}`);
 	}
 	return validationResult.data;
 };
@@ -18,47 +22,92 @@ const validateInput = <T>(schema: ZodSchema<T>, input: unknown): T => {
 const fetchWithValidation = async (url: string, options: RequestInit, errorMessage: string) => {
 	const response = await fetch(url, options);
 	if (!response.ok) {
-		throw new Error(errorMessage);
+		throw new Error(`${errorMessage}. Status: ${response.status}`);
 	}
 	return response;
 };
 
-export const createRegisterKeyBody = (input: unknown) =>
-	validateInput<RegisterKeyInput>(RegisterKeySchema, input);
+const createRequestBody = <T>(schema: ZodSchema<T>, data: unknown): T =>
+	validateData<T>(schema, data);
 
-export const registerKey = async (input: RegisterKeyInput, signature: string) => {
-	await fetchWithValidation(
-		'https://key-manager-store.holo.host/api/v1/register-key',
+const sendRequest = async (
+	url: string,
+	method: string,
+	body: unknown,
+	signature: string,
+	errorMessage: string
+) =>
+	fetchWithValidation(
+		url,
 		{
-			method: 'POST',
+			method,
 			headers: {
 				'Content-Type': 'application/json',
 				Accept: 'application/json',
 				Authorization: signature
 			},
-			body: JSON.stringify(input)
+			body: JSON.stringify(body)
 		},
+		errorMessage
+	);
+
+export const createRegisterKeyBody = (data: unknown) =>
+	createRequestBody<RegisterKeyInput>(RegisterKeySchema, data);
+
+export const registerKey = async (data: RegisterKeyInput, signature: string) => {
+	await sendRequest(
+		'https://key-manager-store.holo.host/api/v1/register-key',
+		'POST',
+		data,
+		signature,
 		'Failed to register key'
 	);
 };
 
-export const createGetKeysObjectParams = (input: unknown): GetKeysObjectParams =>
-	validateInput<GetKeysObjectParams>(GetKeysObjectParamsSchema, input);
+export const createGetKeysObjectParams = (data: unknown): GetKeysObjectParams =>
+	createRequestBody<GetKeysObjectParams>(GetKeysObjectParamsSchema, data);
+
+const mapItemToNewItem = (item: GetKeysResponse): ArrayKeyItem => ({
+	happId: item.installedAppId,
+	happName: item.appName,
+	keyName: item.metadata.keyName,
+	happLogo: item.metadata.happLogo,
+	happUiUrl: item.metadata.happUiUrl
+});
+
+const insertItemAtIndex = <T>(arr: T[], index: number, newItem: T): T[] => [
+	...arr.slice(0, index),
+	newItem,
+	...arr.slice(index)
+];
+
+export const transformDataToArray = (data: GetKeysResponse[]): ArrayKeyItem[] =>
+	data.reduce<ArrayKeyItem[]>((acc, item) => {
+		const newItem = mapItemToNewItem(item);
+		ArrayKeyItemSchema.parse(newItem);
+		return insertItemAtIndex(acc, item.appIndex, newItem);
+	}, []);
 
 export const getKeys = async (params: GetKeysObjectParams, signature: string) => {
-	const { deepkeyAgent, timestamp } = params;
+	try {
+		const response = await sendRequest(
+			'https://key-manager-store.holo.host/api/v1/data-object',
+			'POST',
+			params,
+			signature,
+			'Failed to fetch data object'
+		);
 
-	const response = await fetchWithValidation(
-		`https://key-manager-store.holo.host/api/v1/data-object/${deepkeyAgent}?timestamp=${timestamp}`,
-		{
-			method: 'GET',
-			headers: {
-				Accept: 'application/json',
-				Authorization: signature
-			}
-		},
-		'Failed to fetch data object'
-	);
+		console.log('response', response);
 
-	return response.json();
+		const json = await response.json();
+		const data = validateData<GetKeysResponse[]>(GetKeysResponseSchema.array(), json);
+
+		return transformDataToArray(data);
+	} catch (error) {
+		if (error instanceof Error && error.message.includes('Status: 404')) {
+			return [];
+		}
+		throw error;
+	}
 };

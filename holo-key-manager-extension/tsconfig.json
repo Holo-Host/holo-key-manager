@@ -4,11 +4,13 @@
 		"outDir": "./build",
 		"allowJs": true,
 		"checkJs": true,
+		"module": "ESNext",
+		"target": "ESNext",
 		"esModuleInterop": true,
 		"forceConsistentCasingInFileNames": true,
 		"resolveJsonModule": true,
 		"sourceMap": true,
 		"strict": true,
-		"types": ["svelte", "chrome"]
+		"types": ["svelte", "chrome", "vitest/globals"]
 	}
 }
