@@ -7,14 +7,12 @@ export default {
 				sans: ['Nunito Sans', 'sans-serif']
 			},
 			colors: {
-				primary: '#4820E3',
-				'primary-disabled': '#C8C1E3',
+				primary: '#00838D',
+				'primary-disabled': '#B2DADD',
 				secondary: '#606C8B',
-				tertiary: '#5C4DA6',
 				quaternary: '#313C59',
 				grey: '#D2D0DD',
 				'light-gray': '#262A3333',
-				'primary-border': '#C8BBFA',
 				'primary-background': '#FBFAFF',
 				'row-background': '#F9F9FB',
 				alert: '#D92D20',

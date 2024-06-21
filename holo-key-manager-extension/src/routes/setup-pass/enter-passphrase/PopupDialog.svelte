@@ -11,7 +11,7 @@
 		</div>
 		<p>Did you remember to write down your passphrase?</p>
 		<div class="mx-auto mt-4 flex w-36 flex-col justify-center">
-			<button class="m-2 rounded-full bg-tertiary px-4 py-2 font-bold text-white" on:click={next}>
+			<button class="m-2 rounded-full bg-primary px-4 py-2 font-bold text-white" on:click={next}>
 				Yes
 			</button>
 			<button class="m-2 bg-white px-4 py-2 font-bold text-quaternary underline" on:click={dismiss}>
