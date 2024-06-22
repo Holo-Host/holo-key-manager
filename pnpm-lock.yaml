@@ -70,17 +70,17 @@ importers:
   holo-key-manager-extension:
     dependencies:
       '@holochain/client':
-        specifier: 0.17.0-rc.0
-        version: 0.17.0-rc.0
+        specifier: 0.17.0
+        version: 0.17.0
       '@holochain/hc-seed-bundle':
-        specifier: 0.1.0
-        version: 0.1.0(typescript@5.4.5)
+        specifier: 0.1.1
+        version: 0.1.1(typescript@5.5.2)
       '@msgpack/msgpack':
         specifier: 3.0.0-beta2
         version: 3.0.0-beta2
       '@tanstack/svelte-query':
-        specifier: ^5.40.3
-        version: 5.44.0(svelte@4.2.18)
+        specifier: ^5.46.1
+        version: 5.46.1(svelte@4.2.18)
       blakejs:
         specifier: ^1.2.1
         version: 1.2.1
@@ -104,8 +104,8 @@ importers:
         version: 0.2.9
     devDependencies:
       '@sveltejs/adapter-static':
-        specifier: ^3.0.1
-        version: 3.0.1(@sveltejs/kit@2.5.17)
+        specifier: ^3.0.2
+        version: 3.0.2(@sveltejs/kit@2.5.17)
       '@sveltejs/kit':
         specifier: ^2.5.10
         version: 2.5.17(@sveltejs/vite-plugin-svelte@3.1.1)(svelte@4.2.18)(vite@5.3.1)
@@ -128,11 +128,11 @@ importers:
         specifier: ^8.4.38
         version: 8.4.38
       prettier-plugin-svelte:
-        specifier: ^3.2.4
-        version: 3.2.4(prettier@3.3.2)(svelte@4.2.18)
+        specifier: ^3.2.5
+        version: 3.2.5(prettier@3.3.2)(svelte@4.2.18)
       prettier-plugin-tailwindcss:
         specifier: ^0.6.2
-        version: 0.6.5(prettier-plugin-svelte@3.2.4)(prettier@3.3.2)
+        version: 0.6.5(prettier-plugin-svelte@3.2.5)(prettier@3.3.2)
       svelte-check:
         specifier: ^3.8.0
         version: 3.8.1(postcss@8.4.38)(svelte@4.2.18)
@@ -475,32 +475,32 @@ packages:
     engines: {node: ^18.18.0 || ^20.9.0 || >=21.1.0}
     dev: true
 
-  /@holochain/client@0.17.0-rc.0:
-    resolution: {integrity: sha512-DyoAe6Gf7Atpn5f+WO8Lj08G4Vfu5p5U9PuUlOkm5gjfwTxHU6rOTAmdEWz1QcA2Yne3cmUj+qqpofTSVqB/Eg==}
+  /@holochain/client@0.17.0:
+    resolution: {integrity: sha512-jDIv2kjfa+oBiQO7wjl09ELaPbVFoNu7f+2Sk3aLdf5AfVE/O8C6iZFGtF1huLKDJM8LPjRlKrt/Obt5ThMhbQ==}
     engines: {node: '>=18.0.0 || >=20.0.0'}
     dependencies:
       '@bitgo/blake2b': 3.2.4
       '@holochain/serialization': 0.1.0-beta-rc.3
       '@msgpack/msgpack': 2.8.0
       emittery: 1.0.3
-      isomorphic-ws: 5.0.0(ws@8.17.0)
+      isomorphic-ws: 5.0.0(ws@8.17.1)
       js-base64: 3.7.7
       libsodium-wrappers: 0.7.13
       lodash-es: 4.17.21
-      ws: 8.17.0
+      ws: 8.17.1
     transitivePeerDependencies:
       - bufferutil
       - utf-8-validate
     dev: false
 
-  /@holochain/hc-seed-bundle@0.1.0(typescript@5.4.5):
-    resolution: {integrity: sha512-gle8Rmu8SWe2iAUmAMn9E8RDpOZjy81HgMoB6lwiW1jTkQCRjRCpZj13dpRXBP0hu31Y81dIKM0tVn46ezN0vg==}
+  /@holochain/hc-seed-bundle@0.1.1(typescript@5.5.2):
+    resolution: {integrity: sha512-ghHIndoNrhnzYCuN7THGVBHq5RnjNqypmjXK+LJYJ69W9tIAEuzPUymlHfK42sW4jh/LNQ83iqjVPHdJycjV1Q==}
     peerDependencies:
       typescript: ^5.0.0
     dependencies:
       '@msgpack/msgpack': 3.0.0-beta2
       libsodium-wrappers-sumo: 0.7.13
-      typescript: 5.4.5
+      typescript: 5.5.2
     dev: false
 
   /@holochain/serialization@0.1.0-beta-rc.3:
@@ -850,8 +850,8 @@ packages:
     resolution: {integrity: sha512-+Fj43pSMwJs4KRrH/938Uf+uAELIgVBmQzg/q1YG10djyfA3TnrU8N8XzqCh/okZdszqBQTZf96idMfE5lnwTA==}
     dev: true
 
-  /@sveltejs/adapter-static@3.0.1(@sveltejs/kit@2.5.17):
-    resolution: {integrity: sha512-6lMvf7xYEJ+oGeR5L8DFJJrowkefTK6ZgA4JiMqoClMkKq0s6yvsd3FZfCFvX1fQ0tpCD7fkuRVHsnUVgsHyNg==}
+  /@sveltejs/adapter-static@3.0.2(@sveltejs/kit@2.5.17):
+    resolution: {integrity: sha512-/EBFydZDwfwFfFEuF1vzUseBoRziwKP7AoHAwv+Ot3M084sE/HTVBHf9mCmXfdM9ijprY5YEugZjleflncX5fQ==}
     peerDependencies:
       '@sveltejs/kit': ^2.0.0
     dependencies:
@@ -921,16 +921,16 @@ packages:
       - supports-color
     dev: true
 
-  /@tanstack/query-core@5.44.0:
-    resolution: {integrity: sha512-Fa1J7iEEyJnjXG1N4+Fz4OXNH/INve3XSn0Htms3X4wgRsXHxMDwqBE2XtDCts7swkwSIs4izEtaFqWVFr/eLQ==}
+  /@tanstack/query-core@5.45.0:
+    resolution: {integrity: sha512-RVfIZQmFUTdjhSAAblvueimfngYyfN6HlwaJUPK71PKd7yi43Vs1S/rdimmZedPWX/WGppcq/U1HOj7O7FwYxw==}
     dev: false
 
-  /@tanstack/svelte-query@5.44.0(svelte@4.2.18):
-    resolution: {integrity: sha512-RkTutmlAaAo/Gh56aMrivhgxrZ9UE0YEqL4vJkerWECXVf6MvGCQCL40QSPWJd3OElGQEGv0paeMSnzufrj2zA==}
+  /@tanstack/svelte-query@5.46.1(svelte@4.2.18):
+    resolution: {integrity: sha512-6zu4jJo8fqsgDJidI8IC68o9HEDpqvY7GoopNCb/AUIL2ZfbdHJ+ZeN4mndP/+zb9Yw9ZF/schXspB0LQfCqtw==}
     peerDependencies:
       svelte: ^3.54.0 || ^4.0.0 || ^5.0.0-next.0
     dependencies:
-      '@tanstack/query-core': 5.44.0
+      '@tanstack/query-core': 5.45.0
       svelte: 4.2.18
     dev: false
 
@@ -1324,8 +1324,8 @@ packages:
   /balanced-match@1.0.2:
     resolution: {integrity: sha512-3oSeUO0TMV67hN1AmbXsK4yaqU7tjiHlbxRDZOpH0KW9+CeX4bRAaX0Anxt0tx2MrpRpWwQaPwIlISEJhYU5Pw==}
 
-  /bare-events@2.2.2:
-    resolution: {integrity: sha512-h7z00dWdG0PYOQEvChhOSWvOfkIKsdZGkWr083FgN/HyoQuebSew/cgirYqh9SCuy/hRvxc5Vy6Fw8xAmYHLkQ==}
+  /bare-events@2.4.2:
+    resolution: {integrity: sha512-qMKFd2qG/36aA4GwvKq8MxnPgCQAmBWmSyLWsJcbn8v03wvIPQ/hG1Ms8bPzndZxMDoHpxez5VOS+gC9Yi24/Q==}
     requiresBuild: true
     dev: true
     optional: true
@@ -2362,12 +2362,12 @@ packages:
   /isexe@2.0.0:
     resolution: {integrity: sha512-RHxMLp9lnKHGHRng9QFhRCMbYAcVpn69smSGcq3f36xjgVVWThj4qqLbTLlq7Ssj8B+fIQ1EuCEGI2lKsyQeIw==}
 
-  /isomorphic-ws@5.0.0(ws@8.17.0):
+  /isomorphic-ws@5.0.0(ws@8.17.1):
     resolution: {integrity: sha512-muId7Zzn9ywDsyXgTIafTry2sV3nySZeUDe6YedVd1Hvuuep5AsIlqK+XefWpYTyJG5e503F2xIuT2lcU6rCSw==}
     peerDependencies:
       ws: '*'
     dependencies:
-      ws: 8.17.0
+      ws: 8.17.1
     dev: false
 
   /jackspeak@2.3.6:
@@ -3082,8 +3082,8 @@ packages:
       fast-diff: 1.3.0
     dev: true
 
-  /prettier-plugin-svelte@3.2.4(prettier@3.3.2)(svelte@4.2.18):
-    resolution: {integrity: sha512-tZv+ADfeOWFNQkXkRh6zUXE16w3Vla8x2Ug0B/EnSmjR4EnwdwZbGgL/liSwR1kcEALU5mAAyua98HBxheCxgg==}
+  /prettier-plugin-svelte@3.2.5(prettier@3.3.2)(svelte@4.2.18):
+    resolution: {integrity: sha512-vP/M/Goc8z4iVIvrwXwbrYVjJgA0Hf8PO1G4LBh/ocSt6vUP6sLvyu9F3ABEGr+dbKyxZjEKLkeFsWy/yYl0HQ==}
     peerDependencies:
       prettier: ^3.0.0
       svelte: ^3.2.0 || ^4.0.0-next.0 || ^5.0.0-next.0
@@ -3092,7 +3092,7 @@ packages:
       svelte: 4.2.18
     dev: true
 
-  /prettier-plugin-tailwindcss@0.6.5(prettier-plugin-svelte@3.2.4)(prettier@3.3.2):
+  /prettier-plugin-tailwindcss@0.6.5(prettier-plugin-svelte@3.2.5)(prettier@3.3.2):
     resolution: {integrity: sha512-axfeOArc/RiGHjOIy9HytehlC0ZLeMaqY09mm8YCkMzznKiDkwFzOpBvtuhuv3xG5qB73+Mj7OCe2j/L1ryfuQ==}
     engines: {node: '>=14.21.3'}
     peerDependencies:
@@ -3145,7 +3145,7 @@ packages:
         optional: true
     dependencies:
       prettier: 3.3.2
-      prettier-plugin-svelte: 3.2.4(prettier@3.3.2)(svelte@4.2.18)
+      prettier-plugin-svelte: 3.2.5(prettier@3.3.2)(svelte@4.2.18)
     dev: true
 
   /prettier@3.3.2:
@@ -3523,7 +3523,7 @@ packages:
       fast-fifo: 1.3.2
       queue-tick: 1.0.1
     optionalDependencies:
-      bare-events: 2.2.2
+      bare-events: 2.4.2
     dev: true
 
   /string-argv@0.3.2:
@@ -3937,6 +3937,13 @@ packages:
     resolution: {integrity: sha512-vcI4UpRgg81oIRUFwR0WSIHKt11nJ7SAVlYNIu+QpqeyXP+gpQJy/Z4+F0aGxSE4MqwjyXvW/TzgkLAx2AGHwQ==}
     engines: {node: '>=14.17'}
     hasBin: true
+    dev: true
+
+  /typescript@5.5.2:
+    resolution: {integrity: sha512-NcRtPEOsPFFWjobJEtfihkLCZCXZt/os3zf8nTxjVH3RvTSxjrCamJpbExGvYOF+tFHc3pA65qpdwPbzjohhew==}
+    engines: {node: '>=14.17'}
+    hasBin: true
+    dev: false
 
   /ufo@1.5.3:
     resolution: {integrity: sha512-Y7HYmWaFwPUmkoQCUIAYpKqkOf+SbVj/2fJJZ4RJMCfZp0rTGwRbzQD+HghfnhKOjL9E01okqz+ncJskGYfBNw==}
@@ -4147,8 +4154,8 @@ packages:
     resolution: {integrity: sha512-l4Sp/DRseor9wL6EvV2+TuQn63dMkPjZ/sp9XkghTEbV9KlPS1xUsZ3u7/IQO4wxtcFB4bgpQPRcR3QCvezPcQ==}
     dev: true
 
-  /ws@8.17.0:
-    resolution: {integrity: sha512-uJq6108EgZMAl20KagGkzCKfMEjxmKvZHG7Tlq0Z6nOky7YF7aq4mOx6xK8TJ/i1LeK4Qus7INktacctDgY8Ow==}
+  /ws@8.17.1:
+    resolution: {integrity: sha512-6XQFvXTkbfUOZOKKILFG1PDK2NDQs4azKQl26T0YS5CxqWLgXajbPZ+h4gZekJyRqFU8pvnbAbbs/3TgRPy+GQ==}
     engines: {node: '>=10.0.0'}
     peerDependencies:
       bufferutil: ^4.0.1
