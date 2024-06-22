@@ -85,8 +85,7 @@ jobs:
 
       - name: Remove key field from manifest for Edge
         run: |
-          jq 'del(.key)' buildEdge/static/manifest.json > buildEdge/static/manifest.json.tmp
-          mv buildEdge/static/manifest.json.tmp buildEdge/static/manifest.json
+          jq 'del(.key)' buildEdge/static/manifest.json | sponge buildEdge/static/manifest.json
         working-directory: holo-key-manager-extension
 
       - name: Zip the build for Edge
