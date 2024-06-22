@@ -80,13 +80,14 @@ jobs:
 
       - name: Unzip build for Edge
         run: |
-          unzip holo-key-manager-extension/build.zip -d holo-key-manager-extension/buildEdge
+          unzip build.zip -d buildEdge
         working-directory: holo-key-manager-extension
 
       - name: Remove key field from manifest for Edge
         run: |
-          jq 'del(.key)' holo-key-manager-extension/buildEdge/static/manifest.json > holo-key-manager-extension/buildEdge/static/manifest.json.tmp
-          mv holo-key-manager-extension/buildEdge/static/manifest.json.tmp holo-key-manager-extension/buildEdge/static/manifest.json
+          jq 'del(.key)' buildEdge/static/manifest.json > buildEdge/static/manifest.json.tmp
+          mv buildEdge/static/manifest.json.tmp buildEdge/static/manifest.json
+        working-directory: holo-key-manager-extension
 
       - name: Zip the build for Edge
         run: |
