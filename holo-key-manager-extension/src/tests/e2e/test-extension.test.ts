@@ -2,14 +2,9 @@ import dotenv from 'dotenv';
 import fs from 'fs';
 import path from 'path';
 import type { Browser, Page } from 'puppeteer';
-import { afterAll, beforeAll, describe, it } from 'vitest';
+import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 
-import {
-	checkPageContent,
-	launchBrowserWithExtension,
-	openExtensionPage,
-	waitForLoadingToChange
-} from './helpers';
+import { launchBrowserWithExtension, openExtensionPage, waitForLoadingToChange } from './helpers';
 
 const envPath = path.resolve('../.env');
 
@@ -38,6 +33,7 @@ afterAll(async () => {
 
 describe('Extension E2E Tests', () => {
 	it('should find "Setup Required" text on the extension page', async () => {
-		await checkPageContent(page, 'Setup Required');
+		const content = await page.content();
+		expect(content).toContain('Setup Required');
 	});
 });
