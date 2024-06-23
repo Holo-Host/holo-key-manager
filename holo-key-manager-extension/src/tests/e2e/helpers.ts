@@ -13,13 +13,6 @@ export const openExtensionPage = async (browser: Browser, extensionId: string): 
 	return page;
 };
 
-export const checkPageContent = async (page: Page, text: string): Promise<void> => {
-	const content = await page.content();
-	if (!content.includes(text)) {
-		throw new Error(`${text} not found`);
-	}
-};
-
 export const waitForLoadingToChange = async (page: Page): Promise<void> => {
 	await page.waitForFunction(
 		() => {
