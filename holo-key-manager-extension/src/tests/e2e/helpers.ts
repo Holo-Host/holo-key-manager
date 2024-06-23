@@ -1,4 +1,4 @@
-import { Browser, launch, Page } from 'puppeteer';
+import { Browser, ElementHandle, launch, Page } from 'puppeteer';
 
 export const launchBrowserWithExtension = async (extensionPath: string): Promise<Browser> => {
 	return launch({
@@ -13,12 +13,21 @@ export const openExtensionPage = async (browser: Browser, extensionId: string): 
 	return page;
 };
 
-export const waitForLoadingToChange = async (page: Page): Promise<void> => {
-	await page.waitForFunction(
-		() => {
-			const span = document.querySelector('span');
-			return span && span.textContent ? !span.textContent.includes('Loading') : false;
-		},
-		{ timeout: 5000 }
+export const clickButtonAndWaitForNewPage = async (
+	browser: Browser,
+	button: ElementHandle<Element>
+): Promise<Page> => {
+	await button?.click();
+
+	const newPagePromise = new Promise<Page | null>((resolve) =>
+		browser.once('targetcreated', async (target) => resolve(await target.page()))
 	);
+
+	const newPage = await newPagePromise;
+	if (!newPage) {
+		throw new Error('Failed to create new page');
+	}
+	await newPage.waitForNavigation();
+
+	return newPage;
 };

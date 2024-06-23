@@ -4,7 +4,11 @@ import path from 'path';
 import type { Browser, Page } from 'puppeteer';
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 
-import { launchBrowserWithExtension, openExtensionPage, waitForLoadingToChange } from './helpers';
+import {
+	clickButtonAndWaitForNewPage,
+	launchBrowserWithExtension,
+	openExtensionPage
+} from './helpers';
 
 const envPath = path.resolve('../.env');
 
@@ -24,7 +28,6 @@ beforeAll(async () => {
 	const extensionPath = path.resolve('.', 'build');
 	browser = await launchBrowserWithExtension(extensionPath);
 	page = await openExtensionPage(browser, EXTENSION_ID);
-	await waitForLoadingToChange(page);
 });
 
 afterAll(async () => {
@@ -32,8 +35,32 @@ afterAll(async () => {
 });
 
 describe('Extension E2E Tests', () => {
-	it('should find "Setup Required" text on the extension page', async () => {
-		const content = await page.content();
-		expect(content).toContain('Setup Required');
+	it('Setup flow is working properly', async () => {
+		const setupButton = await page.waitForSelector('button::-p-text("Setup")');
+
+		expect(await page.content()).toContain('Setup Required');
+
+		if (!setupButton) {
+			throw new Error('Button not found');
+		}
+		const setupPage = await clickButtonAndWaitForNewPage(browser, setupButton);
+
+		const setupPageContent = await setupPage.content();
+
+		expect(setupPageContent).toContain('Welcome to Holo Key Manager');
+
+		const firstTimeSetupButton = await setupPage.waitForSelector(
+			'button::-p-text("First time setup")'
+		);
+
+		if (!firstTimeSetupButton) {
+			throw new Error('Button not found');
+		}
+
+		await Promise.all([setupPage.waitForNavigation(), firstTimeSetupButton.click()]);
+
+		const firstTimeSetupPageContent = await setupPage.content();
+
+		expect(firstTimeSetupPageContent).toContain('Set Key Manager Password');
 	});
 });
