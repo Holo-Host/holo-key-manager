@@ -16,42 +16,42 @@ jobs:
         uses: actions/setup-node@v4
       - name: Install pnpm
         run: npm install -g pnpm
-      # - name: Install webextension-store-meta
-      #   run: pnpm add -D webextension-store-meta -w
-      # - name: Check version against latest release in Chrome Web Store
-      #   id: check_version
-      #   uses: actions/github-script@v7
-      #   with:
-      #     script: |
-      #       const fs = require('fs/promises');
-      #       const { ChromeWebStore } = require('webextension-store-meta/lib/chrome-web-store');
+      - name: Install webextension-store-meta
+        run: pnpm add -D webextension-store-meta -w
+      - name: Check version against latest release in Chrome Web Store
+        id: check_version
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs/promises');
+            const { ChromeWebStore } = require('webextension-store-meta/lib/chrome-web-store');
 
-      #       const getManifestVersion = async (filePath) => {
-      #         const data = await fs.readFile(filePath, 'utf8');
-      #         const manifest = JSON.parse(data);
-      #         return manifest.version;
-      #       };
-      #       const checkVersion = async (chromeId) => {
-      #         const chromeWebStore = await ChromeWebStore.load({ id: chromeId, qs: { hl: 'en' } });
-      #         return chromeWebStore.meta().version;
-      #       };
+            const getManifestVersion = async (filePath) => {
+              const data = await fs.readFile(filePath, 'utf8');
+              const manifest = JSON.parse(data);
+              return manifest.version;
+            };
+            const checkVersion = async (chromeId) => {
+              const chromeWebStore = await ChromeWebStore.load({ id: chromeId, qs: { hl: 'en' } });
+              return chromeWebStore.meta().version;
+            };
 
-      #       const fetchVersionInfo = async () => {
-      #         try {
-      #           const currentVersion = await getManifestVersion('./holo-key-manager-extension/static/manifest.json');
-      #           const latestVersion = await checkVersion('${{ vars.CHROME_ID }}');
-      #           core.setOutput('abort', currentVersion === latestVersion ? 'true' : 'false');
-      #         } catch (error) {
-      #           core.setFailed(error.message);
-      #         }
-      #       };
+            const fetchVersionInfo = async () => {
+              try {
+                const currentVersion = await getManifestVersion('./holo-key-manager-extension/static/manifest.json');
+                const latestVersion = await checkVersion('${{ vars.CHROME_ID }}');
+                core.setOutput('abort', currentVersion === latestVersion ? 'true' : 'false');
+              } catch (error) {
+                core.setFailed(error.message);
+              }
+            };
 
-      #       fetchVersionInfo();
-      # - name: Abort build if version matches
-      #   if: steps.check_version.outputs.abort == 'true'
-      #   run: |
-      #     echo "Version in manifest matches the latest release version in Chrome Web Store. Aborting build."
-      #     exit 1
+            fetchVersionInfo();
+      - name: Abort build if version matches
+        if: steps.check_version.outputs.abort == 'true'
+        run: |
+          echo "Version in manifest matches the latest release version in Chrome Web Store. Aborting build."
+          exit 1
 
       - name: Install dependencies
         run: pnpm install --no-frozen-lockfile
