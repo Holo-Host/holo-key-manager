@@ -2,7 +2,7 @@ import { Browser, launch, Page } from 'puppeteer';
 
 export const launchBrowserWithExtension = async (extensionPath: string): Promise<Browser> => {
 	return launch({
-		headless: false,
+		headless: true,
 		args: [`--disable-extensions-except=${extensionPath}`, `--load-extension=${extensionPath}`]
 	});
 };
