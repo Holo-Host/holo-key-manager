@@ -39,7 +39,7 @@
 <Title>Import Your Device Seed</Title>
 <AppParagraph
 	extraProps="my-4 max-w-xs text-center"
-	text="Kindly import your device seed file below to recover your Key Manager"
+	text="Please import your device seed file below to recover your Key Manager"
 />
 <div class="w-full p-6 px-16">
 	<Dropzone
@@ -95,7 +95,7 @@
 		<input
 			bind:value={passphrase}
 			type="passphrase"
-			placeholder="Enter Passphrase"
+			placeholder="Enter passphrase"
 			class={clsx('rounded border p-2 outline-none focus:outline-none', {
 				'border-black': !$recoverDeviceKeyMutation.error,
 				'border-alert': $recoverDeviceKeyMutation.error
@@ -107,7 +107,10 @@
 			}}
 		/>
 		{#if $recoverDeviceKeyMutation.error}
-			<span class="mt-2 self-end text-base text-alert">Wrong file or passphrase, try again</span>
+			<span class="mt-2 self-end text-base text-alert"
+				>Oops! We couldn't import your device seed.</span
+			>
+			<span>Please try again.</span>
 		{/if}
 	</div>
 </div>

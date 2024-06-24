@@ -58,7 +58,7 @@
 />
 <AppParagraph
 	extraProps="mx-auto max-w-md text-center"
-	text="Learn more about seed and key files by visiting our FAQ page."
+	text="Learn more about seed and key files by visiting our FAQ page</a>."
 />
 
 <img src="/img/padlock.svg" alt="Padlock" class="my-6" />

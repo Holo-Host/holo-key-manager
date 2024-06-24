@@ -25,23 +25,23 @@
 		<img src="/img/arrow-left.svg" alt="Arrow" />
 		<span class="ml-2 text-base">Back</span></button
 	>
-	<Title>Manage Password</Title>
+	<Title>Change Password</Title>
 	{#if $changePasswordWithDeviceKeyMutation.error}
 		<span class="text-xs text-alert">{$changePasswordWithDeviceKeyMutation.error.message}</span>
 	{/if}
 	<div class="w-full p-6">
-		<Input type="password" bind:value={oldPassword} label="Old Password" extraProps="mb-6" />
+		<Input type="password" bind:value={oldPassword} label="Old password" extraProps="mb-6" />
 		<Input
 			type="password"
 			bind:value={$passwordStore}
-			label="New Password (8 Characters min)"
+			label="New password (8 characters min)"
 			extraProps="mb-6"
 			error={charCount < 8 ? 'Please enter a minimum of 8 characters' : ''}
 		/>
 		<Input
 			type="password"
 			bind:value={confirmPassword}
-			label="Confirm New Password"
+			label="Confirm new password"
 			extraProps="mb-4"
 			error={confirmPassword !== $passwordStore ? "Password doesn't match" : ''}
 		/>

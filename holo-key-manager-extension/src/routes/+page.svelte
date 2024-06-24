@@ -46,7 +46,7 @@
 		mainAction={redirectToListOfHapps}
 		mainActionLabel="List of hApps"
 		secondaryAction={redirectToChangePassword}
-		secondaryActionLabel="Change Password"
+		secondaryActionLabel="Change password"
 		title="Holo Key Manager"
 		subTitle=""
 	/>

@@ -32,7 +32,7 @@
 	<h1 class="mt-4 text-2xl font-bold">Sign up</h1>
 	<AppParagraph
 		extraProps="my-4 max-w-48 text-center"
-		text="Please provide the following details below"
+		text="Please provide the following details"
 	/>
 </div>
 
@@ -41,13 +41,13 @@
 {/if}
 {#if $extractDetailsFromUrl.requireRegistrationCode}
 	<Input
-		label="Registration Code:"
+		label="Registration code:"
 		bind:value={registrationCode}
 		extraProps="mb-4"
 		error={errors.registrationCode}
 	/>
 {/if}
-<Input label="Name This Key:" bind:value={keyName} extraProps="mb-4" error={errors.keyName} />
+<Input label="Name this key:" bind:value={keyName} extraProps="mb-4" error={errors.keyName} />
 
 {#if $applicationKeyMutation.error}
 	<div class="mutation-error">

@@ -33,14 +33,14 @@
 		<Input
 			type="password"
 			bind:value={$passwordStore}
-			label="Enter Password (8 Characters min)"
+			label="Enter password (8 characters min)"
 			extraProps="mb-6"
 			error={charCount < 8 ? 'Please enter a minimum of 8 characters' : ''}
 		/>
 		<Input
 			type="password"
 			bind:value={confirmPassword}
-			label="Confirm Password"
+			label="Confirm password"
 			extraProps="mb-4"
 			error={confirmPassword !== $passwordStore ? "Password doesn't match" : ''}
 		/>
