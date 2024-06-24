@@ -1,9 +1,9 @@
 # Holo Key Manager
 
 ![Client Build](https://github.com/holo-host/holo-key-manager/actions/workflows/client.yaml/badge.svg)
-![Chrome Release](https://github.com/holo-host/holo-key-manager/actions/workflows/extension.yaml/badge.svg?job=chrome-release)
-![Firefox Release](https://github.com/holo-host/holo-key-manager/actions/workflows/extension.yaml/badge.svg?job=firefox-release)
-![Edge Release](https://github.com/holo-host/holo-key-manager/actions/workflows/extension.yaml/badge.svg?job=edge-release)
+![Chrome Release](https://img.shields.io/github/actions/workflow/status/holo-host/holo-key-manager/extension.yaml?label=Chrome%20Release&logo=google-chrome&style=flat-square&job=chrome-release)
+![Firefox Release](https://img.shields.io/github/actions/workflow/status/holo-host/holo-key-manager/extension.yaml?label=Firefox%20Release&logo=firefox-browser&style=flat-square&job=firefox-release)
+![Edge Release](https://img.shields.io/github/actions/workflow/status/holo-host/holo-key-manager/extension.yaml?label=Edge%20Release&logo=microsoft-edge&style=flat-square&job=edge-release)
 ![License](https://img.shields.io/badge/license-MIT-blue)
 
 ## Description
