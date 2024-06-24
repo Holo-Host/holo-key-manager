@@ -51,11 +51,15 @@
 
 <img src="/img/check.svg" alt="check" class="my-4 w-12" />
 
-<Title>Save Seed Files and Keys</Title>
+<Title>Save seed and key files</Title>
 <AppParagraph
 	extraProps="mx-auto max-w-md text-center"
-	text="All done, please save your files. Remember to back them up an external drive you store in a secure location."
+	text="All done, please save your files. Remember to back them up an external drive you store in a secure location"
+/>
+<AppParagraph
+	extraProps="mx-auto max-w-md text-center"
+	text="Learn more about seed and key files by visiting our FAQ page."
 />
 
 <img src="/img/padlock.svg" alt="Padlock" class="my-6" />
-<Button label="Save" onClick={download} />
+<Button label="Export" onClick={download} />

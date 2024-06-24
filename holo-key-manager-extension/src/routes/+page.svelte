@@ -57,6 +57,6 @@
 		mainAction={redirectToSetup}
 		mainActionLabel="Setup"
 		title="Setup Required"
-		subTitle="You are yet to setup Holo Key Manager. Click “start setup” to begin."
+		subTitle="Please set up Holo Key Manager to continue."
 	/>
 {/if}

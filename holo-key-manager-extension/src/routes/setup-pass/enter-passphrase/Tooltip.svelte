@@ -1,6 +1,6 @@
 <div class="group relative cursor-pointer">
 	<div class="flex items-center text-base text-primary">
-		<p>What is passphrase</p>
+		<p>What is a passphrase</p>
 		<img src="/img/question.svg" alt="Question icon" class="ml-2" />
 	</div>
 	<div
@@ -9,14 +9,7 @@
 		<strong class="text-sm text-black">Passphrase</strong>
 		<p>
 			This is can be a word or sentence of your choice. E.g Manager (word) or The quick brown fox
-			jumps over the lazy dog (sentence). Make your passphrase as strong as possible. It should be
-			long, include a mix of many different types of characters, and be hard to guess.
+			jumps over the lazy dog (sentence).
 		</p>
-		<p class="pt-2">
-			You can optionally turn off your internet while doing this for added security.
-		</p>
-		<div class="pt-2">
-			<strong>Tip:</strong> Write down or store your passphrase in a password manager.
-		</div>
 	</div>
 </div>

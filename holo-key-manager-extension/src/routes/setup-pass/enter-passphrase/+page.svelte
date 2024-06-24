@@ -27,7 +27,7 @@
 		isDisabled={charCount < 20}
 		bind:inputValue={$passphraseStore}
 		title="Enter Passphrase"
-		description="Enter your desired passphrase and remind to keep it safe."
+		description="Make your passphrase as strong as possible. It should be long, include a mix of many different type of characters, and be hard to guess. Save it somewhere safe"
 		nextLabel="Set Passphrase"
 		inputState={charCount < 20
 			? 'Please enter a minimum of 20 Characters'
