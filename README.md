@@ -33,6 +33,154 @@ The priority items are:
 
 ## Development Setup
 
+To set up the development environment for the Holo Key Manager monorepo, follow these steps:
+
+### Prerequisites
+
+Ensure you have the following installed on your machine:
+
+- Node.js (v16 or higher)
+- pnpm (v7 or higher)
+
+Additionally, request the `.env` file from the codebase maintainer. Once you receive it, ensure that it matches the structure and keys provided in the `.env.example` file.
+
+### Initial Setup
+
+1. **Clone the repository:**
+
+   ```sh
+   git clone https://github.com/holo-host/holo-key-manager.git
+   cd holo-key-manager
+   ```
+
+2. **Install dependencies:**
+   ```sh
+   pnpm install
+   ```
+
+### Building the Projects
+
+The monorepo consists of two main projects: `holo-key-manager-extension` and `holo-key-manager-js-client`, and a shared directory. You can build these projects using the following commands:
+
+1. **Build the extension:**
+
+   ```sh
+   pnpm buildExtension
+   ```
+
+2. **Build the client:**
+
+   ```sh
+   pnpm buildClient
+   ```
+
+3. **Build both projects for development:**
+   ```sh
+   pnpm build
+   ```
+
+### Loading Extension Files into Chrome Browser
+
+After building the extension, you need to load it into your Chrome browser to test and use it. Follow these steps:
+
+1. **Open Chrome and navigate to the Extensions page:**
+
+   Open Chrome and go to `chrome://extensions/` or click on the three dots in the upper right corner, then go to `More tools` > `Extensions`.
+
+2. **Enable Developer Mode:**
+
+   In the top right corner of the Extensions page, toggle the switch to enable Developer Mode.
+
+3. **Load the unpacked extension:**
+
+   Click on the "Load unpacked" button that appears after enabling Developer Mode. This will open a file dialog.
+
+4. **Select the build folder:**
+
+   Navigate to the `holo-key-manager-extension/build` directory in your file system and select it. This will load the extension into Chrome.
+
+5. **Verify the extension is loaded:**
+
+   You should see the Holo Key Manager extension listed on the Extensions page. Ensure there are no errors and the extension is enabled.
+
+By following these steps, you can load and test the Holo Key Manager extension in your Chrome browser. If you encounter any issues, check the console for error messages and ensure that the build process completed successfully.
+
+### Working with holo-key-manager-js-client
+
+If you want to work on the interaction between the extension and the client, you need to run the `buildPack` script inside the `holo-key-manager-js-client` directory. This will create a `.tgz` file that you can link to your new web app.
+
+1. **Build the client package:**
+
+   ```sh
+   cd holo-key-manager-js-client
+   pnpm buildPack
+   ```
+
+2. **Create a new web app:**
+
+   You can use any framework of your choice. Here are examples for Create React App and a new Svelte project.
+
+   **Create React App:**
+
+   ```sh
+   npx create-react-app my-holo-app
+   cd my-holo-app
+   ```
+
+   **New Svelte Project:**
+
+   ```sh
+   npx degit sveltejs/template my-holo-app
+   cd my-holo-app
+   pnpm install
+   ```
+
+3. **Link the `.tgz` file:**
+
+   After building the client package, link the generated `.tgz` file to your new web app.
+
+   ```sh
+   pnpm add ../holo-key-manager-js-client/holo-key-manager-js-client-1.0.0.tgz
+   ```
+
+4. **Call API functions:**
+
+   You can now call the API functions defined in the `README` of `holo-key-manager-js-client`. Here is an example of how to use the API in your new web app.
+
+By following these steps, you can set up a new web app and interact with the Holo Key Manager extension using the `holo-key-manager-js-client` API.
+
+### Linting and Formatting
+
+To ensure code quality and consistency, use the following commands:
+
+1. **Lint the code:**
+
+   ```sh
+   pnpm lint
+   ```
+
+2. **Format the code:**
+
+   ```sh
+   pnpm format
+   ```
+
+3. **Run linting and formatting together:**
+   ```sh
+   pnpm lintAndFormat
+   ```
+
+### Project Structure
+
+- **holo-key-manager-js-client:** Contains the JavaScript client library for managing Holo keys.
+- **holo-key-manager-extension:** Contains the browser extension for managing Holo keys.
+
+### Workspaces
+
+The monorepo uses pnpm workspaces to manage dependencies and scripts across multiple projects. The workspaces are defined in the root `package.json`:
+
+By following these steps, you should be able to set up and start developing on the Holo Key Manager monorepo. If you encounter any issues or have questions, feel free to reach out to the maintainers.
+
 ## Testing
 
 ## License
