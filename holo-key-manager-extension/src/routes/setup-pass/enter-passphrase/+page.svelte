@@ -30,7 +30,7 @@
 		description="Make your passphrase as strong as possible. It should be long, include a mix of many different type of characters, and be hard to guess. Save it somewhere safe"
 		nextLabel="Set Passphrase"
 		inputState={charCount < 20
-			? 'Please enter a minimum of 20 Characters'
+			? 'Please enter a minimum of 20 characters'
 			: `${charCount} characters`}
 		next={() => (showDialog = true)}
 	/>
@@ -44,7 +44,7 @@
 		bind:inputValue={confirmPassphrase}
 		isDisabled={confirmPassphrase !== $passphraseStore}
 		title="Confirm Passphrase"
-		description="Tying loose ends, please enter your passphrase again."
+		description="Please enter your passphrase again."
 		nextLabel="Next"
 		inputState={confirmPassphrase !== $passphraseStore ? 'Passphrases do not match' : ``}
 		next={() => goto('/setup-keys/generate-keys')}
