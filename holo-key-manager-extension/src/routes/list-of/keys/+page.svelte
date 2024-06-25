@@ -48,8 +48,8 @@
 			<tr class="w-full" class:bg-gray-100={index % 2 === 0}>
 				<td class="border-b px-4 py-2 last:border-b-0">{applicationKey.keyName}</td>
 				<td class="flex justify-end border-b px-4 py-2 last:border-b-0">
-					<button class="mr-2 rounded-md px-4 py-2 text-sm text-grey" disabled> Delete Key </button>
-					<button class="rounded-md px-4 py-2 text-sm text-grey" disabled> Change Key </button>
+					<button class="mr-2 rounded-md px-4 py-2 text-sm text-grey" disabled> Revoke key </button>
+					<button class="rounded-md px-4 py-2 text-sm text-grey" disabled> Change key </button>
 				</td>
 			</tr>
 		{/each}

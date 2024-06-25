@@ -26,7 +26,7 @@
 </script>
 
 <div class="mt-4 flex justify-between">
-	<h2 class="text-xl font-semibold">Managed hApps</h2>
+	<h2 class="text-xl font-semibold">hApps</h2>
 	<div class="relative">
 		<img
 			src={'/img/magnifying-glass.svg'}

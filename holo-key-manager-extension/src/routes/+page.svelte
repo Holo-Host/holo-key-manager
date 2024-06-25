@@ -46,7 +46,7 @@
 		mainAction={redirectToListOfHapps}
 		mainActionLabel="List of hApps"
 		secondaryAction={redirectToChangePassword}
-		secondaryActionLabel="Change Password"
+		secondaryActionLabel="Change password"
 		title="Holo Key Manager"
 		subTitle=""
 	/>
@@ -57,6 +57,6 @@
 		mainAction={redirectToSetup}
 		mainActionLabel="Setup"
 		title="Setup Required"
-		subTitle="You are yet to setup Holo Key Manager. Click “start setup” to begin."
+		subTitle="Please set up Holo Key Manager to continue."
 	/>
 {/if}

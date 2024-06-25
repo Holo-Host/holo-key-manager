@@ -27,22 +27,22 @@
 	<Title>Set Key Manager Password</Title>
 	<AppParagraph
 		extraProps="mx-auto max-w-sm text-center"
-		text="This password secures your Key Manager extension, it would be requested each time you launch it."
+		text="This password secures your Key Manager extension and is requested each time you launch it."
 	/>
 	<div class="w-full p-6">
 		<Input
 			type="password"
 			bind:value={$passwordStore}
-			label="New Password (8 Characters min)"
+			label="Enter password (8 characters min)"
 			extraProps="mb-6"
-			error={charCount < 8 ? 'Please enter a minimum of 8 Characters' : ''}
+			error={charCount < 8 ? 'Please enter a minimum of 8 characters' : ''}
 		/>
 		<Input
 			type="password"
 			bind:value={confirmPassword}
-			label="Confirm New Password"
+			label="Confirm password"
 			extraProps="mb-4"
-			error={confirmPassword !== $passwordStore ? "Password doesn't Match" : ''}
+			error={confirmPassword !== $passwordStore ? "Password doesn't match" : ''}
 		/>
 	</div>
 

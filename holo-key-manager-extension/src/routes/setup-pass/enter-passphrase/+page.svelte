@@ -5,11 +5,9 @@
 	import { passphraseStore } from '$stores';
 
 	import EnterSecretComponent from './EnterSecretComponent.svelte';
-	import PopupDialog from './PopupDialog.svelte';
 
 	let passphraseState: SetSecret = 'set';
 	let confirmPassphrase = '';
-	let showDialog = false;
 
 	$: charCount = $passphraseStore.length;
 
@@ -27,16 +25,13 @@
 		isDisabled={charCount < 20}
 		bind:inputValue={$passphraseStore}
 		title="Enter Passphrase"
-		description="Enter your desired passphrase and remind to keep it safe."
-		nextLabel="Set Passphrase"
+		description="Make your passphrase as strong as possible. It should be long, include a mix of many different type of characters, and be hard to guess. Save it somewhere safe"
+		nextLabel="Set passphrase"
 		inputState={charCount < 20
-			? 'Please enter a minimum of 20 Characters'
+			? 'Please enter a minimum of 20 characters'
 			: `${charCount} characters`}
-		next={() => (showDialog = true)}
+		next={() => (passphraseState = 'confirm')}
 	/>
-	{#if showDialog}
-		<PopupDialog next={() => (passphraseState = 'confirm')} dismiss={() => (showDialog = false)} />
-	{/if}
 {/if}
 
 {#if passphraseState === 'confirm'}
@@ -44,7 +39,7 @@
 		bind:inputValue={confirmPassphrase}
 		isDisabled={confirmPassphrase !== $passphraseStore}
 		title="Confirm Passphrase"
-		description="Tying loose ends, please enter your passphrase again."
+		description="Please enter your passphrase again."
 		nextLabel="Next"
 		inputState={confirmPassphrase !== $passphraseStore ? 'Passphrases do not match' : ``}
 		next={() => goto('/setup-keys/generate-keys')}
