@@ -42,7 +42,11 @@ Ensure you have the following installed on your machine:
 - Node.js (v16 or higher)
 - pnpm (v7 or higher)
 
-Additionally, request the `.env` file from the codebase maintainer. Once you receive it, ensure that it matches the structure and keys provided in the `.env.example` file.
+To run e2e tests you need to create a `.env` file with
+`CHROME_ID=eggfhkdnfdhdpmkfpihjjbnncgmhihce`
+that corresponds to the key property (which is actually the pub_key) in `holo-key-manager-extension/static/manifest.json`.
+
+The rest of the `.env` properties visible in `.env.example` are for CI/CD.
 
 ### Initial Setup
 
@@ -172,7 +176,7 @@ To ensure code quality and consistency, use the following commands:
 
 ### Project Structure
 
-- **holo-key-manager-js-client:** Contains the JavaScript client library for managing Holo keys.
+- **holo-key-manager-js-client:** Contains the JavaScript client library for interacting with the key manager and stored keys.
 - **holo-key-manager-extension:** Contains the browser extension for managing Holo keys.
 
 ### Workspaces
