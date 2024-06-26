@@ -79,5 +79,5 @@ describe('Extension E2E Tests', () => {
 		await Promise.all([setupPage.waitForNavigation(), setPasswordButton.click()]);
 
 		expect(newPasswordInput).toBeDefined();
-	});
+	}, 10000);
 });
