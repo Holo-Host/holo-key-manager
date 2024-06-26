@@ -42,10 +42,12 @@ describe('Extension E2E Tests', () => {
 
 		const setupPageContent = await setupPage.content();
 
-		expect(setupPageContent).toContain('Welcome to Holo Key Manager');
+		expect(setupPageContent).toContain(
+			'Holo Key Manager is a safe place to set up and manage keys for Holochain apps'
+		);
 
 		const firstTimeSetupButton = await setupPage.waitForSelector(
-			'button::-p-text("First time setup")'
+			'button::-p-text("First time set up")'
 		);
 
 		if (!firstTimeSetupButton) {
@@ -58,10 +60,8 @@ describe('Extension E2E Tests', () => {
 
 		expect(firstTimeSetupPageContent).toContain('Set Key Manager Password');
 
-		const newPasswordInput = await setupPage.waitForSelector('input[id*="new-password"]');
-		const confirmPasswordInput = await setupPage.waitForSelector(
-			'input[id="confirm-new-password"]'
-		);
+		const newPasswordInput = await setupPage.waitForSelector('input[id*="enter-password"]');
+		const confirmPasswordInput = await setupPage.waitForSelector('input[id="confirm-password"]');
 
 		if (!newPasswordInput || !confirmPasswordInput) {
 			throw new Error('Password inputs not found');
