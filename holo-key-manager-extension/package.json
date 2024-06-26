@@ -14,9 +14,7 @@
 		"preview": "vite preview",
 		"check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
 		"check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch",
-		"test": "pnpm unit-test && pnpm e2e-test",
-		"unit-test": "vitest --config src/tests/unit/vitest.config.ts run",
-		"e2e-test": "vitest --config src/tests/e2e/vitest.config.ts run"
+		"test": "vitest run"
 	},
 	"devDependencies": {
 		"@sveltejs/adapter-static": "^3.0.2",
@@ -26,16 +24,13 @@
 		"@vitest/ui": "^1.6.0",
 		"archiver": "^7.0.1",
 		"autoprefixer": "^10.4.19",
-		"dotenv": "^16.4.5",
 		"postcss": "^8.4.38",
 		"prettier-plugin-svelte": "^3.2.5",
 		"prettier-plugin-tailwindcss": "^0.6.2",
-		"puppeteer": "^22.12.0",
 		"svelte-check": "^3.8.0",
 		"svelte-file-dropzone": "^2.0.7",
 		"tslib": "^2.6.3",
-		"vite": "^5.2.13",
-		"vitest": "^1.6.0"
+		"vite": "^5.2.13"
 	},
 	"type": "module",
 	"dependencies": {

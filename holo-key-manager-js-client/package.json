@@ -5,7 +5,7 @@
   "main": "lib/index.js",
   "types": "lib/holo-key-manager-js-client/src/index.d.ts",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "vitest run",
     "build": "rm -rf lib/* && rollup -c",
     "buildPack": "npm run build && npm pack"
   },

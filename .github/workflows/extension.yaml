@@ -72,10 +72,9 @@ jobs:
         working-directory: holo-key-manager-extension
 
       - name: Run e2e tests
-        run: pnpm e2e-test
+        run: pnpm e2e-tests
         env:
           CHROME_ID: ${{  vars.CHROME_ID }}
-        working-directory: holo-key-manager-extension
 
       - name: Zip the build
         run: |
