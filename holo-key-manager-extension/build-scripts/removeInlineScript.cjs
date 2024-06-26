@@ -4,7 +4,7 @@ const glob = require('tiny-glob');
 const path = require('path');
 const fs = require('fs');
 
-function hash(value) {
+const hash = (value) => {
 	let hash = 5381;
 	let i = value.length;
 	if (typeof value === 'string') {
@@ -13,9 +13,9 @@ function hash(value) {
 		while (i) hash = (hash * 33) ^ value[--i];
 	}
 	return (hash >>> 0).toString(36);
-}
+};
 
-async function removeInlineScript(directory) {
+const removeInlineScript = async (directory) => {
 	console.log('Removing Inline Scripts');
 	const scriptRegx = /<script>([\s\S]+)<\/script>/;
 	const files = await glob('**/*.{html}', {
@@ -42,6 +42,6 @@ async function removeInlineScript(directory) {
 				console.log(`Inline script extracted and saved at: ${directory}${fn}`);
 			}
 		});
-}
+};
 
 removeInlineScript(path.resolve(__dirname, '../build'));
