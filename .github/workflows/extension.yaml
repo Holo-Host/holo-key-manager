@@ -26,7 +26,7 @@ jobs:
         run: pnpm install --no-frozen-lockfile
 
       - name: Run unit tests
-        run: pnpm unit-test
+        run: pnpm test
         working-directory: holo-key-manager-extension
 
       - name: Install webextension-store-meta
