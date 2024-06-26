@@ -1,5 +1,4 @@
 import dotenv from 'dotenv';
-import fs from 'fs';
 import path from 'path';
 import type { Browser, Page } from 'puppeteer';
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
@@ -10,11 +9,7 @@ import {
 	openExtensionPage
 } from './helpers';
 
-const envPath = path.resolve('../.env');
-
-if (fs.existsSync(envPath)) {
-	dotenv.config({ path: envPath });
-}
+dotenv.config();
 
 const EXTENSION_ID = process.env.CHROME_ID;
 
@@ -25,7 +20,7 @@ beforeAll(async () => {
 	if (!EXTENSION_ID) {
 		throw new Error('EXTENSION_ID is not set');
 	}
-	const extensionPath = path.resolve('.', 'build');
+	const extensionPath = path.resolve('holo-key-manager-extension', 'build');
 	browser = await launchBrowserWithExtension(extensionPath);
 	page = await openExtensionPage(browser, EXTENSION_ID);
 });
@@ -62,5 +57,27 @@ describe('Extension E2E Tests', () => {
 		const firstTimeSetupPageContent = await setupPage.content();
 
 		expect(firstTimeSetupPageContent).toContain('Set Key Manager Password');
+
+		const newPasswordInput = await setupPage.waitForSelector('input[id*="new-password"]');
+		const confirmPasswordInput = await setupPage.waitForSelector(
+			'input[id="confirm-new-password"]'
+		);
+
+		if (!newPasswordInput || !confirmPasswordInput) {
+			throw new Error('Password inputs not found');
+		}
+
+		await newPasswordInput.type('password');
+		await confirmPasswordInput.type('password');
+
+		const setPasswordButton = await setupPage.waitForSelector('button::-p-text("Set password")');
+
+		if (!setPasswordButton) {
+			throw new Error('Button not found');
+		}
+
+		await Promise.all([setupPage.waitForNavigation(), setPasswordButton.click()]);
+
+		expect(newPasswordInput).toBeDefined();
 	});
 });
