@@ -25,7 +25,7 @@ jobs:
       - name: Install dependencies
         run: pnpm install --no-frozen-lockfile
         working-directory: holo-key-manager-js-client
-      - name: Run tests
+      - name: Run unit tests
         run: pnpm test
         working-directory: holo-key-manager-js-client
       - name: Build and pack
