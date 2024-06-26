@@ -78,6 +78,8 @@ describe('Extension E2E Tests', () => {
 
 		await Promise.all([setupPage.waitForNavigation(), setPasswordButton.click()]);
 
-		expect(newPasswordInput).toBeDefined();
+		const enterPassphrasePageContent = await setupPage.content();
+
+		expect(enterPassphrasePageContent).toContain('Enter Passphrase');
 	}, 10000);
 });
