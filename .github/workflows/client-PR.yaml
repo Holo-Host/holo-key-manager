@@ -4,7 +4,7 @@ on:
     branches: [main]
     paths:
       - 'holo-key-manager-js-client/package.json'
-      - '.github/workflows/client.yaml'
+      - '.github/workflows/client-PR.yaml'
 
 jobs:
   build:
