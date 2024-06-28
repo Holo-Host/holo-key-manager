@@ -8,6 +8,8 @@ import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 import {
 	clickButtonAndWaitForNewPage,
 	fileExists,
+	findButtonByText,
+	findTextBySelector,
 	launchBrowserWithExtension,
 	openExtensionPage
 } from './helpers';
@@ -37,120 +39,68 @@ afterAll(async () => {
 
 describe('Extension E2E Tests', () => {
 	it('Setup flow is working properly', async () => {
-		const setupButton = await page.waitForSelector('button::-p-text("Setup")');
+		const setupButton = await findButtonByText(page)('Setup');
 
-		expect(await page.content()).toContain('Setup Required');
+		const setupPageContent = await findTextBySelector(page)('Setup Required');
 
-		if (!setupButton) {
-			throw new Error('Button not found');
-		}
+		expect(setupPageContent).toBeTruthy();
 
 		const setupPage = await clickButtonAndWaitForNewPage(browser, setupButton, downloadPath);
 
-		const setupPageContent = await setupPage.content();
+		const findButtonOnSetupPage = findButtonByText(setupPage);
+		const findTextOnSetupPage = findTextBySelector(setupPage);
 
-		expect(setupPageContent).toContain(
+		const setupPageText = await findTextOnSetupPage(
 			'Holo Key Manager is a safe place to set up and manage keys for Holochain apps'
 		);
 
-		const firstTimeSetupButton = await setupPage.waitForSelector(
-			'button::-p-text("First time set up")'
-		);
+		expect(setupPageText).toBeTruthy();
 
-		if (!firstTimeSetupButton) {
-			throw new Error('Button not found');
-		}
+		const firstTimeSetupButton = await findButtonOnSetupPage('First time set up');
 
 		await Promise.all([setupPage.waitForNavigation(), firstTimeSetupButton.click()]);
+		const setKeyManagerPasswordText = await findTextOnSetupPage('Set Key Manager Password');
 
-		const firstTimeSetupPageContent = await setupPage.content();
+		expect(setKeyManagerPasswordText).toBeTruthy();
 
-		expect(firstTimeSetupPageContent).toContain('Set Key Manager Password');
+		await setupPage.type('input[id*="enter-password"]', 'password');
+		await setupPage.type('input[id="confirm-password"]', 'password');
 
-		const newPasswordInput = await setupPage.waitForSelector('input[id*="enter-password"]');
-		const confirmPasswordInput = await setupPage.waitForSelector('input[id="confirm-password"]');
-
-		if (!newPasswordInput || !confirmPasswordInput) {
-			throw new Error('Password inputs not found');
-		}
-
-		await newPasswordInput.type('password');
-		await confirmPasswordInput.type('password');
-
-		const setPasswordButton = await setupPage.waitForSelector('button::-p-text("Set password")');
-
-		if (!setPasswordButton) {
-			throw new Error('Button not found');
-		}
+		const setPasswordButton = await findButtonOnSetupPage('Set password');
 
 		await Promise.all([setupPage.waitForNavigation(), setPasswordButton.click()]);
 
-		const enterPassphrasePageContent = await setupPage.content();
+		const enterPassphraseText = await findTextOnSetupPage('Enter Passphrase');
+		expect(enterPassphraseText).toBeTruthy();
 
-		expect(enterPassphrasePageContent).toContain('Enter Passphrase');
+		await setupPage.type('textarea[placeholder="Enter Passphrase"]', 'passphrase passphrase');
 
-		const enterPassphraseInput = await setupPage.waitForSelector(
-			'textarea[placeholder="Enter Passphrase"]'
-		);
-		if (!enterPassphraseInput) {
-			throw new Error('Password inputs not found');
-		}
-
-		await enterPassphraseInput.type('passphrase passphrase');
-
-		const setPassphraseButton = await setupPage.waitForSelector(
-			'button::-p-text("Set passphrase")'
-		);
-
-		if (!setPassphraseButton) {
-			throw new Error('Button not found');
-		}
+		const setPassphraseButton = await findButtonOnSetupPage('Set passphrase');
 
 		await setPassphraseButton.click();
 
-		const confirmPassphrasePageContent = await setupPage.content();
+		const confirmPassphraseText = await findTextOnSetupPage('Confirm Passphrase');
+		expect(confirmPassphraseText).toBeTruthy();
 
-		expect(confirmPassphrasePageContent).toContain('Confirm Passphrase');
+		await setupPage.type('textarea[placeholder="Confirm Passphrase"]', 'passphrase passphrase');
 
-		const confirmPassphraseInput = await setupPage.waitForSelector(
-			'textarea[placeholder="Confirm Passphrase"]'
-		);
-
-		if (!confirmPassphraseInput) {
-			throw new Error('Password inputs not found');
-		}
-
-		await confirmPassphraseInput.type('passphrase passphrase');
-
-		const confirmPassphraseButton = await setupPage.waitForSelector('button::-p-text("Next")');
-
-		if (!confirmPassphraseButton) {
-			throw new Error('Button not found');
-		}
+		const confirmPassphraseButton = await findButtonOnSetupPage('Next');
 
 		await Promise.all([setupPage.waitForNavigation(), confirmPassphraseButton.click()]);
 
-		const generateSeedPageContent = await setupPage.content();
+		const generateSeedText = await findTextOnSetupPage('Generate seed and key files');
 
-		expect(generateSeedPageContent).toContain('Generate seed and key files');
+		expect(generateSeedText).toBeTruthy();
 
-		const generateButton = await setupPage.waitForSelector('button::-p-text("Generate")');
+		const generateSeedButton = await findButtonOnSetupPage('Generate');
 
-		if (!generateButton) {
-			throw new Error('Button not found');
-		}
+		await Promise.all([setupPage.waitForNavigation(), generateSeedButton.click()]);
 
-		await Promise.all([setupPage.waitForNavigation(), generateButton.click()]);
+		const saveSeedText = await findTextOnSetupPage('Save seed and key files');
 
-		const saveSeedPageContent = await setupPage.content();
+		expect(saveSeedText).toBeTruthy();
 
-		expect(saveSeedPageContent).toContain('Save seed and key files');
-
-		const exportButton = await setupPage.waitForSelector('button::-p-text("Export")');
-
-		if (!exportButton) {
-			throw new Error('Button not found');
-		}
+		const exportButton = await findButtonOnSetupPage('Export');
 
 		exportButton.click();
 
@@ -170,8 +120,8 @@ describe('Extension E2E Tests', () => {
 			expect(actualFiles).toContain(file);
 		});
 
-		const setupCompletePageContent = await setupPage.content();
+		const setupCompleteText = await findTextOnSetupPage('Setup Complete');
 
-		expect(setupCompletePageContent).toContain('Setup Complete');
+		expect(setupCompleteText).toBeTruthy();
 	}, 10000);
 });
