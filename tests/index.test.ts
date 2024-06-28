@@ -113,7 +113,7 @@ describe('Extension E2E Tests', () => {
 		const zipContent = await readFile(keysFilePath);
 		const zip = await JSZip.loadAsync(zipContent);
 
-		const expectedFiles = ['device.txt', 'master.txt', 'revocation.txt'];
+		const expectedFiles = ['devic.txt', 'master.txt', 'revocation.txt'];
 		const actualFiles = Object.keys(zip.files);
 
 		expectedFiles.forEach((file) => {
