@@ -1,5 +1,5 @@
 import { access, constants } from 'fs';
-import { Browser, ElementHandle, launch, Page } from 'puppeteer';
+import { Browser, launch, Locator, Page } from 'puppeteer';
 
 export const launchBrowserWithExtension = async (extensionPath: string): Promise<Browser> => {
 	return launch({
@@ -24,7 +24,7 @@ const waitForNewPage = (browser: Browser): Promise<Page> =>
 
 export const clickButtonAndWaitForNewPage = async (
 	browser: Browser,
-	button: ElementHandle<Element>,
+	button: Locator<Element>,
 	downloadPath: string
 ): Promise<Page> => {
 	await button?.click();
@@ -54,3 +54,13 @@ export const fileExists = (filePath: string): Promise<boolean> => {
 		checkFile();
 	});
 };
+
+const findElementByText = (context: Page, selector: string) => async (text: string) => {
+	const locator = context.locator(`${selector}::-p-text(${text})`);
+	await locator.wait();
+	return locator;
+};
+
+export const findButtonByText = (context: Page) =>
+	findElementByText(context, 'button:not(:disabled) > span');
+export const findTextBySelector = (context: Page) => findElementByText(context, '');
