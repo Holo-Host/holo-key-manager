@@ -1,16 +1,17 @@
-name: 'extension-pr'
+name: 'client-pr'
 on:
   pull_request:
     branches: [main]
     paths:
-      - 'holo-key-manager-extension/**'
+      - 'holo-key-manager-js-client/package.json'
+      - '.github/workflows/client.yaml'
 
 jobs:
   build:
     runs-on: ubuntu-latest
 
     environment:
-      name: Extension
+      name: Client
 
     steps:
       - uses: actions/checkout@v4
@@ -18,22 +19,12 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: lts/*
-
+          registry-url: 'https://registry.npmjs.org'
       - name: Install pnpm
         run: npm install -g pnpm
-
       - name: Install dependencies
         run: pnpm install --no-frozen-lockfile
-
+        working-directory: holo-key-manager-js-client
       - name: Run unit tests
         run: pnpm test
-        working-directory: holo-key-manager-extension
-
-      - name: Build extension
-        run: pnpm build
-        working-directory: holo-key-manager-extension
-
-      - name: Run e2e tests
-        run: pnpm e2e-tests
-        env:
-          CHROME_ID: ${{  vars.CHROME_ID }}
+        working-directory: holo-key-manager-js-client
