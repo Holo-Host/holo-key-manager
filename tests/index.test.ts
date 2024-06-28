@@ -1,6 +1,5 @@
 import dotenv from 'dotenv';
-import { rmdirSync } from 'fs';
-import fs from 'fs/promises';
+import { access, readFile, rmdir } from 'fs/promises';
 import JSZip from 'jszip';
 import { join, resolve } from 'path';
 import type { Browser, Page } from 'puppeteer';
@@ -32,8 +31,12 @@ beforeAll(async () => {
 });
 
 afterAll(async () => {
-	rmdirSync(downloadPath, { recursive: true });
-	await browser?.close();
+	try {
+		await access(downloadPath);
+		await rmdir(downloadPath, { recursive: true });
+	} finally {
+		await browser?.close();
+	}
 });
 
 describe('Extension E2E Tests', () => {
@@ -161,7 +164,7 @@ describe('Extension E2E Tests', () => {
 
 		expect(keysFileExists).toBe(true);
 
-		const zipContent = await fs.readFile(keysFilePath);
+		const zipContent = await readFile(keysFilePath);
 		const zip = await JSZip.loadAsync(zipContent);
 
 		const expectedFiles = ['device.txt', 'master.txt', 'revocation.txt'];
