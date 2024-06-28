@@ -1,10 +1,14 @@
 import dotenv from 'dotenv';
-import path from 'path';
+import { rmdirSync } from 'fs';
+import fs from 'fs/promises';
+import JSZip from 'jszip';
+import { join, resolve } from 'path';
 import type { Browser, Page } from 'puppeteer';
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 
 import {
 	clickButtonAndWaitForNewPage,
+	fileExists,
 	launchBrowserWithExtension,
 	openExtensionPage
 } from './helpers';
@@ -13,6 +17,8 @@ dotenv.config();
 
 const EXTENSION_ID = process.env.CHROME_ID;
 
+const downloadPath = resolve('./downloads');
+
 let browser: Browser;
 let page: Page;
 
@@ -20,12 +26,13 @@ beforeAll(async () => {
 	if (!EXTENSION_ID) {
 		throw new Error('EXTENSION_ID is not set');
 	}
-	const extensionPath = path.resolve('holo-key-manager-extension', 'build');
+	const extensionPath = resolve('holo-key-manager-extension', 'build');
 	browser = await launchBrowserWithExtension(extensionPath);
 	page = await openExtensionPage(browser, EXTENSION_ID);
 });
 
 afterAll(async () => {
+	rmdirSync(downloadPath, { recursive: true });
 	await browser?.close();
 });
 
@@ -38,7 +45,8 @@ describe('Extension E2E Tests', () => {
 		if (!setupButton) {
 			throw new Error('Button not found');
 		}
-		const setupPage = await clickButtonAndWaitForNewPage(browser, setupButton);
+
+		const setupPage = await clickButtonAndWaitForNewPage(browser, setupButton, downloadPath);
 
 		const setupPageContent = await setupPage.content();
 
@@ -81,5 +89,90 @@ describe('Extension E2E Tests', () => {
 		const enterPassphrasePageContent = await setupPage.content();
 
 		expect(enterPassphrasePageContent).toContain('Enter Passphrase');
+
+		const enterPassphraseInput = await setupPage.waitForSelector(
+			'textarea[placeholder="Enter Passphrase"]'
+		);
+		if (!enterPassphraseInput) {
+			throw new Error('Password inputs not found');
+		}
+
+		await enterPassphraseInput.type('passphrase passphrase');
+
+		const setPassphraseButton = await setupPage.waitForSelector(
+			'button::-p-text("Set passphrase")'
+		);
+
+		if (!setPassphraseButton) {
+			throw new Error('Button not found');
+		}
+
+		await setPassphraseButton.click();
+
+		const confirmPassphrasePageContent = await setupPage.content();
+
+		expect(confirmPassphrasePageContent).toContain('Confirm Passphrase');
+
+		const confirmPassphraseInput = await setupPage.waitForSelector(
+			'textarea[placeholder="Confirm Passphrase"]'
+		);
+
+		if (!confirmPassphraseInput) {
+			throw new Error('Password inputs not found');
+		}
+
+		await confirmPassphraseInput.type('passphrase passphrase');
+
+		const confirmPassphraseButton = await setupPage.waitForSelector('button::-p-text("Next")');
+
+		if (!confirmPassphraseButton) {
+			throw new Error('Button not found');
+		}
+
+		await Promise.all([setupPage.waitForNavigation(), confirmPassphraseButton.click()]);
+
+		const generateSeedPageContent = await setupPage.content();
+
+		expect(generateSeedPageContent).toContain('Generate seed and key files');
+
+		const generateButton = await setupPage.waitForSelector('button::-p-text("Generate")');
+
+		if (!generateButton) {
+			throw new Error('Button not found');
+		}
+
+		await Promise.all([setupPage.waitForNavigation(), generateButton.click()]);
+
+		const saveSeedPageContent = await setupPage.content();
+
+		expect(saveSeedPageContent).toContain('Save seed and key files');
+
+		const exportButton = await setupPage.waitForSelector('button::-p-text("Export")');
+
+		if (!exportButton) {
+			throw new Error('Button not found');
+		}
+
+		exportButton.click();
+
+		const keysFilePath = join(downloadPath, 'keys.zip');
+
+		const keysFileExists = await fileExists(keysFilePath);
+
+		expect(keysFileExists).toBe(true);
+
+		const zipContent = await fs.readFile(keysFilePath);
+		const zip = await JSZip.loadAsync(zipContent);
+
+		const expectedFiles = ['device.txt', 'master.txt', 'revocation.txt'];
+		const actualFiles = Object.keys(zip.files);
+
+		expectedFiles.forEach((file) => {
+			expect(actualFiles).toContain(file);
+		});
+
+		const setupCompletePageContent = await setupPage.content();
+
+		expect(setupCompletePageContent).toContain('Setup Complete');
 	}, 10000);
 });
