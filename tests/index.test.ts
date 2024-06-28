@@ -1,5 +1,5 @@
 import dotenv from 'dotenv';
-import { access, readFile, rmdir } from 'fs/promises';
+import { readFile, rm } from 'fs/promises';
 import JSZip from 'jszip';
 import { join, resolve } from 'path';
 import type { Browser, Page } from 'puppeteer';
@@ -31,12 +31,8 @@ beforeAll(async () => {
 });
 
 afterAll(async () => {
-	try {
-		await access(downloadPath);
-		await rmdir(downloadPath, { recursive: true });
-	} finally {
-		await browser?.close();
-	}
+	await rm(downloadPath, { recursive: true, force: true });
+	await browser?.close();
 });
 
 describe('Extension E2E Tests', () => {
