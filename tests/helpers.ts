@@ -27,9 +27,8 @@ export const clickButtonAndWaitForNewPage = async (
 	button: Locator<Element>,
 	downloadPath: string
 ): Promise<Page> => {
-	await button?.click();
+	await button.click();
 	const newPage = await waitForNewPage(browser);
-	await newPage.waitForNavigation();
 
 	const session = await newPage.createCDPSession();
 	await session.send('Page.setDownloadBehavior', {
@@ -57,7 +56,7 @@ export const fileExists = (filePath: string): Promise<boolean> => {
 
 const findElementByText = (context: Page, selector: string) => async (text: string) => {
 	const locator = context.locator(`${selector}::-p-text(${text})`);
-	await locator.wait();
+	await locator.waitHandle();
 	return locator;
 };
 
