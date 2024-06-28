@@ -33,6 +33,7 @@ beforeAll(async () => {
 afterAll(async () => {
 	await rm(downloadPath, { recursive: true, force: true });
 	await browser?.close();
+	console.log('test');
 });
 
 describe('Extension E2E Tests', () => {
