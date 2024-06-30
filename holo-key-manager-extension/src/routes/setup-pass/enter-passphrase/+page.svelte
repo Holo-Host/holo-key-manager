@@ -1,4 +1,6 @@
 <script lang="ts">
+	import { onMount } from 'svelte';
+
 	import { goto } from '$app/navigation';
 	import type { SetSecret } from '$lib/types';
 	import { appQueries } from '$queries';
@@ -13,11 +15,13 @@
 
 	const { setupPasswordQuery } = appQueries();
 
-	$: {
-		if ($setupPasswordQuery.data === false) {
-			goto('start');
-		}
-	}
+	onMount(() =>
+		setupPasswordQuery.subscribe(({ data }) => {
+			if (data === false) {
+				goto('start');
+			}
+		})
+	);
 </script>
 
 {#if passphraseState === 'set'}

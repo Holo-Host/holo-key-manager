@@ -42,12 +42,6 @@ Ensure you have the following installed on your machine:
 - Node.js (v16 or higher)
 - pnpm (v7 or higher)
 
-To run e2e tests you need to create a `.env` file with
-`CHROME_ID=eggfhkdnfdhdpmkfpihjjbnncgmhihce`
-that corresponds to the key property (which is actually the pub_key) in `holo-key-manager-extension/static/manifest.json`.
-
-The rest of the `.env` properties visible in `.env.example` are for CI/CD.
-
 ### Initial Setup
 
 1. **Clone the repository:**
@@ -186,6 +180,30 @@ The monorepo uses pnpm workspaces to manage dependencies and scripts across mult
 By following these steps, you should be able to set up and start developing on the Holo Key Manager monorepo. If you encounter any issues or have questions, feel free to reach out to the maintainers.
 
 ## Testing
+
+There are three types of tests in this repository:
+
+1. **Unit Tests** for `holo-key-manager-js-client`:
+
+   - Run the unit tests using the command:
+     ```sh
+     cd holo-key-manager-js-client && pnpm test
+     ```
+
+2. **Unit Tests** for `holo-key-manager-extension`:
+
+   - Run the unit tests using the command:
+     ```sh
+     cd holo-key-manager-extension && pnpm test
+     ```
+
+3. **End-to-End (e2e) Tests** for the whole repository:
+   - To run e2e tests, you need to create a `.env` file with `CHROME_ID=eggfhkdnfdhdpmkfpihjjbnncgmhihce` that corresponds to the key property (which is actually the pub_key) in `holo-key-manager-extension/static/manifest.json`.
+   - The rest of the `.env` properties visible in `.env.example` are for CI/CD.
+   - Run the e2e tests using the command:
+     ```sh
+     pnpm e2e-tests
+     ```
 
 ## License
 

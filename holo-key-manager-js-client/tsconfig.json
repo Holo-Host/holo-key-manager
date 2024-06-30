@@ -4,6 +4,6 @@
 		"declaration": true,
 		"outDir": "./lib"
 	},
-	"include": ["src/**/*.ts"],
+	"include": ["src/**/*.ts", "tests/**/*.ts"],
 	"exclude": ["node_modules/**/*"]
 }
