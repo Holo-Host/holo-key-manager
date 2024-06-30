@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
+	import { Loading } from '$components';
 	import { appQueries } from '$queries';
 	import type { ArrayKeyItem } from '$types';
 
@@ -25,8 +26,8 @@
 		: [];
 </script>
 
-<div class="mt-4 flex justify-between">
-	<h2 class="text-xl font-semibold">hApps</h2>
+<div class="mt-4 flex items-center justify-between">
+	<h2 class="text-xl font-semibold">Applications</h2>
 	<div class="relative">
 		<img
 			src={'/img/magnifying-glass.svg'}
@@ -40,9 +41,12 @@
 		/>
 	</div>
 </div>
-{#if $applicationsListQuery.isFetching || filteredApplications.length === 0}
+
+{#if $applicationsListQuery.isFetching}
+	<Loading />
+{:else if filteredApplications.length === 0}
 	<div class="flex items-center justify-center">
-		<span>{$applicationsListQuery.isFetching ? 'Loading' : 'No keys'}</span>
+		<span>No keys</span>
 	</div>
 {:else}
 	{#each filteredApplications as applicationKey}

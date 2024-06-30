@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { ActionPage, Login } from '$components';
+	import { ActionPage, Loading, Login } from '$components';
 	import { dismissWindow } from '$helpers';
 	import { appQueries } from '$queries';
 
@@ -15,7 +15,7 @@
 
 <div class="mx-auto flex h-screen w-full max-w-xs flex-col justify-center py-8">
 	{#if isLoading}
-		<span>Loading</span>
+		<Loading />
 	{:else if hasSessionData}
 		<slot />
 	{:else if hasSetupData}

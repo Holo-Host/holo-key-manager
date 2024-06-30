@@ -107,10 +107,10 @@
 			}}
 		/>
 		{#if $recoverDeviceKeyMutation.error}
-			<span class="mt-2 self-end text-base text-alert"
-				>Oops! We couldn't import your device seed.</span
-			>
-			<span>Please try again.</span>
+			<span class="mt-2 self-end text-base text-alert">
+				Oops! We couldn't import your device seed.
+			</span>
+			<span class="mt-2 self-end text-base text-alert"> Please try again. </span>
 		{/if}
 	</div>
 </div>

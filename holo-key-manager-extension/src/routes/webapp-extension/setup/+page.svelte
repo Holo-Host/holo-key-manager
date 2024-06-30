@@ -2,7 +2,7 @@
 	import { onMount } from 'svelte';
 
 	import { goto } from '$app/navigation';
-	import { ActionPage } from '$components';
+	import { ActionPage, Loading } from '$components';
 	import { dismissWindow, extractDetailsFromUrl, sendMessageAndHandleResponse } from '$helpers';
 	import { appQueries } from '$queries';
 	import { NO_KEY_FOR_HAPP, SENDER_EXTENSION, SIGN_IN } from '$shared/const';
@@ -37,7 +37,7 @@
 </script>
 
 {#if $applicationsListQuery.isFetching}
-	<span>Loading</span>
+	<Loading />
 {:else}
 	<ActionPage
 		outerWindow={true}

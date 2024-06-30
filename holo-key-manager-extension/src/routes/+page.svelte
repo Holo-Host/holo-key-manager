@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
 
-	import { ActionPage, Login } from '$components';
+	import { ActionPage, Loading, Login } from '$components';
 	import { appQueries } from '$queries';
 	import { isChromePermissionsSafe } from '$shared/helpers';
 
@@ -33,7 +33,7 @@
 </script>
 
 {#if isLoading}
-	<span>Loading</span>
+	<Loading />
 {:else if !permissionGranted}
 	<ActionPage
 		mainAction={requestPermission}

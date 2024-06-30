@@ -4,7 +4,7 @@
 	import { onMount } from 'svelte';
 
 	import { goto } from '$app/navigation';
-	import { AppParagraph, Button, Title } from '$components';
+	import { Button, Title } from '$components';
 	import { uint8ArrayToBase64 } from '$shared/helpers';
 	import { keysStore } from '$stores';
 
@@ -52,14 +52,12 @@
 <img src="/img/check.svg" alt="check" class="my-4 w-12" />
 
 <Title>Save seed and key files</Title>
-<AppParagraph
-	extraProps="mx-auto max-w-md text-center"
-	text="All done, please save your files. Remember to back them up an external drive you store in a secure location"
-/>
-<AppParagraph
-	extraProps="mx-auto max-w-md text-center"
-	text="Learn more about seed and key files by visiting our FAQ page</a>."
-/>
-
-<img src="/img/padlock.svg" alt="Padlock" class="my-6" />
-<Button label="Export" onClick={download} />
+<p class="mx-auto mb-6 max-w-md text-center text-base font-light text-secondary">
+	All done, please save your files. Remember to back them up an external drive you store in a secure
+	location. Learn more about seed and key files by
+	<a href="https://holo.host/faq/" target="_blank" class="font-semibold text-primary underline">
+		visiting our FAQ
+	</a>
+	page.
+</p>
+<Button label="Save" onClick={download} />

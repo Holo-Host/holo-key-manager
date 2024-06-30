@@ -2,7 +2,7 @@
 	import { onMount } from 'svelte';
 
 	import { goto } from '$app/navigation';
-	import { AppParagraph, Button, Title } from '$components';
+	import { AppParagraph, Button, Loading, Title } from '$components';
 	import { appQueries } from '$queries';
 	import { keysStore, passphraseStore, passwordStore } from '$stores';
 
@@ -33,7 +33,7 @@
 </script>
 
 {#if $keysStore.loading}
-	<span>Loading</span>
+	<Loading />
 {:else}
 	<img src="/img/download.svg" alt="Download" class="my-4 w-12" />
 	<Title>Generate seed and key files</Title>
