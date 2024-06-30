@@ -127,8 +127,8 @@ describe('Extension E2E Tests', () => {
 
 		expect(saveSeedText).toBeTruthy();
 
-		console.log('Finding Export button');
-		const exportButton = await findButtonOnSetupPage('Export');
+		console.log('Finding Save button');
+		const exportButton = await findButtonOnSetupPage('Save');
 
 		console.log('Clicking Export button');
 		exportButton.click();
