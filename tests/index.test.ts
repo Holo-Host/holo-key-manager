@@ -83,6 +83,14 @@ describe('Extension E2E Tests', () => {
 		console.log('Clicking Set password button and waiting for navigation');
 		await Promise.all([setupPage.waitForNavigation(), setPasswordButton.click()]);
 
+		console.log('Finding I understand button');
+		const iUnderstandButton = await findButtonOnSetupPage('I understand');
+
+		expect(iUnderstandButton).toBeTruthy();
+
+		console.log('Clicking Set password button and waiting for navigation');
+		await Promise.all([setupPage.waitForNavigation(), iUnderstandButton.click()]);
+
 		console.log('Finding Enter Passphrase text');
 		const enterPassphraseText = await findTextOnSetupPage('Enter Passphrase');
 
