@@ -8,10 +8,12 @@
 	$: if ($setupDeviceKeyQuery.data) {
 		dismissWindow();
 	}
+	const shouldShowGoBack = (pathname: string): boolean =>
+		!pathname.includes('start') && !pathname.includes('important');
 </script>
 
 <AppContainer>
-	{#if !$page.url.pathname.includes('start')}
+	{#if shouldShowGoBack($page.url.pathname)}
 		<GoBack />
 	{/if}
 	<slot />

@@ -62,7 +62,7 @@
 
 				return $createPassword.mutate($passwordStore, {
 					onSuccess: () => {
-						goto('/setup-pass/enter-passphrase');
+						goto('/setup-pass/important');
 					}
 				});
 			}}

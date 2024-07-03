@@ -14,12 +14,15 @@
 	};
 
 	onMount(() => {
+		$applicationsListQuery.refetch();
 		if ($extractDetailsFromUrl.action === SIGN_IN) {
 			const unsubscribe = applicationsListQuery.subscribe(async (data) => {
 				if (data.data === undefined) return;
 
 				if (data.data.some((app) => app.happId === $extractDetailsFromUrl.happId)) {
-					return goto(`select-key-to-login?${new URLSearchParams(window.location.search)}`);
+					goto(`select-key-to-login?${new URLSearchParams(window.location.search)}`);
+					unsubscribe?.();
+					return;
 				}
 
 				await sendMessageAndHandleResponse(
@@ -29,9 +32,9 @@
 					},
 					$extractDetailsFromUrl.messageId
 				);
-				return dismissWindow();
+				dismissWindow();
+				unsubscribe?.();
 			});
-			return () => unsubscribe?.();
 		}
 	});
 </script>

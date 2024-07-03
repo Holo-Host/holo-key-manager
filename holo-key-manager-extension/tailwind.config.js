@@ -10,13 +10,12 @@ export default {
 				primary: '#00838D',
 				'primary-disabled': '#B2DADD',
 				secondary: '#606C8B',
-				quaternary: '#313C59',
 				grey: '#D2D0DD',
 				'light-gray': '#262A3333',
 				'primary-background': '#FBFAFF',
 				'row-background': '#F9F9FB',
 				alert: '#D92D20',
-				'alert-background': '#FDA29B'
+				'alert-background': '#FFFBFA'
 			}
 		}
 	},

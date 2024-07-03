@@ -98,8 +98,6 @@ export const getKeys = async (params: GetKeysObjectParams, signature: string) =>
 			'Failed to fetch data object'
 		);
 
-		console.log('response', response);
-
 		const json = await response.json();
 		const data = validateData<GetKeysResponse[]>(GetKeysResponseSchema.array(), json);
 
