@@ -35,7 +35,7 @@
 			class="absolute left-3 top-1/2 -translate-y-1/2"
 		/>
 		<input
-			placeholder="Search hApp"
+			placeholder="Search applications"
 			bind:value={searchInput}
 			class="rounded-md border border-grey py-1.5 pl-9 outline-none focus:outline-none"
 		/>
