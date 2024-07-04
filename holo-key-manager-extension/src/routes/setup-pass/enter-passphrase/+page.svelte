@@ -15,11 +15,13 @@
 
 	const { setupPasswordQuery } = appQueries();
 
-	onMount(() => {
-		if ($setupPasswordQuery.data === false) {
-			goto('start');
-		}
-	});
+	onMount(() =>
+		setupPasswordQuery.subscribe(({ data }) => {
+			if (data === false) {
+				goto('start');
+			}
+		})
+	);
 </script>
 
 {#if passphraseState === 'set'}
