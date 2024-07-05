@@ -7,11 +7,13 @@
 
 	const { setupPasswordQuery } = appQueries();
 
-	onMount(() => {
-		if ($setupPasswordQuery.data === false) {
-			goto('start');
-		}
-	});
+	onMount(() =>
+		setupPasswordQuery.subscribe(({ data }) => {
+			if (data === false) {
+				goto('start');
+			}
+		})
+	);
 </script>
 
 <img class="mb-12" src="/img/exclamation.svg" alt="Exclamation" />

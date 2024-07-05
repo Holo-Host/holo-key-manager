@@ -44,7 +44,7 @@
 {:else if hasSessionData}
 	<ActionPage
 		mainAction={redirectToListOfHapps}
-		mainActionLabel="List of hApps"
+		mainActionLabel="List of applications"
 		secondaryAction={redirectToChangePassword}
 		secondaryActionLabel="Change password"
 		title="Holo Key Manager"
