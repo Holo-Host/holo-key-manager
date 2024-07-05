@@ -1,10 +1,10 @@
 import { describe, expect, it } from 'vitest';
 
-import { transformDataToArray } from '../lib/services/key-manager-store';
-import { type GetKeysResponse } from '../lib/types';
+import { transformDataToArray } from '$services';
+import { type GetKeysResponse } from '$types';
 
-describe('transformDataToArray', () => {
-	it('should transform GetKeysResponse array to ArrayKeyItem array', () => {
+describe('transformDataToIndexedArray', () => {
+	it('should transform GetKeysResponse array to ArrayKeyItem array in proper index order', () => {
 		const input: GetKeysResponse[] = [
 			{
 				appName: 'App2',

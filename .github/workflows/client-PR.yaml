@@ -1,10 +1,10 @@
-name: 'client'
+name: 'client-pr'
 on:
-  push:
+  pull_request:
     branches: [main]
     paths:
       - 'holo-key-manager-js-client/package.json'
-      - '.github/workflows/client.yaml'
+      - '.github/workflows/client-PR.yaml'
 
 jobs:
   build:
@@ -28,11 +28,3 @@ jobs:
       - name: Run unit tests
         run: pnpm test
         working-directory: holo-key-manager-js-client
-      - name: Build and pack
-        run: pnpm buildPack
-        working-directory: holo-key-manager-js-client
-      - name: Publish to npm
-        run: npm publish --access public
-        working-directory: holo-key-manager-js-client
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}

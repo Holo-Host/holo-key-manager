@@ -8,15 +8,13 @@ const buildDir = path.resolve(__dirname, '../build');
 const firefoxDir = path.join(buildDir, 'firefox');
 
 // Copy build directory to firefox directory
-function copyDir(src, dest) {
-	execSync(`cp -r ${src} ${dest}`);
-}
+const copyDir = (src, dest) => execSync(`cp -r ${src} ${dest}`);
 
 // Update manifest for Firefox
-function updateManifestForFirefox(directory) {
+const updateManifestForFirefox = (directory) => {
 	const manifestPath = path.join(directory, 'manifest.json');
 	const data = fs.readFileSync(manifestPath, 'utf8');
-	const manifest = JSON.parse(data);
+	const { key, ...manifest } = JSON.parse(data);
 	const updatedManifest = {
 		...manifest,
 		background: {
@@ -25,10 +23,10 @@ function updateManifestForFirefox(directory) {
 		}
 	};
 	fs.writeFileSync(manifestPath, JSON.stringify(updatedManifest, null, 2), 'utf8');
-}
+};
 
 // Archive directory
-function archiveDirectory(sourceDir, outPath) {
+const archiveDirectory = (sourceDir, outPath) => {
 	const archive = archiver('zip', { zlib: { level: 9 } });
 	const stream = fs.createWriteStream(outPath);
 
@@ -41,9 +39,9 @@ function archiveDirectory(sourceDir, outPath) {
 		stream.on('close', () => resolve());
 		archive.finalize();
 	});
-}
+};
 
-async function buildForFirefox() {
+const buildForFirefox = async () => {
 	// Ensure firefox directory does not exist
 	if (fs.existsSync(firefoxDir)) {
 		execSync(`rm -rf ${firefoxDir}`);
@@ -61,6 +59,6 @@ async function buildForFirefox() {
 	execSync(`rm -rf ${firefoxDir}`);
 
 	console.log('Firefox build is ready and archived.');
-}
+};
 
 buildForFirefox();
