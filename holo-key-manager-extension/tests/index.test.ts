@@ -7,6 +7,7 @@ describe('transformDataToIndexedArray', () => {
 	it('should transform GetKeysResponse array to ArrayKeyItem array in proper index order', () => {
 		const input: GetKeysResponse[] = [
 			{
+				newKey: 'newKey2',
 				appName: 'App2',
 				installedAppId: 'app2-id',
 				appIndex: 1,
@@ -17,6 +18,7 @@ describe('transformDataToIndexedArray', () => {
 				}
 			},
 			{
+				newKey: 'newKey1',
 				appName: 'App1',
 				installedAppId: 'app1-id',
 				appIndex: 0,
@@ -27,6 +29,7 @@ describe('transformDataToIndexedArray', () => {
 				}
 			},
 			{
+				newKey: 'newKey3',
 				appName: 'App3',
 				installedAppId: 'app3-id',
 				appIndex: 3,
@@ -37,6 +40,7 @@ describe('transformDataToIndexedArray', () => {
 				}
 			},
 			{
+				newKey: 'newKey4',
 				appName: 'App4',
 				installedAppId: 'app4-id',
 				appIndex: 2,
@@ -47,6 +51,7 @@ describe('transformDataToIndexedArray', () => {
 				}
 			},
 			{
+				newKey: 'newKey5',
 				appName: 'App5',
 				installedAppId: 'app5-id',
 				appIndex: 4,
@@ -60,6 +65,7 @@ describe('transformDataToIndexedArray', () => {
 
 		const expectedOutput = [
 			{
+				newKey: 'newKey1',
 				happId: 'app1-id',
 				happName: 'App1',
 				keyName: 'key1',
@@ -67,6 +73,7 @@ describe('transformDataToIndexedArray', () => {
 				happUiUrl: 'http://app1.com'
 			},
 			{
+				newKey: 'newKey2',
 				happId: 'app2-id',
 				happName: 'App2',
 				keyName: 'key2',
@@ -74,6 +81,7 @@ describe('transformDataToIndexedArray', () => {
 				happUiUrl: 'http://app2.com'
 			},
 			{
+				newKey: 'newKey4',
 				happId: 'app4-id',
 				happName: 'App4',
 				keyName: 'key4',
@@ -81,6 +89,7 @@ describe('transformDataToIndexedArray', () => {
 				happUiUrl: 'http://app4.com'
 			},
 			{
+				newKey: 'newKey3',
 				happId: 'app3-id',
 				happName: 'App3',
 				keyName: 'key1',
@@ -89,6 +98,7 @@ describe('transformDataToIndexedArray', () => {
 			},
 
 			{
+				newKey: 'newKey5',
 				happId: 'app5-id',
 				happName: 'App5',
 				keyName: 'key5',
