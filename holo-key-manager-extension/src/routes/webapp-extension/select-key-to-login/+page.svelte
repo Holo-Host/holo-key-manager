@@ -2,7 +2,7 @@
 	import clsx from 'clsx';
 	import { derived } from 'svelte/store';
 
-	import { AppParagraph, Button, LogoCloseBar } from '$components';
+	import { AppParagraph, Button, HoverTooltip, LogoCloseBar } from '$components';
 	import { dismissWindow, extractDetailsFromUrl } from '$helpers';
 	import { appQueries } from '$queries';
 
@@ -36,25 +36,31 @@
 		/>
 		<p class="my-2 text-base">Keys</p>
 		{#if $applicationKeysQuery.length > 0}
-			<div class="max-h-44 overflow-auto">
-				{#each $applicationKeysQuery as key, index}
-					{@const selected = selectedKey === key.keyName}
-					<button
-						class={clsx('flex w-full items-center justify-between border p-2', {
-							'bg-row-background': index % 2 === 1,
-							'border-primary': selected,
-							'border-transparent': !selected
-						})}
-						on:click={() => selectKey(key.keyName)}
-					>
-						<p class="font-light">{key.keyName}</p>
-						<img
-							src={`/img/${selected ? 'selected' : 'select'}-arrow.svg`}
-							alt="Arrow"
-							class="text-primary"
-						/>
-					</button>
-				{/each}
+			<div class="relative">
+				<div class="max-h-44 overflow-y-auto">
+					{#each $applicationKeysQuery as key, index}
+						<HoverTooltip tooltipText={key.newKey} delay={2000}>
+							{@const selected = selectedKey === key.keyName}
+							<button
+								class={clsx('flex w-full items-center justify-between border p-2', {
+									'bg-row-background': index % 2 === 1,
+									'border-primary': selected,
+									'border-transparent': !selected
+								})}
+								on:click={() => selectKey(key.keyName)}
+							>
+								<p class="font-light">
+									{key.keyName}
+								</p>
+								<img
+									src={`/img/${selected ? 'selected' : 'select'}-arrow.svg`}
+									alt="Arrow"
+									class="text-primary"
+								/>
+							</button>
+						</HoverTooltip>
+					{/each}
+				</div>
 			</div>
 		{/if}
 	</div>

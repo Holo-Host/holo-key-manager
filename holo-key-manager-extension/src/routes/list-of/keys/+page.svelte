@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { derived } from 'svelte/store';
 
-	import { GoBack } from '$components';
+	import { GoBack, HoverTooltip } from '$components';
 	import { extractDetailsFromUrl } from '$helpers';
 	import { appQueries } from '$queries';
 
@@ -45,13 +45,23 @@
 	<h2 class="border-b border-grey py-4 text-xl font-semibold">Keys</h2>
 	<table class="mt-4 w-full rounded-lg border">
 		{#each $applicationKeysQuery as applicationKey, index}
-			<tr class="w-full" class:bg-gray-100={index % 2 === 0}>
-				<td class="border-b px-4 py-2 last:border-b-0">{applicationKey.keyName}</td>
-				<td class="flex justify-end border-b px-4 py-2 last:border-b-0">
-					<button class="mr-2 rounded-md px-4 py-2 text-sm text-grey" disabled> Revoke key </button>
-					<button class="rounded-md px-4 py-2 text-sm text-grey" disabled> Change key </button>
-				</td>
-			</tr>
+			<HoverTooltip tooltipText={applicationKey.newKey} delay={2000}>
+				<tr class="w-full" class:bg-gray-100={index % 2 === 0}>
+					<td class="w-full border-b px-4 py-2 last:border-b-0">
+						<span class="flex-grow">{applicationKey.keyName}</span>
+					</td>
+					<td class="border-b px-4 py-2 last:border-b-0">
+						<div class="flex space-x-2">
+							<button class="whitespace-nowrap rounded-md px-4 py-2 text-sm text-grey" disabled
+								>Revoke key</button
+							>
+							<button class="whitespace-nowrap rounded-md px-4 py-2 text-sm text-grey" disabled
+								>Change key</button
+							>
+						</div>
+					</td>
+				</tr>
+			</HoverTooltip>
 		{/each}
 	</table>
 {/if}

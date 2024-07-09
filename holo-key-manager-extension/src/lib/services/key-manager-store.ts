@@ -68,6 +68,7 @@ export const createGetKeysObjectParams = (data: unknown): GetKeysObjectParams =>
 	createRequestBody<GetKeysObjectParams>(GetKeysObjectParamsSchema, data);
 
 const mapItemToNewItem = (item: GetKeysResponse): ArrayKeyItem => ({
+	newKey: item.newKey,
 	happId: item.installedAppId,
 	happName: item.appName,
 	keyName: item.metadata.keyName,

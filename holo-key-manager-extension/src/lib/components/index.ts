@@ -3,6 +3,7 @@ export { default as AppContainer } from './AppContainer.svelte';
 export { default as AppParagraph } from './AppParagraph.svelte';
 export { default as Button } from './Button.svelte';
 export { default as GoBack } from './GoBack.svelte';
+export { default as HoverTooltip } from './HoverTooltip.svelte';
 export { default as Input } from './Input.svelte';
 export { default as Loading } from './Loading.svelte';
 export { default as Login } from './Login.svelte';

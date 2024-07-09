@@ -41,6 +41,7 @@ export type GetKeysObjectParams = z.infer<typeof GetKeysObjectParamsSchema>;
 
 export const GetKeysResponseSchema = z.object({
 	appName: requiredString('App Name'),
+	newKey: requiredString('New Key'),
 	installedAppId: requiredString('Installed App ID'),
 	appIndex: nonNegativeNumber('App Index'),
 	metadata: z.object({
@@ -55,6 +56,7 @@ export type GetKeysResponse = z.infer<typeof GetKeysResponseSchema>;
 export const ArrayKeyItemSchema = z.object({
 	happId: z.string(),
 	happName: z.string(),
+	newKey: z.string(),
 	keyName: z.string(),
 	happLogo: z.string().optional(),
 	happUiUrl: z.string().optional()
