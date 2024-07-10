@@ -71,8 +71,7 @@ const calcDhtBytes = (data: Uint8Array): Uint8Array => {
 
 export const extendUint8Array = (inputArray: Uint8Array): Uint8Array => {
 	const prefix = new Uint8Array([132, 32, 36]);
-	const combinedArray = new Uint8Array([...prefix, ...inputArray]);
-	const suffix = calcDhtBytes(combinedArray);
+	const suffix = calcDhtBytes(inputArray);
 
-	return new Uint8Array([...combinedArray, ...suffix]);
+	return new Uint8Array([...prefix, ...inputArray, ...suffix]);
 };

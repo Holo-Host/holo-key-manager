@@ -117,18 +117,18 @@ export function createSignInWithKeyMutation(queryClient: QueryClient) {
 
 			const currentAuthenticatedAppsListData = await fetchAuthenticatedAppsList();
 
-			const newIndex = currentAppsList.findIndex(
+			const index = currentAppsList.findIndex(
 				(app) => app.happId === happId && app.keyName === keyName
 			);
 
-			const pubKey = await deriveSignPubKey(newIndex);
+			const pubKey = await deriveSignPubKey(index);
 
 			storageService.set({
 				key: AUTHENTICATED_APPS_LIST,
 				value: {
 					...currentAuthenticatedAppsListData,
 					[happId]: {
-						index: newIndex,
+						index: index,
 						origin
 					}
 				},
