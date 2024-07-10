@@ -76,18 +76,16 @@ const mapItemToNewItem = (item: GetKeysResponse): ArrayKeyItem => ({
 	happUiUrl: item.metadata.happUiUrl
 });
 
-const insertItemAtIndex = <T>(arr: T[], index: number, newItem: T): T[] => [
-	...arr.slice(0, index),
-	newItem,
-	...arr.slice(index)
-];
+const sortByAppIndex = (a: GetKeysResponse, b: GetKeysResponse) => a.appIndex - b.appIndex;
+
+const transformItem = (item: GetKeysResponse): ArrayKeyItem => {
+	const newItem = mapItemToNewItem(item);
+	ArrayKeyItemSchema.parse(newItem);
+	return newItem;
+};
 
 export const transformDataToArray = (data: GetKeysResponse[]): ArrayKeyItem[] =>
-	data.reduce<ArrayKeyItem[]>((acc, item) => {
-		const newItem = mapItemToNewItem(item);
-		ArrayKeyItemSchema.parse(newItem);
-		return insertItemAtIndex(acc, item.appIndex, newItem);
-	}, []);
+	data.sort(sortByAppIndex).map(transformItem);
 
 export const getKeys = async (params: GetKeysObjectParams, signature: string) => {
 	try {
