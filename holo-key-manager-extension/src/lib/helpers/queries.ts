@@ -2,6 +2,7 @@ import { encodeHashToBase64 } from '@holochain/client';
 import { encode } from '@msgpack/msgpack';
 import type { QueryClient } from '@tanstack/svelte-query';
 
+import { DEEP_KEY_INDEX, KEY_INDEX } from '$const';
 import { createGetKeysObjectParams, getKeys, unlockKey } from '$services';
 import {
 	AUTHENTICATED_APPS_LIST,
@@ -36,12 +37,12 @@ export const getPassword = async () => {
 };
 
 export const fetchKeys = async () => {
-	const devicePubKey = await getDevicePubKeyWithExternalEncoding();
+	const { pubKey } = await getDeepKeyAgentPubKeyWithExternalEncoding();
 	const getKeysParams = createGetKeysObjectParams({
-		deepkeyAgent: devicePubKey.pubKey,
+		deepkeyAgent: pubKey,
 		timestamp: Date.now()
 	});
-	const signedMessage = await signWithDevicePubKey(getKeysParams);
+	const signedMessage = await signWithDeepKeyAgent(getKeysParams);
 
 	return await getKeys(getKeysParams, signedMessage.signature);
 };
@@ -83,16 +84,6 @@ export const getExtensionSession = async () => {
 	return parsedResponse.data.payload;
 };
 
-const getSessionAndKey = async () => {
-	const session = await getExtensionSession();
-	if (!session) {
-		throw new Error('Session data not found');
-	}
-	const encryptedDeviceKey = await getDeviceKey();
-	const keyUnlocked = await unlockKey(encryptedDeviceKey, session);
-	return keyUnlocked;
-};
-
 const validatePubKey = (signPubKey: Uint8Array, encoder: (key: Uint8Array) => string) => {
 	const validatedSchema = PubKeySchema.safeParse({
 		pubKey: encoder(signPubKey)
@@ -110,21 +101,26 @@ const validatePubKeyWithExternalEncoding = (signPubKey: Uint8Array) => {
 	return validatePubKey(extendedSignPubKey, encodeHashToBase64);
 };
 
-export const getDevicePubKeyWithExternalEncoding = async () => {
-	const keyUnlocked = await getSessionAndKey();
-	const { signPubKey } = keyUnlocked;
+const deriveAppKey = async (index: number) => {
+	const session = await getExtensionSession();
+	if (!session) {
+		throw new Error('Session data not found');
+	}
+	const encryptedDeviceKey = await getDeviceKey();
+	const keyUnlocked = await unlockKey(encryptedDeviceKey, session);
+	const agent = keyUnlocked.derive(index);
 	keyUnlocked.zero();
-	return validatePubKeyWithExternalEncoding(signPubKey);
+	const appKey = agent.derive(KEY_INDEX);
+	agent.zero();
+	return appKey;
 };
 
-export const signWithDevicePubKey = async (payload: object) => {
-	const keyUnlocked = await getSessionAndKey();
-
+export const signWithDeepKeyAgent = async (payload: object) => {
+	const deepKeyAgent = await deriveAppKey(DEEP_KEY_INDEX);
 	const encodedPayload = encode(payload, { useBigInt64: true });
 
-	const signature = keyUnlocked.sign(encodedPayload);
-
-	keyUnlocked.zero();
+	const signature = deepKeyAgent.sign(encodedPayload);
+	deepKeyAgent.zero();
 
 	const validatedSchema = SuccessMessageSignedSchema.safeParse({
 		signature: encodeHashToBase64(signature)
@@ -137,14 +133,21 @@ export const signWithDevicePubKey = async (payload: object) => {
 	return validatedSchema.data;
 };
 
-const deriveSignPubKeyBase = async (newIndex: number, validator: (key: Uint8Array) => PubKey) => {
-	const keyUnlocked = await getSessionAndKey();
-	const { signPubKey } = keyUnlocked.derive(newIndex);
-	keyUnlocked.zero();
-	return validator(signPubKey);
+export const getDeepKeyAgentPubKeyWithExternalEncoding = async () => {
+	const appKey = await deriveAppKey(DEEP_KEY_INDEX);
+	const validatedPubKey = validatePubKeyWithExternalEncoding(appKey.signPubKey);
+	appKey.zero();
+	return validatedPubKey;
 };
 
-export const deriveSignPubKey = async (newIndex: number) =>
-	deriveSignPubKeyBase(newIndex, validatePubKeyWithBase64);
-export const deriveSignPubKeyWithExternalEncoding = async (newIndex: number) =>
-	deriveSignPubKeyBase(newIndex, validatePubKeyWithExternalEncoding);
+const deriveSignPubKeyBase = async (index: number, validator: (key: Uint8Array) => PubKey) => {
+	const appKey = await deriveAppKey(index);
+	const validatedPubKey = validator(appKey.signPubKey);
+	appKey.zero();
+	return validatedPubKey;
+};
+
+export const deriveSignPubKey = async (index: number) =>
+	deriveSignPubKeyBase(index, validatePubKeyWithBase64);
+export const deriveSignPubKeyWithExternalEncoding = async (index: number) =>
+	deriveSignPubKeyBase(index, validatePubKeyWithExternalEncoding);

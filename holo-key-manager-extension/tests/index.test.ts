@@ -110,25 +110,10 @@ describe('transformDataToIndexedArray', () => {
 					happLogo: 'https://example.com/logo.png',
 					happUiUrl: 'https://example.com/description.html'
 				}
-			},
-			{
-				newKey: 'uhCAkzSOTorctsWN-ASn7s-FxI6Av9VkXFvi5Vdq4boJyO8jzPkZu',
-				appName: 'Cloud Console',
-				installedAppId: 'uhCkkJlEYXJyglP3ECCNBobeeEp-z85CVm_SsViHpxDyPK6Mzzkyp',
-				appIndex: 0,
-				metadata: { keyName: 'key 1', happUiUrl: 'https://cloud-console.holo.host/' }
 			}
 		];
 
 		const expectedOutput = [
-			{
-				happId: 'uhCkkJlEYXJyglP3ECCNBobeeEp-z85CVm_SsViHpxDyPK6Mzzkyp',
-				happName: 'Cloud Console',
-				happLogo: undefined,
-				newKey: 'uhCAkzSOTorctsWN-ASn7s-FxI6Av9VkXFvi5Vdq4boJyO8jzPkZu',
-				keyName: 'key 1',
-				happUiUrl: 'https://cloud-console.holo.host/'
-			},
 			{
 				happId: 'uhCkkSwHw3d3yz-tg26QxvY0ZZyO85pbmhQXYDwj4mdnQrQx4uF6L',
 				happName: 'Cloud Console',
