@@ -5,12 +5,13 @@ import {
 	deriveSignPubKeyWithExternalEncoding,
 	fetchAuthenticatedAppsList,
 	fetchKeys,
-	getDevicePubKeyWithExternalEncoding,
+	getDeepKeyAgentPubKeyWithExternalEncoding,
 	handleSuccess,
 	sendMessageAndHandleResponse,
-	signWithDevicePubKey
+	signWithDeepKeyAgent
 } from '$helpers';
 import { createRegisterKeyBody, registerKey } from '$services';
+import { DEEP_KEY_AGENT_OFFSET } from '$shared/const';
 import {
 	APPLICATION_KEYS,
 	APPLICATION_SIGNED_IN_KEY,
@@ -39,9 +40,9 @@ export function createApplicationKeyMutation(queryClient: QueryClient) {
 		}) => {
 			const currentParsedAuthenticatedAppsListData = await fetchAuthenticatedAppsList();
 
-			const newIndex = mutationData.currentAppsList.length;
+			const newIndex = mutationData.currentAppsList.length + DEEP_KEY_AGENT_OFFSET;
 
-			const devicePubKeyExternal = await getDevicePubKeyWithExternalEncoding();
+			const devicePubKeyExternal = await getDeepKeyAgentPubKeyWithExternalEncoding();
 
 			const pubKeyObjectExternal = await deriveSignPubKeyWithExternalEncoding(newIndex);
 
@@ -59,7 +60,7 @@ export function createApplicationKeyMutation(queryClient: QueryClient) {
 				happUiUrl: mutationData.happUiUrl
 			});
 
-			const signedPostMessage = await signWithDevicePubKey(registerKeyBody);
+			const signedPostMessage = await signWithDeepKeyAgent(registerKeyBody);
 
 			await registerKey(registerKeyBody, signedPostMessage.signature);
 
@@ -121,7 +122,7 @@ export function createSignInWithKeyMutation(queryClient: QueryClient) {
 				(app) => app.happId === happId && app.keyName === keyName
 			);
 
-			const pubKey = await deriveSignPubKey(index);
+			const pubKey = await deriveSignPubKey(index + DEEP_KEY_AGENT_OFFSET);
 
 			storageService.set({
 				key: AUTHENTICATED_APPS_LIST,
