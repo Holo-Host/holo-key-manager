@@ -37,7 +37,7 @@
 		<p class="my-2 text-base">Keys</p>
 		{#if $applicationKeysQuery.length > 0}
 			<div class="relative">
-				<div class="max-h-44 overflow-y-auto">
+				<div class="max-h-56 overflow-y-auto pb-12">
 					{#each $applicationKeysQuery as key, index}
 						<HoverTooltip tooltipText={key.newKey} delay={1000}>
 							{@const selected = selectedKey === key.keyName}
