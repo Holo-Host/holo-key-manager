@@ -1,5 +1,6 @@
 import { createMutation, createQuery, QueryClient } from '@tanstack/svelte-query';
 
+import { DEEP_KEY_AGENT_OFFSET } from '$const';
 import {
 	deriveSignPubKey,
 	deriveSignPubKeyWithExternalEncoding,
@@ -11,7 +12,6 @@ import {
 	signWithDeepKeyAgent
 } from '$helpers';
 import { createRegisterKeyBody, registerKey } from '$services';
-import { DEEP_KEY_AGENT_OFFSET } from '$shared/const';
 import {
 	APPLICATION_KEYS,
 	APPLICATION_SIGNED_IN_KEY,
