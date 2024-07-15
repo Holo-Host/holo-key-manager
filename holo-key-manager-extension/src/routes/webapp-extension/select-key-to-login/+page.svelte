@@ -37,9 +37,9 @@
 		<p class="my-2 text-base">Keys</p>
 		{#if $applicationKeysQuery.length > 0}
 			<div class="relative">
-				<div class="max-h-44 overflow-y-auto">
+				<div class="max-h-44 overflow-y-auto" id="key-list">
 					{#each $applicationKeysQuery as key, index}
-						<HoverTooltip tooltipText={key.newKey} delay={2000}>
+						<HoverTooltip outerContainerId="key-list" tooltipText={key.newKey}>
 							{@const selected = selectedKey === key.keyName}
 							<button
 								class={clsx('flex w-full items-center justify-between border p-2', {
