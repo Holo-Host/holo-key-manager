@@ -32,7 +32,7 @@
 	<h1 class="mt-4 text-2xl font-bold">Sign up</h1>
 	<AppParagraph
 		extraProps="my-4 max-w-48 text-center"
-		text="Please provide the following details"
+		text="This app is requesting the following details"
 	/>
 </div>
 
