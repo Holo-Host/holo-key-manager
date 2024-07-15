@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
 
-	export let delay = 2000;
+	export let delay = 1000;
 	export let tooltipText = '';
 
 	let showTooltip = false;

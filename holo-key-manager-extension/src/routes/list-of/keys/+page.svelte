@@ -45,7 +45,7 @@
 	<h2 class="border-b border-grey py-4 text-xl font-semibold">Keys</h2>
 	<table class="mt-4 w-full rounded-lg border">
 		{#each $applicationKeysQuery as applicationKey, index}
-			<HoverTooltip tooltipText={applicationKey.newKey} delay={2000}>
+			<HoverTooltip tooltipText={applicationKey.newKey} delay={1000}>
 				<tr class="w-full" class:bg-gray-100={index % 2 === 0}>
 					<td class="w-full border-b px-4 py-2 last:border-b-0">
 						<span class="flex-grow">{applicationKey.keyName}</span>
