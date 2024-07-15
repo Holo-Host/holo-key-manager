@@ -4,7 +4,7 @@ import {
 	seedBundleReady,
 	UnlockedSeedBundle
 } from '@holochain/hc-seed-bundle';
-import { AUTHENTICATED_APPS_LIST, DEEP_KEY_AGENT_OFFSET, SESSION } from '@shared/const';
+import { AUTHENTICATED_APPS_LIST, DEEP_KEY_AGENT_OFFSET, KEY_INDEX, SESSION } from '@shared/const';
 import { base64ToUint8Array, uint8ArrayToBase64 } from '@shared/helpers';
 import { getDeviceKey, storageService } from '@shared/services';
 import {
@@ -41,13 +41,15 @@ export const signMessageLogic = async ({ message, happId, session }: SignMessage
 	const pw = new TextEncoder().encode(session);
 	const keyUnlocked = cipherList[0].unlock(parseSecret(pw));
 
-	const appKey = keyUnlocked.derive(index + DEEP_KEY_AGENT_OFFSET);
+	const agent = keyUnlocked.derive(index + DEEP_KEY_AGENT_OFFSET);
+	const appKey = agent.derive(KEY_INDEX);
 
 	const uIntArrayMessage = base64ToUint8Array(message);
 
 	const signedMessage = appKey.sign(uIntArrayMessage);
 
 	keyUnlocked.zero();
+	agent.zero();
 	appKey.zero();
 
 	const validatedSchema = SuccessMessageSignedSchema.safeParse({

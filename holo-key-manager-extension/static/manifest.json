@@ -1,7 +1,7 @@
 {
 	"name": "Holo key manager",
 	"description": "A browser extension to manage holo keys",
-	"version": "0.0.70",
+	"version": "0.0.71",
 	"key": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAiAtKvbHNTN3O2BLRZH7RkLczaMLenSeZu+YP+KomPQPZ18nt4DY9boIN/+GWts7gCzEeQq59l8edGdF2P7xAbsRxYR88+zFEbxMtIyfyqJZIlzXwnvPJkwGu/S6arNtX48K7q1+xnJEE7VyeYSj6/i2LR+LmPigCzY9JCP7+SmWVeYbdm3kZmReK0ecfh15RXSNjZpXJUgrbea/RVxweggYKnmhhOUBmuJSCLoWTXIuJPBMwGQK1O2GKBqHOq94bPVSF7j+4WzSpPan70ZZJX/reFsOFE/idfFN6wbizjR1Ne50Po03kudEmfQgoqUhVpd0wP8A3YbqE7ODdZcCPPwIDAQAB",
 	"manifest_version": 3,
 	"action": {
