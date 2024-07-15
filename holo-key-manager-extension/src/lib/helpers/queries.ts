@@ -2,12 +2,13 @@ import { encodeHashToBase64 } from '@holochain/client';
 import { encode } from '@msgpack/msgpack';
 import type { QueryClient } from '@tanstack/svelte-query';
 
-import { DEEP_KEY_INDEX, KEY_INDEX } from '$const';
+import { DEEP_KEY_INDEX } from '$const';
 import { createGetKeysObjectParams, getKeys, unlockKey } from '$services';
 import {
 	AUTHENTICATED_APPS_LIST,
 	EXTENSION_SESSION_INFO,
 	GET_EXTENSION_SESSION,
+	KEY_INDEX,
 	LOCAL,
 	PASSWORD,
 	SENDER_EXTENSION,
