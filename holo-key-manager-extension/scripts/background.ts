@@ -58,41 +58,33 @@ const createWindowProperties = (parsedMessage?: MessageWithId): WindowProperties
 	left: 1100
 });
 
-const updateWindow = (
+const createOrUpdateWindow = (
 	windowProperties: WindowProperties,
 	handleWindowUpdateOrCreate: () => Promise<void>
-) =>
-	chrome.windows.update(
-		windowId!,
-		{ ...windowProperties, focused: true },
-		handleWindowUpdateOrCreate
-	);
-
-const createWindow = (
-	windowProperties: WindowProperties,
-	handleWindowUpdateOrCreate: () => Promise<void>
-) =>
-	chrome.windows.create(windowProperties, (newWindow) => {
+) => {
+	const onWindowCreated = (newWindow: chrome.windows.Window | undefined) => {
 		if (!newWindow) return;
 		windowId = newWindow.id;
 		chrome.windows.onRemoved.addListener((id) => {
 			if (id === windowId) windowId = undefined;
 		});
 		handleWindowUpdateOrCreate();
-	});
+	};
 
-const manageWindow = (
-	windowProperties: WindowProperties,
-	handleWindowUpdateOrCreate: () => Promise<void>
-) =>
-	windowId
-		? updateWindow(windowProperties, handleWindowUpdateOrCreate)
-		: createWindow(windowProperties, handleWindowUpdateOrCreate);
+	if (windowId) {
+		chrome.windows.remove(windowId, () => {
+			windowId = undefined;
+			chrome.windows.create(windowProperties, onWindowCreated);
+		});
+	} else {
+		chrome.windows.create(windowProperties, onWindowCreated);
+	}
+};
 
 const updateOrCreateWindowCommon = (
 	handleWindowUpdateOrCreate: () => Promise<void>,
 	parsedMessage?: MessageWithId
-) => manageWindow(createWindowProperties(parsedMessage), handleWindowUpdateOrCreate);
+) => createOrUpdateWindow(createWindowProperties(parsedMessage), handleWindowUpdateOrCreate);
 
 const updateOrCreateWindow = (
 	successAction: typeof NEEDS_SETUP,
