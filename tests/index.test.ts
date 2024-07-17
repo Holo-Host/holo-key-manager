@@ -3,7 +3,7 @@ import { rm } from 'fs/promises';
 import { Server } from 'http';
 import { resolve } from 'path';
 import type { Browser } from 'puppeteer';
-import { afterAll, beforeAll, describe, it } from 'vitest';
+import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 
 import clientInteractionTest from './clientInteraction';
 import { launchBrowserWithExtension, startServer } from './helpers';
@@ -37,18 +37,18 @@ afterAll(async () => {
 
 describe.sequential('End-to-End Tests for Extension and Client', () => {
 	it('should not allow the client to interact with the extension before setup', async () => {
-		await needsSetupTest(browser);
+		await expect(needsSetupTest(browser)).resolves.not.toThrow();
 	});
 	it('verify setup flow works as expected', async () => {
 		if (!EXTENSION_ID) {
 			throw new Error('EXTENSION_ID is not set');
 		}
-		await setupFlowTest(browser, EXTENSION_ID);
+		await expect(setupFlowTest(browser, EXTENSION_ID)).resolves.not.toThrow();
 	}, 10000);
 	it('should allow the client to interact with the extension after setup', async () => {
-		await clientInteractionTest(browser);
+		await expect(clientInteractionTest(browser)).resolves.not.toThrow();
 	}, 10000);
 	it('should prevent the malicious page from signing messages', async () => {
-		await preventSignatureFromOtherOrigin(browser);
+		await expect(preventSignatureFromOtherOrigin(browser)).resolves.not.toThrow();
 	});
 });
