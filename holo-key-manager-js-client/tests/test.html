@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<title>Library Test</title>
+		<script type="module">
+			import createHoloKeyManager from '../lib/index.js';
+
+			const holoKeyManagerConfig = {
+				happId: 'your-happId',
+				happName: 'your-happName',
+				happLogo: 'https://example.com/happLogo.png',
+				happUiUrl: 'https://example.com/ui',
+				requireRegistrationCode: false,
+				requireEmail: true
+			};
+
+			const holoKeyManager = createHoloKeyManager(holoKeyManagerConfig);
+
+			const handleButtonClick = (buttonId, action) => {
+				document.getElementById(buttonId).addEventListener('click', async () => {
+					const resultElement = document.getElementById(`${buttonId}Result`);
+					try {
+						const result = await action();
+						resultElement.textContent = `${buttonId} successful: ${JSON.stringify(result)}`;
+					} catch (error) {
+						resultElement.textContent = `Error: ${error.message}`;
+					}
+				});
+			};
+
+			handleButtonClick('signUpBtn', async () => {
+				const { email, registrationCode, pubKey } = await holoKeyManager.signUp();
+				return { email, registrationCode, pubKey };
+			});
+
+			handleButtonClick('signInBtn', async () => {
+				const { pubKey } = await holoKeyManager.signIn();
+				return { pubKey };
+			});
+
+			handleButtonClick('signMessageBtn', async () => {
+				const messageInput = document.getElementById('messageInput').value;
+				const message = new Uint8Array(JSON.parse(messageInput));
+				const signedMessage = await holoKeyManager.signMessage(message);
+				return { signedMessage };
+			});
+
+			handleButtonClick('signOutBtn', async () => {
+				await holoKeyManager.signOut();
+				return {};
+			});
+		</script>
+	</head>
+	<body>
+		<div id="app">
+			<button id="signUpBtn">Sign Up</button>
+			<p id="signUpBtnResult"></p>
+			<button id="signInBtn">Sign In</button>
+			<p id="signInBtnResult"></p>
+			<input id="messageInput" type="text" placeholder="Enter message as [1,2,3]" />
+			<button id="signMessageBtn">Sign Message</button>
+			<p id="signMessageBtnResult"></p>
+			<button id="signOutBtn">Sign Out</button>
+			<p id="signOutBtnResult"></p>
+		</div>
+	</body>
+</html>

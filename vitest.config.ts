@@ -1,3 +1,4 @@
+import path from 'path';
 import { defineConfig } from 'vitest/config';
 
 export default defineConfig({
@@ -5,5 +6,10 @@ export default defineConfig({
 		globals: true,
 		environment: 'node',
 		include: ['tests/**/*.test.ts']
+	},
+	resolve: {
+		alias: {
+			$types: path.resolve('./holo-key-manager-extension/src/lib/types')
+		}
 	}
 });
