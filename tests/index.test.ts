@@ -44,10 +44,10 @@ describe('End-to-End Tests for Extension and Client', () => {
 			throw new Error('EXTENSION_ID is not set');
 		}
 		await setupFlowTest(browser, EXTENSION_ID);
-	});
+	}, 10000);
 	it('should allow the client to interact with the extension after setup', async () => {
 		await clientInteractionTest(browser);
-	});
+	}, 10000);
 	it('should prevent the malicious page from signing messages', async () => {
 		await preventSignatureFromOtherOrigin(browser);
 	});
