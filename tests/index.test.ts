@@ -35,7 +35,7 @@ afterAll(async () => {
 	server.close();
 });
 
-describe('End-to-End Tests for Extension and Client', () => {
+describe.sequential('End-to-End Tests for Extension and Client', () => {
 	it('should allow the client to interact with the extension after setup', async () => {
 		await needsSetupTest(browser);
 	});
