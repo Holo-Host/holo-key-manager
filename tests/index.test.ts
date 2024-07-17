@@ -36,7 +36,7 @@ afterAll(async () => {
 });
 
 describe.sequential('End-to-End Tests for Extension and Client', () => {
-	it('should allow the client to interact with the extension after setup', async () => {
+	it('should not allow the client to interact with the extension before setup', async () => {
 		await needsSetupTest(browser);
 	});
 	it('verify setup flow works as expected', async () => {
