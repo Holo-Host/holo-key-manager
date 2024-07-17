@@ -15,5 +15,5 @@ export default async function needsSetupTest(browser: Browser) {
 	await signUpButton.click();
 
 	const needsSetupText = await findTextOnPage('NeedsSetup');
-	return expect(needsSetupText).toBeTruthy();
+	expect(needsSetupText).toBeTruthy();
 }

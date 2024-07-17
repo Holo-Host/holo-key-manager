@@ -37,18 +37,18 @@ afterAll(async () => {
 
 describe.sequential('End-to-End Tests for Extension and Client', () => {
 	it('should not allow the client to interact with the extension before setup', async () => {
-		await expect(needsSetupTest(browser)).resolves.not.toThrow();
+		expect(await needsSetupTest(browser)).resolves.not.toThrow();
 	});
 	it('verify setup flow works as expected', async () => {
 		if (!EXTENSION_ID) {
 			throw new Error('EXTENSION_ID is not set');
 		}
-		await expect(setupFlowTest(browser, EXTENSION_ID)).resolves.not.toThrow();
+		expect(await setupFlowTest(browser, EXTENSION_ID)).resolves.not.toThrow();
 	}, 10000);
 	it('should allow the client to interact with the extension after setup', async () => {
-		await expect(clientInteractionTest(browser)).resolves.not.toThrow();
+		expect(await clientInteractionTest(browser)).resolves.not.toThrow();
 	}, 10000);
 	it('should prevent the malicious page from signing messages', async () => {
-		await expect(preventSignatureFromOtherOrigin(browser)).resolves.not.toThrow();
+		expect(await preventSignatureFromOtherOrigin(browser)).resolves.not.toThrow();
 	});
 });

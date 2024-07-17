@@ -8,6 +8,7 @@ import { vi } from 'vitest';
 
 export const launchBrowserWithExtension = async (extensionPath: string): Promise<Browser> => {
 	return launch({
+		dumpio: true,
 		headless: true,
 		args: [`--disable-extensions-except=${extensionPath}`, `--load-extension=${extensionPath}`]
 	});
