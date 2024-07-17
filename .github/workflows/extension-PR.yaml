@@ -34,7 +34,7 @@ jobs:
         working-directory: holo-key-manager-extension
 
       - name: Build and pack client
-        run: pnpm buildPack
+        run: pnpm build
         working-directory: holo-key-manager-js-client
 
       - name: Run e2e tests

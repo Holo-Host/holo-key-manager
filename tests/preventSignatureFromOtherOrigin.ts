@@ -48,7 +48,7 @@ export default async function preventSignatureFromOtherOrigin(browser: Browser) 
 			typeof result === 'object' && result !== null && 'action' in result;
 
 		if (isValidResult(result)) {
-			expect(result.action).toBe('AppNotAuthenticated');
+			return expect(result.action).toBe('AppNotAuthenticated');
 		} else {
 			throw new Error('Unexpected result structure');
 		}

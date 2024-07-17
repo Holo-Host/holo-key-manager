@@ -96,5 +96,5 @@ export default async function clientInteractionTest(browser: Browser) {
 
 	const result = validateSignature(pubKey, signedMessage, new Uint8Array(JSON.parse(messageInput)));
 
-	expect(result).toBe(true);
+	return expect(result).toBe(true);
 }

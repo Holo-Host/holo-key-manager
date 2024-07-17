@@ -134,6 +134,6 @@ export default async function setupFlowTest(browser: Browser, EXTENSION_ID: stri
 	console.log('Verifying setup completion');
 	const setupCompleteText = await findTextOnSetupPage('Setup Complete');
 
-	expect(setupCompleteText).toBeTruthy();
+	return expect(setupCompleteText).toBeTruthy();
 	console.log('Setup flow test completed successfully');
 }
