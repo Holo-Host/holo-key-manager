@@ -63,10 +63,8 @@ const createOrUpdateWindow = (
 	handleWindowUpdateOrCreate: () => Promise<void>
 ) => {
 	const onWindowCreated = (newWindow: chrome.windows.Window | undefined) => {
-		console.log(3);
-		console.log('newWindow', newWindow);
 		if (chrome.runtime.lastError) {
-			console.error('Window creation error:', chrome.runtime.lastError);
+			console.error('Window creation error:', JSON.stringify(chrome.runtime.lastError));
 		}
 
 		if (!newWindow) return;
