@@ -14,7 +14,7 @@ import setupFlowTest from './setupFlow';
 
 dotenv.config();
 
-const EXTENSION_ID = process.env.CHROME_ID;
+const EXTENSION_ID = process.env.CHROME_ID || 'eggfhkdnfdhdpmkfpihjjbnncgmhihce';
 
 const downloadPath = resolve('./downloads');
 
@@ -27,6 +27,8 @@ beforeAll(async () => {
 	}
 	const extensionPath = resolve('holo-key-manager-extension', 'build');
 	browser = await launchBrowserWithExtension(extensionPath);
+	const version = await browser.version();
+	console.log('Browser version:', version);
 	server = startServer();
 });
 
