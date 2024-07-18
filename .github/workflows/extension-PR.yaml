@@ -27,14 +27,12 @@ jobs:
 
       - name: Cache build
         id: cache-build
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         with:
           path: |
             holo-key-manager-extension/build
             holo-key-manager-js-client/lib
-          key: ${{ runner.os }}-build-${{ hashFiles('**/package.json') }}-${{ hashFiles('**/pnpm-lock.yaml') }}
-          restore-keys: |
-            ${{ runner.os }}-build-
+          key: test-cache
 
       - name: Run unit tests
         run: pnpm test

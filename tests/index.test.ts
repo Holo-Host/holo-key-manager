@@ -3,11 +3,11 @@ import { rm } from 'fs/promises';
 import { Server } from 'http';
 import { resolve } from 'path';
 import type { Browser } from 'puppeteer';
-import { afterAll, beforeAll, describe, it } from 'vitest';
+import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 
 // import clientInteractionTest from './clientInteraction';
-import { launchBrowserWithExtension, startServer } from './helpers';
-import needsSetupTest from './needsSetup';
+import { findTextBySelector, launchBrowserWithExtension, startServer } from './helpers';
+// import needsSetupTest from './needsSetup';
 // import preventSignatureFromOtherOrigin from './preventSignatureFromOtherOrigin';
 // import setupFlowTest from './setupFlow';
 
@@ -37,8 +37,23 @@ afterAll(async () => {
 
 describe.sequential('End-to-End Tests for Extension and Client', () => {
 	it('should not allow the client to interact with the extension before setup', async () => {
-		await needsSetupTest(browser);
+		const page = await browser.newPage();
+		await page.goto('http://localhost:3000/tests/test.html');
+
+		const findTextOnPage = findTextBySelector(page);
+
+		const signUpButton = await findTextOnPage('Sign Up');
+		expect(signUpButton).toBeTruthy();
+
+		await signUpButton.click();
+
+		const needsSetupText = await findTextOnPage('NeedsSetup');
+		expect(needsSetupText).toBeTruthy();
 	}, 10000);
+
+	// it('should not allow the client to interact with the extension before setup', async () => {
+	// 	await needsSetupTest(browser);
+	// }, 10000);
 
 	// it('verify setup flow works as expected', async () => {
 	// 	if (!EXTENSION_ID) {
