@@ -64,7 +64,7 @@ const createOrUpdateWindow = (
 ) => {
 	const onWindowCreated = (newWindow: chrome.windows.Window | undefined) => {
 		console.log(3);
-		console.log(newWindow);
+		console.log('newWindow', newWindow);
 		if (!newWindow) return;
 		windowId = newWindow.id;
 		chrome.windows.onRemoved.addListener((id) => {
@@ -72,6 +72,8 @@ const createOrUpdateWindow = (
 		});
 		handleWindowUpdateOrCreate();
 	};
+
+	console.log('windowId', windowId);
 
 	if (windowId) {
 		chrome.windows.remove(windowId, () => {
