@@ -19,7 +19,6 @@
 		"prepare": "husky install",
 		"test": "concurrently \"pnpm e2e-tests\" \"cd holo-key-manager-extension && pnpm test\" \"cd holo-key-manager-js-client && pnpm test\"",
 		"e2e-tests": "vitest run"
-		
 	},
 	"devDependencies": {
 		"@rollup/plugin-node-resolve": "^15.2.3",
@@ -35,7 +34,7 @@
 		"eslint-plugin-svelte": "^2.42.0",
 		"express": "^4.19.2",
 		"globals": "^15.8.0",
-		"husky": "^9.1.0",
+		"husky": "^9.1.1",
 		"jszip": "^3.10.1",
 		"lint-staged": "^15.2.5",
 		"prettier": "^3.3.3",

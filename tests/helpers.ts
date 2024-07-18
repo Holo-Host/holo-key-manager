@@ -8,7 +8,6 @@ import { vi } from 'vitest';
 
 export const launchBrowserWithExtension = async (extensionPath: string): Promise<Browser> => {
 	return launch({
-		dumpio: true,
 		headless: true,
 		args: [`--disable-extensions-except=${extensionPath}`, `--load-extension=${extensionPath}`]
 	});
@@ -63,13 +62,9 @@ export const findButtonExtensionByText = (context: Page) =>
 export const findTextBySelector = (context: Page) => findElementByText(context, '');
 
 export const startServer = (port: number = 3007): Server => {
-	try {
-		const app = express();
-		app.use(express.static(resolve('./holo-key-manager-js-client')));
-		return app.listen(port);
-	} catch (error) {
-		throw new Error(`Failed to start server: ${error}`);
-	}
+	const app = express();
+	app.use(express.static(resolve('./holo-key-manager-js-client')));
+	return app.listen(port);
 };
 
 export const waitForNewPage = (browser: Browser): Promise<Page> =>

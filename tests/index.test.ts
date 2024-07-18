@@ -13,7 +13,7 @@ import setupFlowTest from './setupFlow';
 
 dotenv.config();
 
-const EXTENSION_ID = process.env.CHROME_ID || 'eggfhkdnfdhdpmkfpihjjbnncgmhihce';
+const EXTENSION_ID = process.env.CHROME_ID;
 
 const downloadPath = resolve('./downloads');
 

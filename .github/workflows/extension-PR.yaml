@@ -30,12 +30,10 @@ jobs:
         working-directory: holo-key-manager-extension
 
       - name: Build extension
-        if: steps.cache-build.outputs.cache-hit != 'true'
         run: pnpm build
         working-directory: holo-key-manager-extension
 
       - name: Build client
-        if: steps.cache-build.outputs.cache-hit != 'true'
         run: pnpm build
         working-directory: holo-key-manager-js-client
 

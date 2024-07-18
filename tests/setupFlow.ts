@@ -21,16 +21,6 @@ export default async function setupFlowTest(browser: Browser, EXTENSION_ID: stri
 
 	const page = await openExtensionPage(browser, EXTENSION_ID);
 
-	const targets = browser.targets();
-	console.log(targets);
-	const serviceWorkerTarget = targets.find((target) => target.type() === 'service_worker');
-
-	if (serviceWorkerTarget) {
-		console.log('Service worker from this extension is working');
-	} else {
-		console.log('Service worker from this extension is not detected');
-	}
-
 	const setupButton = await findButtonExtensionByText(page)('Setup');
 
 	const setupPageContent = await findTextBySelector(page)('Setup Required');

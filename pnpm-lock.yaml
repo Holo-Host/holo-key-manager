@@ -52,8 +52,8 @@ importers:
         specifier: ^15.8.0
         version: 15.8.0
       husky:
-        specifier: ^9.1.0
-        version: 9.1.0
+        specifier: ^9.1.1
+        version: 9.1.1
       jszip:
         specifier: ^3.10.1
         version: 3.10.1
@@ -101,7 +101,7 @@ importers:
         version: 3.0.0-beta2
       '@tanstack/svelte-query':
         specifier: ^5.46.1
-        version: 5.51.5(svelte@4.2.18)
+        version: 5.51.9(svelte@4.2.18)
       blakejs:
         specifier: ^1.2.1
         version: 1.2.1
@@ -650,11 +650,11 @@ packages:
       svelte: ^4.0.0 || ^5.0.0-next.0
       vite: ^5.0.0
 
-  '@tanstack/query-core@5.51.5':
-    resolution: {integrity: sha512-qovOto6hFet2zA4Pf3cDO+qkOqskO6xP39PlKnr6YKPtjRsePWyZnTaMf59+VnlOLY8gpku1I4WPC4dqBXo4FQ==}
+  '@tanstack/query-core@5.51.9':
+    resolution: {integrity: sha512-HsAwaY5J19MD18ykZDS3aVVh+bAt0i7m6uQlFC2b77DLV9djo+xEN7MWQAQQTR8IM+7r/zbozTQ7P0xr0bHuew==}
 
-  '@tanstack/svelte-query@5.51.5':
-    resolution: {integrity: sha512-6POqaWbhmkyFosZfA9lYJC5q+pehWQ6Ykkxq+s5wgrHdSAMw/q9t124Z92WcK7YTia5GXMJ0OTNsprh64ZFw8g==}
+  '@tanstack/svelte-query@5.51.9':
+    resolution: {integrity: sha512-u9U/Lo/5TrQ1bzBP5DPKfACNLAiY0BySeRaKC5Xn45+5k9aD3BZVCOIsTAprkByBklsshWkueXE0QQiCo7LPeQ==}
     peerDependencies:
       svelte: ^3.54.0 || ^4.0.0 || ^5.0.0-next.0
 
@@ -1661,8 +1661,8 @@ packages:
     resolution: {integrity: sha512-AXcZb6vzzrFAUE61HnN4mpLqd/cSIwNQjtNWR0euPm6y0iqx3G4gOXaIDdtdDwZmhwe82LA6+zinmW4UBWVePQ==}
     engines: {node: '>=16.17.0'}
 
-  husky@9.1.0:
-    resolution: {integrity: sha512-8XCjbomYTGdNF2h50dio3T3zghmZ9f/ZNzr99YwSkvDdhEjJGs5qzy8tbFx+SG8yCx2wn9nMVfZxVrr/yT8gNQ==}
+  husky@9.1.1:
+    resolution: {integrity: sha512-fCqlqLXcBnXa/TJXmT93/A36tJsjdJkibQ1MuIiFyCCYUlpYpIaj2mv1w+3KR6Rzu1IC3slFTje5f6DUp2A2rg==}
     engines: {node: '>=18'}
     hasBin: true
 
@@ -1843,11 +1843,11 @@ packages:
   libsodium-wrappers-sumo@0.7.13:
     resolution: {integrity: sha512-lz4YdplzDRh6AhnLGF2Dj2IUj94xRN6Bh8T0HLNwzYGwPehQJX6c7iYVrFUPZ3QqxE0bqC+K0IIqqZJYWumwSQ==}
 
-  libsodium-wrappers@0.7.13:
-    resolution: {integrity: sha512-kasvDsEi/r1fMzKouIDv7B8I6vNmknXwGiYodErGuESoFTohGSKZplFtVxZqHaoQ217AynyIFgnOVRitpHs0Qw==}
+  libsodium-wrappers@0.7.14:
+    resolution: {integrity: sha512-300TtsePizhJZ7HjLmWr6hLHAgJUxIGhapSw+EwfCtDuWaEmEdGXSQv6j6qFw0bs9l4vS2NH9BtOHfXAq6h5kQ==}
 
-  libsodium@0.7.13:
-    resolution: {integrity: sha512-mK8ju0fnrKXXfleL53vtp9xiPq5hKM0zbDQtcxQIsSmxNgSxqCj6R7Hl9PkrNe2j29T4yoDaF7DJLK9/i5iWUw==}
+  libsodium@0.7.14:
+    resolution: {integrity: sha512-/pOd7eO6oZrfORquRTC4284OUJFcMi8F3Vnc9xtRBT0teLfOUxWIItaBFF3odYjZ7nlJNwnLdUVEUFHxVyX/Sw==}
 
   lie@3.3.0:
     resolution: {integrity: sha512-UaiMJzeWRlEujzAuw5LokY1L5ecNQYZKfmyZ9L7wDHb/p5etKaxXhohBcrw0EYby+G/NA52vRSN4N39dxHAIwQ==}
@@ -3249,7 +3249,7 @@ snapshots:
       emittery: 1.0.3
       isomorphic-ws: 5.0.0(ws@8.18.0)
       js-base64: 3.7.7
-      libsodium-wrappers: 0.7.13
+      libsodium-wrappers: 0.7.14
       lodash-es: 4.17.21
       ws: 8.18.0
     transitivePeerDependencies:
@@ -3490,11 +3490,11 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  '@tanstack/query-core@5.51.5': {}
+  '@tanstack/query-core@5.51.9': {}
 
-  '@tanstack/svelte-query@5.51.5(svelte@4.2.18)':
+  '@tanstack/svelte-query@5.51.9(svelte@4.2.18)':
     dependencies:
-      '@tanstack/query-core': 5.51.5
+      '@tanstack/query-core': 5.51.9
       svelte: 4.2.18
 
   '@tootallnate/quickjs-emscripten@0.23.0': {}
@@ -4637,7 +4637,7 @@ snapshots:
 
   human-signals@5.0.0: {}
 
-  husky@9.1.0: {}
+  husky@9.1.1: {}
 
   iconv-lite@0.4.24:
     dependencies:
@@ -4794,11 +4794,11 @@ snapshots:
     dependencies:
       libsodium-sumo: 0.7.13
 
-  libsodium-wrappers@0.7.13:
+  libsodium-wrappers@0.7.14:
     dependencies:
-      libsodium: 0.7.13
+      libsodium: 0.7.14
 
-  libsodium@0.7.13: {}
+  libsodium@0.7.14: {}
 
   lie@3.3.0:
     dependencies:
