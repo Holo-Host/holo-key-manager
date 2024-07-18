@@ -8,10 +8,21 @@ import { findTextBySelector } from './helpers';
 export default async function needsSetupTest(browser: Browser) {
 	const page = await browser.newPage();
 	await page.goto('http://localhost:3007/tests/test.html');
-	page.on('console', (msg) => {
-		for (let i = 0; i < msg.args().length; ++i) {
-			console.log(`${i}: ${msg.args()[i]}`);
-		}
+
+	await page.evaluate(() => {
+		window.addEventListener('message', (event) => {
+			console.log(event.data);
+		});
+	});
+	page.on('console', async (message) => {
+		const type = message.type();
+		const text = await message.text();
+		const args = await Promise.all(message.args().map((arg) => arg.jsonValue()));
+
+		const formattedArgs = args.map((arg) => JSON.stringify(arg)).join(', ');
+		console.log(
+			`Console message [${type}]: ${text}${formattedArgs ? ` | Args: ${formattedArgs}` : ''}`
+		);
 	});
 
 	const findTextOnPage = findTextBySelector(page);
@@ -22,11 +33,6 @@ export default async function needsSetupTest(browser: Browser) {
 	expect(page).toBeTruthy();
 
 	await signUpButton.click();
-
-	await new Promise((resolve) => setTimeout(resolve, 2000));
-
-	const pageContent = await page.content();
-	console.log(pageContent);
 
 	const needsSetupText = await findTextOnPage('NeedsSetup');
 	expect(needsSetupText).toBeTruthy();
