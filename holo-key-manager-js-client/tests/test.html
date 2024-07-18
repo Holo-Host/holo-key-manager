@@ -21,11 +21,9 @@
 				document.getElementById(buttonId).addEventListener('click', async () => {
 					const resultElement = document.getElementById(`${buttonId}Result`);
 					try {
-						console.log('Action:', action);
 						const result = await action();
 						resultElement.textContent = `${buttonId} successful: ${JSON.stringify(result)}`;
 					} catch (error) {
-						console.log('Error:', error);
 						resultElement.textContent = `Error: ${error.message}`;
 					}
 				});
