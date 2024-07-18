@@ -13,8 +13,7 @@ export const launchBrowserWithExtension = async (extensionPath: string): Promise
 		args: [
 			`--disable-extensions-except=${extensionPath}`,
 			`--load-extension=${extensionPath}`,
-			'--no-sandbox',
-			'--disable-setuid-sandbox'
+			'--window-size=1920,1080'
 		]
 	});
 };
