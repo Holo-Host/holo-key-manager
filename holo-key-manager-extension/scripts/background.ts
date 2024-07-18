@@ -73,7 +73,7 @@ const createOrUpdateWindow = (
 		handleWindowUpdateOrCreate();
 	};
 
-	console.log('windowId', windowId);
+	console.log(windowProperties);
 
 	if (windowId) {
 		chrome.windows.remove(windowId, () => {
