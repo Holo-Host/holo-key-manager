@@ -137,8 +137,8 @@ const processMessageWebApp = async (
 	sendResponseWithSender: SendResponseWithSender
 ) => {
 	try {
-		console.log(JSON.stringify(parsedMessage));
 		if (!(await isSetupComplete())) {
+			console.log(JSON.stringify(parsedMessage));
 			return updateOrCreateWindow(NEEDS_SETUP, sendResponseWithSender);
 		}
 		switch (parsedMessage.action) {
