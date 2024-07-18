@@ -1,6 +1,8 @@
 import { Browser } from 'puppeteer';
 import { expect } from 'vitest';
 
+import { findTextBySelector } from './helpers';
+
 // import { findTextBySelector } from './helpers';
 
 export default async function needsSetupTest(browser: Browser) {
@@ -9,12 +11,12 @@ export default async function needsSetupTest(browser: Browser) {
 
 	console.log(await page.content());
 
+	const findTextOnPage = findTextBySelector(page);
+
+	const signUpButton = await findTextOnPage('Sign Up');
+	expect(signUpButton).toBeTruthy();
+
 	expect(page).toBeTruthy();
-
-	// const findTextOnPage = findTextBySelector(page);
-
-	// const signUpButton = await findTextOnPage('Sign Up');
-	// expect(signUpButton).toBeTruthy();
 
 	// await signUpButton.click();
 
