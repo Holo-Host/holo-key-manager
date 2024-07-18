@@ -25,15 +25,28 @@ jobs:
       - name: Install dependencies
         run: pnpm install --no-frozen-lockfile
 
+      - name: Cache build
+        id: cache-build
+        uses: actions/cache@v3
+        with:
+          path: |
+            holo-key-manager-extension/build
+            holo-key-manager-js-client/lib
+          key: ${{ runner.os }}-build-${{ hashFiles('**/package.json') }}-${{ hashFiles('**/pnpm-lock.yaml') }}
+          restore-keys: |
+            ${{ runner.os }}-build-
+
       - name: Run unit tests
         run: pnpm test
         working-directory: holo-key-manager-extension
 
       - name: Build extension
+        if: steps.cache-build.outputs.cache-hit != 'true'
         run: pnpm build
         working-directory: holo-key-manager-extension
 
       - name: Build and pack client
+        if: steps.cache-build.outputs.cache-hit != 'true'
         run: pnpm build
         working-directory: holo-key-manager-js-client
 
