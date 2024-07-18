@@ -4,10 +4,10 @@ import { expect } from 'vitest';
 import { startServer } from './helpers';
 
 export default async function preventSignatureFromOtherOrigin(browser: Browser) {
-	const server = startServer(4000);
+	const server = startServer(6000);
 
 	const maliciousPage = await browser.newPage();
-	await maliciousPage.goto('http://localhost:4000');
+	await maliciousPage.goto('http://localhost:6000');
 
 	try {
 		const result = await maliciousPage.evaluate(async () => {
