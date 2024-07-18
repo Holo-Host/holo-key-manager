@@ -3,13 +3,13 @@ import { rm } from 'fs/promises';
 import { Server } from 'http';
 import { resolve } from 'path';
 import type { Browser } from 'puppeteer';
-import { afterAll, beforeAll, describe, expect, it } from 'vitest';
+import { afterAll, beforeAll, describe, it } from 'vitest';
 
-// import clientInteractionTest from './clientInteraction';
-import { findTextBySelector, launchBrowserWithExtension, startServer } from './helpers';
-// import needsSetupTest from './needsSetup';
-// import preventSignatureFromOtherOrigin from './preventSignatureFromOtherOrigin';
-// import setupFlowTest from './setupFlow';
+import clientInteractionTest from './clientInteraction';
+import { launchBrowserWithExtension, startServer } from './helpers';
+import needsSetupTest from './needsSetup';
+import preventSignatureFromOtherOrigin from './preventSignatureFromOtherOrigin';
+import setupFlowTest from './setupFlow';
 
 dotenv.config();
 
@@ -37,36 +37,21 @@ afterAll(async () => {
 
 describe('End-to-End Tests for Extension and Client', () => {
 	it('should not allow the client to interact with the extension before setup', async () => {
-		const page = await browser.newPage();
-		await page.goto('http://localhost:3007/tests/test.html');
+		await needsSetupTest(browser);
+	});
 
-		const findTextOnPage = findTextBySelector(page);
+	it('verify setup flow works as expected', async () => {
+		if (!EXTENSION_ID) {
+			throw new Error('EXTENSION_ID is not set');
+		}
+		await setupFlowTest(browser, EXTENSION_ID);
+	});
 
-		const signUpButton = await findTextOnPage('Sign Up');
-		expect(signUpButton).toBeTruthy();
+	it('should allow the client to interact with the extension after setup', async () => {
+		await clientInteractionTest(browser);
+	});
 
-		await signUpButton.click();
-
-		const needsSetupText = await findTextOnPage('NeedsSetup');
-		expect(needsSetupText).toBeTruthy();
-	}, 10000);
-
-	// it('should not allow the client to interact with the extension before setup', async () => {
-	// 	await needsSetupTest(browser);
-	// }, 10000);
-
-	// it('verify setup flow works as expected', async () => {
-	// 	if (!EXTENSION_ID) {
-	// 		throw new Error('EXTENSION_ID is not set');
-	// 	}
-	// 	await setupFlowTest(browser, EXTENSION_ID);
-	// }, 20000);
-
-	// it('should allow the client to interact with the extension after setup', async () => {
-	// 	await clientInteractionTest(browser);
-	// }, 20000);
-
-	// it('should prevent the malicious page from signing messages', async () => {
-	// 	await preventSignatureFromOtherOrigin(browser);
-	// }, 20000);
+	it('should prevent the malicious page from signing messages', async () => {
+		await preventSignatureFromOtherOrigin(browser);
+	});
 });
