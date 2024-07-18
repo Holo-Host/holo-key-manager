@@ -55,7 +55,7 @@ const createWindowProperties = (parsedMessage?: MessageWithId): WindowProperties
 	height: 500,
 	width: 375,
 	top: 100,
-	left: 1100
+	left: 0
 });
 
 const createOrUpdateWindow = (
