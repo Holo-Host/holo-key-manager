@@ -10,7 +10,12 @@ export const launchBrowserWithExtension = async (extensionPath: string): Promise
 	return launch({
 		dumpio: true,
 		headless: true,
-		args: [`--disable-extensions-except=${extensionPath}`, `--load-extension=${extensionPath}`]
+		args: [
+			`--disable-extensions-except=${extensionPath}`,
+			`--load-extension=${extensionPath}`,
+			'--no-sandbox',
+			'--disable-setuid-sandbox'
+		]
 	});
 };
 
