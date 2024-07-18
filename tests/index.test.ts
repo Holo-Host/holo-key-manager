@@ -1,12 +1,15 @@
 import dotenv from 'dotenv';
 import { rm } from 'fs/promises';
-import { Server } from 'http';
+// import { Server } from 'http';
 import { resolve } from 'path';
 import type { Browser } from 'puppeteer';
 import { afterAll, beforeAll, describe, it } from 'vitest';
 
 import clientInteractionTest from './clientInteraction';
-import { launchBrowserWithExtension, startServer } from './helpers';
+import {
+	launchBrowserWithExtension
+	// startServer
+} from './helpers';
 import needsSetupTest from './needsSetup';
 import preventSignatureFromOtherOrigin from './preventSignatureFromOtherOrigin';
 import setupFlowTest from './setupFlow';
@@ -18,7 +21,7 @@ const EXTENSION_ID = process.env.CHROME_ID;
 const downloadPath = resolve('./downloads');
 
 let browser: Browser;
-let server: Server;
+// let server: Server;
 
 beforeAll(async () => {
 	if (!EXTENSION_ID) {
@@ -26,13 +29,13 @@ beforeAll(async () => {
 	}
 	const extensionPath = resolve('holo-key-manager-extension', 'build');
 	browser = await launchBrowserWithExtension(extensionPath);
-	server = startServer();
+	// server = startServer();
 });
 
 afterAll(async () => {
 	await rm(downloadPath, { recursive: true, force: true });
 	await browser?.close();
-	server.close();
+	// server.close();
 });
 
 describe('End-to-End Tests for Extension and Client', () => {
