@@ -7,7 +7,10 @@ const parseAndHandleMessage = async (event: MessageEvent) => {
 	const parsedResult = MessageWithIdSchema.safeParse(event.data);
 	if (!parsedResult.success || parsedResult.data.sender === SENDER_BACKGROUND_SCRIPT) return;
 	try {
-		console.log('Sending message to background script');
+		window.postMessage('Sending message to background script', '*');
+		window.postMessage(JSON.stringify(chrome), '*');
+		window.postMessage(JSON.stringify(chrome.runtime), '*');
+		window.postMessage(JSON.stringify(chrome.runtime.sendMessage), '*');
 		const response = await sendMessage({ ...parsedResult.data, origin: event.origin });
 		const parsedMessageSchema = parseMessageSchema(response);
 		window.postMessage(responseToMessage(parsedMessageSchema.data, parsedResult.data.id), '*');

@@ -11,19 +11,13 @@ export default async function needsSetupTest(browser: Browser) {
 
 	const targets = browser.targets();
 	console.log(targets);
-	const serviceWorkerTarget = targets.find((target) => target.type() === 'service_worker');
-
-	if (serviceWorkerTarget) {
-		console.log('Service worker from this extension is working');
-	} else {
-		console.log('Service worker from this extension is not detected');
-	}
 
 	await page.evaluate(() => {
 		window.addEventListener('message', (event) => {
 			console.log(event.data);
 		});
 	});
+
 	page.on('console', async (message) => {
 		const type = message.type();
 		const text = await message.text();

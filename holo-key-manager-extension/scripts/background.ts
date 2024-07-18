@@ -196,6 +196,7 @@ const processMessageExtension = async (
 };
 
 chrome.runtime.onMessage.addListener((message: Message, sender, sendResponse: SendResponse) => {
+	console.log('Received message from', sender);
 	const sendResponseWithSender = (response: ActionPayload) =>
 		sendResponse({ ...response, sender: SENDER_BACKGROUND_SCRIPT });
 
