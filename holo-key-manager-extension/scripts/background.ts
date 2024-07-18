@@ -65,6 +65,10 @@ const createOrUpdateWindow = (
 	const onWindowCreated = (newWindow: chrome.windows.Window | undefined) => {
 		console.log(3);
 		console.log('newWindow', newWindow);
+		if (chrome.runtime.lastError) {
+			console.error('Window creation error:', chrome.runtime.lastError);
+		}
+
 		if (!newWindow) return;
 		windowId = newWindow.id;
 		chrome.windows.onRemoved.addListener((id) => {
