@@ -8,6 +8,11 @@ import { findTextBySelector } from './helpers';
 export default async function needsSetupTest(browser: Browser) {
 	const page = await browser.newPage();
 	await page.goto('http://localhost:3007/tests/test.html');
+	page.on('console', (msg) => {
+		for (let i = 0; i < msg.args().length; ++i) {
+			console.log(`${i}: ${msg.args()[i]}`);
+		}
+	});
 
 	const findTextOnPage = findTextBySelector(page);
 
