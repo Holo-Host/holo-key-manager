@@ -9,8 +9,21 @@ export default async function needsSetupTest(browser: Browser) {
 	const page = await browser.newPage();
 	await page.goto('http://localhost:3007/tests/test.html');
 
-	const targets = browser.targets();
-	console.log(targets);
+	// Find the service worker target
+	const swTarget = await browser.waitForTarget((target) => target.type() === 'service_worker');
+
+	// Create a new page for the service worker
+	const swPage = await swTarget.createCDPSession();
+
+	// Enable console logging for the service worker
+	await swPage.send('Runtime.enable');
+
+	// Listen for console messages from the service worker
+	swPage.on('Runtime.consoleAPICalled', (event) => {
+		const { type, args } = event;
+		const formattedArgs = args.map((arg) => arg.value || arg.description).join(', ');
+		console.log(`Service Worker Console [${type}]: ${formattedArgs}`);
+	});
 
 	await page.evaluate(() => {
 		window.addEventListener('message', (event) => {
