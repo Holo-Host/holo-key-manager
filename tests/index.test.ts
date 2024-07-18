@@ -7,6 +7,7 @@ import { afterAll, beforeAll, describe, it } from 'vitest';
 
 // import clientInteractionTest from './clientInteraction';
 import { launchBrowserWithExtension, startServer } from './helpers';
+import needsSetupTest from './needsSetup';
 // import needsSetupTest from './needsSetup';
 // import preventSignatureFromOtherOrigin from './preventSignatureFromOtherOrigin';
 import setupFlowTest from './setupFlow';
@@ -36,9 +37,9 @@ afterAll(async () => {
 });
 
 describe('End-to-End Tests for Extension and Client', () => {
-	// it('should not allow the client to interact with the extension before setup', async () => {
-	// 	await needsSetupTest(browser);
-	// });
+	it('should not allow the client to interact with the extension before setup', async () => {
+		await needsSetupTest(browser);
+	});
 
 	it('verify setup flow works as expected', async () => {
 		if (!EXTENSION_ID) {
