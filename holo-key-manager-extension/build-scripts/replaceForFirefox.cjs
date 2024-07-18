@@ -16,8 +16,12 @@ const exitWithError = (message) => {
 const updateManifest = (data, geckoId) => {
 	const manifest = JSON.parse(data);
 	const { key, ...rest } = manifest;
+	const updatedPermissions = rest.permissions.filter(
+		(permission) => permission !== 'system.display'
+	);
 	return {
 		...rest,
+		permissions: updatedPermissions,
 		background: {
 			scripts: ['scripts/background.js'],
 			type: 'module'

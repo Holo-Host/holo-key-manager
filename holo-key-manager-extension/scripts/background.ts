@@ -49,16 +49,40 @@ const handleError = (sendResponse: SendResponseWithSender) => {
 	sendResponse({ action: GENERIC_ERROR });
 };
 
-const createWindowProperties = (parsedMessage?: MessageWithId): WindowProperties => ({
-	url: `webapp-extension/setup.html${parsedMessage ? `?${createQueryParams(parsedMessage)}` : ''}`,
-	type: 'popup',
-	height: 500,
-	width: 375,
-	top: 100,
-	left: 0
-});
+const createWindowProperties = async (parsedMessage?: MessageWithId): Promise<WindowProperties> => {
+	const width = 375;
+	const height = 500;
+	const defaultLeft = 1100;
+	const defaultTop = 100;
 
-const createOrUpdateWindow = (
+	const getDisplayInfo = async () => {
+		try {
+			const displays = await chrome.system.display.getInfo();
+			return displays.find((d) => d.isPrimary) || displays[0];
+		} catch (error) {
+			return null;
+		}
+	};
+
+	const calculatePosition = (display: chrome.system.display.DisplayInfo | null) => ({
+		left: display ? display.workArea.width - width - 20 : defaultLeft,
+		top: display ? Math.min(defaultTop, display.workArea.height - height) : defaultTop
+	});
+
+	const primaryDisplay = await getDisplayInfo();
+	const { left, top } = calculatePosition(primaryDisplay);
+
+	return {
+		url: `webapp-extension/setup.html${parsedMessage ? `?${createQueryParams(parsedMessage)}` : ''}`,
+		type: 'popup',
+		width,
+		height,
+		top,
+		left
+	};
+};
+
+const createOrUpdateWindow = async (
 	windowProperties: WindowProperties,
 	handleWindowUpdateOrCreate: () => Promise<void>
 ) => {
@@ -75,8 +99,6 @@ const createOrUpdateWindow = (
 		handleWindowUpdateOrCreate();
 	};
 
-	console.log(JSON.stringify(windowProperties));
-
 	if (windowId) {
 		chrome.windows.remove(windowId, () => {
 			windowId = undefined;
@@ -87,16 +109,16 @@ const createOrUpdateWindow = (
 	}
 };
 
-const updateOrCreateWindowCommon = (
+const updateOrCreateWindowCommon = async (
 	handleWindowUpdateOrCreate: () => Promise<void>,
 	parsedMessage?: MessageWithId
-) => createOrUpdateWindow(createWindowProperties(parsedMessage), handleWindowUpdateOrCreate);
+) => createOrUpdateWindow(await createWindowProperties(parsedMessage), handleWindowUpdateOrCreate);
 
-const updateOrCreateWindow = (
+const updateOrCreateWindow = async (
 	successAction: typeof NEEDS_SETUP,
 	sendResponse: SendResponseWithSender
 ) =>
-	updateOrCreateWindowCommon(async () => {
+	await updateOrCreateWindowCommon(async () => {
 		if (chrome.runtime.lastError) return handleError(sendResponse);
 		try {
 			sendResponse({ action: successAction });
@@ -123,11 +145,11 @@ const waitForFormSubmission = (id: string): Promise<Message> =>
 		chrome.runtime.onMessage.addListener(messageListener);
 	});
 
-const createOrUpdateDataResponseWindow = (
+const createOrUpdateDataResponseWindow = async (
 	sendResponse: SendResponseWithSender,
 	parsedMessage: MessageWithId
 ) =>
-	updateOrCreateWindowCommon(async () => {
+	await updateOrCreateWindowCommon(async () => {
 		if (chrome.runtime.lastError) return handleError(sendResponse);
 
 		try {

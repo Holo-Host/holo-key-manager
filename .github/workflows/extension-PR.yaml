@@ -25,15 +25,6 @@ jobs:
       - name: Install dependencies
         run: pnpm install --no-frozen-lockfile
 
-      - name: Cache build
-        id: cache-build
-        uses: actions/cache@v4
-        with:
-          path: |
-            holo-key-manager-extension/build
-            holo-key-manager-js-client/lib
-          key: test-cache-2
-
       - name: Run unit tests
         run: pnpm test
         working-directory: holo-key-manager-extension
