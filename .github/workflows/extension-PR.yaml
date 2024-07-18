@@ -32,7 +32,7 @@ jobs:
           path: |
             holo-key-manager-extension/build
             holo-key-manager-js-client/lib
-          key: test-cache
+          key: test-cache-1
 
       - name: Run unit tests
         run: pnpm test
