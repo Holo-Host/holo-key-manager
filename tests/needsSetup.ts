@@ -9,6 +9,16 @@ export default async function needsSetupTest(browser: Browser) {
 	const page = await browser.newPage();
 	await page.goto('http://localhost:3007/tests/test.html');
 
+	const targets = browser.targets();
+	console.log(targets);
+	const serviceWorkerTarget = targets.find((target) => target.type() === 'service_worker');
+
+	if (serviceWorkerTarget) {
+		console.log('Service worker from this extension is working');
+	} else {
+		console.log('Service worker from this extension is not detected');
+	}
+
 	await page.evaluate(() => {
 		window.addEventListener('message', (event) => {
 			console.log(event.data);
