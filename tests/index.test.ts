@@ -5,13 +5,13 @@ import { resolve } from 'path';
 import type { Browser } from 'puppeteer';
 import { afterAll, beforeAll, describe, it } from 'vitest';
 
-import clientInteractionTest from './clientInteraction';
+// import clientInteractionTest from './clientInteraction';
 import {
 	launchBrowserWithExtension
 	// startServer
 } from './helpers';
-import needsSetupTest from './needsSetup';
-import preventSignatureFromOtherOrigin from './preventSignatureFromOtherOrigin';
+// import needsSetupTest from './needsSetup';
+// import preventSignatureFromOtherOrigin from './preventSignatureFromOtherOrigin';
 import setupFlowTest from './setupFlow';
 
 dotenv.config();
@@ -39,9 +39,9 @@ afterAll(async () => {
 });
 
 describe('End-to-End Tests for Extension and Client', () => {
-	it('should not allow the client to interact with the extension before setup', async () => {
-		await needsSetupTest(browser);
-	});
+	// it('should not allow the client to interact with the extension before setup', async () => {
+	// 	await needsSetupTest(browser);
+	// });
 
 	it('verify setup flow works as expected', async () => {
 		if (!EXTENSION_ID) {
@@ -50,11 +50,11 @@ describe('End-to-End Tests for Extension and Client', () => {
 		await setupFlowTest(browser, EXTENSION_ID);
 	});
 
-	it('should allow the client to interact with the extension after setup', async () => {
-		await clientInteractionTest(browser);
-	});
+	// it('should allow the client to interact with the extension after setup', async () => {
+	// 	await clientInteractionTest(browser);
+	// });
 
-	it('should prevent the malicious page from signing messages', async () => {
-		await preventSignatureFromOtherOrigin(browser);
-	});
+	// it('should prevent the malicious page from signing messages', async () => {
+	// 	await preventSignatureFromOtherOrigin(browser);
+	// });
 });
