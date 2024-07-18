@@ -18,7 +18,10 @@ export default async function needsSetupTest(browser: Browser) {
 
 	await signUpButton.click();
 
-	console.log(await page.content());
+	await new Promise((resolve) => setTimeout(resolve, 2000));
+
+	const pageContent = await page.content();
+	console.log(pageContent);
 
 	const needsSetupText = await findTextOnPage('NeedsSetup');
 	expect(needsSetupText).toBeTruthy();
