@@ -62,7 +62,7 @@ export const findButtonExtensionByText = (context: Page) =>
 	findElementByText(context, 'button:not(:disabled) > span');
 export const findTextBySelector = (context: Page) => findElementByText(context, '');
 
-export const startServer = (port: number = 5000): Server => {
+export const startServer = (port: number = 3007): Server => {
 	const app = express();
 	app.use(express.static(resolve('./holo-key-manager-js-client')));
 	return app.listen(port);

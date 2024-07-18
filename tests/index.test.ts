@@ -38,7 +38,7 @@ afterAll(async () => {
 describe('End-to-End Tests for Extension and Client', () => {
 	it('should not allow the client to interact with the extension before setup', async () => {
 		const page = await browser.newPage();
-		await page.goto('http://localhost:5000/tests/test.html');
+		await page.goto('http://localhost:3007/tests/test.html');
 
 		const findTextOnPage = findTextBySelector(page);
 

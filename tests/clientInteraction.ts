@@ -11,7 +11,7 @@ import {
 
 export default async function clientInteractionTest(browser: Browser) {
 	const appPage = await browser.newPage();
-	await appPage.goto('http://localhost:5000/tests/test.html');
+	await appPage.goto('http://localhost:3007/tests/test.html');
 
 	const findTextOnAppPage = findTextBySelector(appPage);
 
