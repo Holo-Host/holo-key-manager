@@ -14,7 +14,11 @@ export const launchBrowserWithExtension = async (extensionPath: string): Promise
 			`--disable-extensions-except=${extensionPath}`,
 			`--load-extension=${extensionPath}`,
 			'--window-size=1920,1080'
-		]
+		],
+		defaultViewport: {
+			width: 1920,
+			height: 1080
+		}
 	});
 };
 
