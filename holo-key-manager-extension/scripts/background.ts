@@ -137,6 +137,7 @@ const processMessageWebApp = async (
 	sendResponseWithSender: SendResponseWithSender
 ) => {
 	try {
+		console.log(JSON.stringify(parsedMessage));
 		if (!(await isSetupComplete())) {
 			return updateOrCreateWindow(NEEDS_SETUP, sendResponseWithSender);
 		}
@@ -196,7 +197,6 @@ const processMessageExtension = async (
 };
 
 chrome.runtime.onMessage.addListener((message: Message, sender, sendResponse: SendResponse) => {
-	console.log(JSON.stringify(message));
 	const sendResponseWithSender = (response: ActionPayload) =>
 		sendResponse({ ...response, sender: SENDER_BACKGROUND_SCRIPT });
 
