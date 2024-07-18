@@ -62,8 +62,9 @@ const createOrUpdateWindow = (
 	windowProperties: WindowProperties,
 	handleWindowUpdateOrCreate: () => Promise<void>
 ) => {
-	console.log(2);
 	const onWindowCreated = (newWindow: chrome.windows.Window | undefined) => {
+		console.log(3);
+		console.log(newWindow);
 		if (!newWindow) return;
 		windowId = newWindow.id;
 		chrome.windows.onRemoved.addListener((id) => {
@@ -71,8 +72,6 @@ const createOrUpdateWindow = (
 		});
 		handleWindowUpdateOrCreate();
 	};
-
-	console.log(windowId);
 
 	if (windowId) {
 		chrome.windows.remove(windowId, () => {
@@ -141,7 +140,6 @@ const processMessageWebApp = async (
 ) => {
 	try {
 		if (!(await isSetupComplete())) {
-			console.log('1');
 			return updateOrCreateWindow(NEEDS_SETUP, sendResponseWithSender);
 		}
 		switch (parsedMessage.action) {
