@@ -10,16 +10,16 @@ vi.mock('../src/helpers', async (importOriginal) => {
 	const actual = await importOriginal();
 	return {
 		...(typeof actual === 'object' && actual !== null ? actual : {}),
-		sendMessage: vi.fn(),
-		parseMessagePayload: vi.fn(),
+		sendMessage: vi.fn<typeof sendMessage>(),
+		parseMessagePayload: vi.fn<typeof parseMessagePayload>(),
 		checkContentScriptAndBrowser: vi.fn()
 	};
 });
 
 describe('createHoloKeyManager', () => {
 	let holoKeyManager: ReturnType<typeof createHoloKeyManager>;
-	let sendMessageMock: Mock;
-	let parseMessagePayloadMock: Mock;
+	let sendMessageMock: Mock<typeof sendMessage>;
+	let parseMessagePayloadMock: Mock<typeof parseMessagePayload>;
 
 	beforeEach(() => {
 		holoKeyManager = createHoloKeyManager(config);
