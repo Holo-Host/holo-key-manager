@@ -208,8 +208,8 @@ There are three types of tests in this repository:
      ```
 
 3. **End-to-End (e2e) Tests** for the whole repository:
-   - To run e2e tests, you need to create a `.env` file with `CHROME_ID=eggfhkdnfdhdpmkfpihjjbnncgmhihce` that corresponds to the key property (which is actually the pub_key) in `holo-key-manager-extension/static/manifest.json`.
-   - The rest of the `.env` properties visible in `.env.example` are for CI/CD.
+   - To run e2e tests, you need to create a `.env` file with `CHROME_ID=eggfhkdnfdhdpmkfpihjjbnncgmhihce`
+   - The rest of the variables in `.env.example` are for deployment and not necessary for testing
    - Run the e2e tests using the command:
      ```sh
      pnpm e2e-tests
