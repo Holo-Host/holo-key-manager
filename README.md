@@ -210,8 +210,9 @@ There are three types of tests in this repository:
 3. **End-to-End (e2e) Tests** for the whole repository:
    - To run e2e tests, you need to create a `.env` file with `CHROME_ID=eggfhkdnfdhdpmkfpihjjbnncgmhihce`
    - The rest of the variables in `.env.example` are for deployment and not necessary for testing
-   - Run the e2e tests using the command:
+   - Run the e2e tests using the commands:
      ```sh
+     pnpm install
      pnpm e2e-tests
      ```
 
