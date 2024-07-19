@@ -9,11 +9,6 @@ export type GeneratedKeys = {
 	encodedRevocation: Uint8Array | null;
 };
 
-export type KeysState = {
-	keys: GeneratedKeys;
-	loading: boolean;
-};
-
 const requiredString = (fieldName: string) => z.string().min(1, `${fieldName} is required`);
 const nonNegativeNumber = (fieldName: string) =>
 	z.number().nonnegative(`${fieldName} must be a non-negative number`);

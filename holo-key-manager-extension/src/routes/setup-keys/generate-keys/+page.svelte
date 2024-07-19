@@ -6,7 +6,7 @@
 	import { appQueries } from '$queries';
 	import { keysStore, passphraseStore, passwordStore } from '$stores';
 
-	const { storeDeviceKey } = appQueries();
+	const { storeDeviceKey, generateKeysMutation } = appQueries();
 
 	onMount(() => {
 		if ($passphraseStore === '') {
@@ -15,25 +15,31 @@
 	});
 
 	async function generate() {
-		await keysStore.generate($passphraseStore, $passwordStore);
+		try {
+			await $generateKeysMutation.mutateAsync({
+				passphrase: $passphraseStore,
+				password: $passwordStore
+			});
 
-		if ($keysStore.keys) {
 			passphraseStore.clean();
 			passwordStore.reset();
 
-			if ($keysStore.keys.encodedDeviceWithExtensionPassword) {
-				$storeDeviceKey.mutate($keysStore.keys.encodedDeviceWithExtensionPassword, {
-					onSuccess: () => {
-						goto('download');
-					}
-				});
+			const encodedDeviceKey = $keysStore?.encodedDeviceWithExtensionPassword;
+			if (encodedDeviceKey) {
+				await $storeDeviceKey.mutateAsync(encodedDeviceKey);
+				goto('download');
 			}
+		} catch (error) {
+			console.error(error);
 		}
 	}
 </script>
 
-{#if $keysStore.loading}
-	<Loading />
+{#if $generateKeysMutation.isPending || $storeDeviceKey.isPending}
+	<div class="flex flex-col items-center justify-center">
+		<Loading />
+		<p class="text-base font-light">Generating keys...</p>
+	</div>
 {:else}
 	<img src="/img/download.svg" alt="Download" class="my-4 w-12" />
 	<Title>Generate seed and key files</Title>

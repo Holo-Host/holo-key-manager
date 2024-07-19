@@ -20,6 +20,11 @@ import {
 } from './helpers';
 import type { HoloKeyManagerConfig, IHoloKeyManager } from './types';
 
+/**
+ * Creates a Holo Key Manager instance with the provided configuration.
+ * @param config - The configuration for the Holo Key Manager.
+ * @returns An object containing methods for key management.
+ */
 const createHoloKeyManager = ({
 	happId,
 	happName,
@@ -28,6 +33,10 @@ const createHoloKeyManager = ({
 	requireRegistrationCode,
 	requireEmail
 }: HoloKeyManagerConfig): IHoloKeyManager => {
+	/**
+	 * Performs the sign-up action.
+	 * @returns An object containing the public key, email, and registration code.
+	 */
 	const performSignUpAction = async () => {
 		checkContentScriptAndBrowser();
 		const response = await sendMessage({
@@ -55,6 +64,10 @@ const createHoloKeyManager = ({
 		};
 	};
 
+	/**
+	 * Performs the sign-in action.
+	 * @returns An object containing the public key.
+	 */
 	const performSignInAction = async () => {
 		checkContentScriptAndBrowser();
 		const response = await sendMessage({
@@ -72,6 +85,11 @@ const createHoloKeyManager = ({
 		};
 	};
 
+	/**
+	 * Performs the sign message action.
+	 * @param messageToSign - The message to be signed.
+	 * @returns The signed message.
+	 */
 	const performSignMessageAction = async (messageToSign: Uint8Array) => {
 		checkContentScriptAndBrowser();
 		const encodedMessage = uint8ArrayToBase64(messageToSign);
@@ -89,6 +107,9 @@ const createHoloKeyManager = ({
 		return base64ToUint8Array(signature);
 	};
 
+	/**
+	 * Performs the sign-out action.
+	 */
 	const performSignOutAction = async () => {
 		checkContentScriptAndBrowser();
 		const response = await sendMessage({
@@ -109,4 +130,5 @@ const createHoloKeyManager = ({
 		signMessage: performSignMessageAction
 	};
 };
+
 export default createHoloKeyManager;

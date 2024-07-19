@@ -1,17 +1,13 @@
 import { writable } from 'svelte/store';
 
-import { generateKeys } from '$services';
-import type { KeysState } from '$types';
+import type { GeneratedKeys } from '$types';
 
 const initKeysStore = () => {
-	const initialState: KeysState = {
-		keys: {
-			encodedMaster: null,
-			encodedDeviceWithExtensionPassword: null,
-			encodedDevice: null,
-			encodedRevocation: null
-		},
-		loading: false
+	const initialState: GeneratedKeys = {
+		encodedMaster: null,
+		encodedDeviceWithExtensionPassword: null,
+		encodedDevice: null,
+		encodedRevocation: null
 	};
 
 	const { subscribe, set, update } = writable(initialState);
@@ -20,15 +16,7 @@ const initKeysStore = () => {
 		isInitialState: () =>
 			subscribe((state) => JSON.stringify(state) === JSON.stringify(initialState)),
 		subscribe,
-		generate: async (passphrase: string, password: string) => {
-			update((state) => ({ ...state, loading: true }));
-			try {
-				const keys = await generateKeys(passphrase, password);
-				set({ keys, loading: false });
-			} catch (error) {
-				set(initialState);
-			}
-		},
+		set,
 		resetAll: () => update(() => initialState)
 	};
 };

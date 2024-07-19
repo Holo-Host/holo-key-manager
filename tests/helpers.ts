@@ -114,7 +114,7 @@ export const extractUint8ArrayFromResult = async (
 	id: string,
 	key: string
 ): Promise<Uint8Array> => {
-	const resultLocator = page.locator(`#${id}`);
+	const resultLocator = page.locator(`#${id}:not(:empty)`);
 	await resultLocator.wait();
 
 	const resultText = await resultLocator.map((element) => element.textContent).wait();

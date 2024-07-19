@@ -9,8 +9,11 @@ import {
 import { base64ToUint8Array, uint8ArrayToBase64 } from '$shared/helpers';
 import type { GeneratedKeys } from '$types';
 
+const createSeedCipherPwHash = (password: string) =>
+	new SeedCipherPwHash(parseSecret(new TextEncoder().encode(password)), 'moderate');
+
 const lock = (root: UnlockedSeedBundle, password: string) =>
-	root.lock([new SeedCipherPwHash(parseSecret(new TextEncoder().encode(password)), 'minimum')]);
+	root.lock([createSeedCipherPwHash(password)]);
 
 const deriveAndLock = (
 	master: UnlockedSeedBundle,
@@ -18,27 +21,27 @@ const deriveAndLock = (
 	bundleType: string,
 	passphrase: string
 ) => {
-	const root = master.derive(derivationPath, {
-		bundle_type: bundleType
-	});
-
+	const root = master.derive(derivationPath, { bundle_type: bundleType });
 	const encodedBytes = lock(root, passphrase);
 	root.zero();
-
 	return encodedBytes;
 };
 
+/**
+ * Generates keys using the provided passphrase and extension password.
+ * The 'minimum' setting for argon2id is used for the extensionPassword because it is already
+ * PBKDF2 hashed. This is acceptable since the additional argon2id hashing provides sufficient
+ * security for the derived keys.
+ */
 export async function generateKeys(
 	passphrase: string,
 	extensionPassword: string
 ): Promise<GeneratedKeys> {
 	await seedBundleReady;
 
-	const master = UnlockedSeedBundle.newRandom({
-		bundle_type: 'master'
-	});
+	const master = UnlockedSeedBundle.newRandom({ bundle_type: 'master' });
 
-	const encodedMasterBytes: Uint8Array = lock(master, passphrase);
+	const encodedMasterBytes = lock(master, passphrase);
 	const encodedRevocationBytes = deriveAndLock(master, 0, 'revocationRoot', passphrase);
 	const encodedDeviceBytes = deriveAndLock(master, 1, 'deviceRoot', passphrase);
 	const encodedDeviceBytesWithExtensionPassword = deriveAndLock(
@@ -60,12 +63,8 @@ export async function generateKeys(
 
 export const lockKey = async (key: UnlockedSeedBundle, password: string) => {
 	await seedBundleReady;
-
-	const pw = new TextEncoder().encode(password);
-	const encodedBytes = key.lock([new SeedCipherPwHash(parseSecret(pw), 'moderate')]);
-
+	const encodedBytes = lock(key, password);
 	key.zero();
-
 	return uint8ArrayToBase64(encodedBytes);
 };
 
