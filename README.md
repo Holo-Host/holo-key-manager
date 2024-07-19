@@ -12,8 +12,6 @@ Holo Key Manager is a browser extension for generating and managing Holochain ap
 
 ## Usage
 
-test
-
 A javascript client library is available at `@holo-host/holo-key-manager-js-client`. See client documentation [here](holo-key-manager-js-client/README.md)
 
 ## Architecture

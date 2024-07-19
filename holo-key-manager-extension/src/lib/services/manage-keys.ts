@@ -27,12 +27,6 @@ const deriveAndLock = (
 	return encodedBytes;
 };
 
-/**
- * Generates keys using the provided passphrase and extension password.
- * The 'minimum' setting for argon2id is used for the extensionPassword because it is already
- * PBKDF2 hashed. This is acceptable since the additional argon2id hashing provides sufficient
- * security for the derived keys.
- */
 export async function generateKeys(
 	passphrase: string,
 	extensionPassword: string
