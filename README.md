@@ -213,6 +213,7 @@ There are three types of tests in this repository:
    - Run the e2e tests using the commands:
      ```sh
      pnpm install
+     pnpm build
      pnpm e2e-tests
      ```
 
