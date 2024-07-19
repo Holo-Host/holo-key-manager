@@ -12,6 +12,16 @@ Holo Key Manager is a browser extension for generating and managing Holochain ap
 
 ## Usage
 
+### User Installation
+
+To install the Holo Key Manager Extension, follow the instructions for your browser:
+
+- Chrome: [Install from Chrome Web Store](https://chrome.google.com/webstore/detail/holo-key-manager/eggfhkdnfdhdpmkfpihjjbnncgmhihce)
+- Edge: [Install from Microsoft Edge Add-ons](https://microsoftedge.microsoft.com/addons/detail/jfecdgefjljjfcflgbhgfkbeofjenceh)
+- Mozilla: [Install from Firefox Browser Add-ons](https://addons.mozilla.org/en-US/firefox/addon/holo-key-manager/)
+
+### Interacting with the Extension
+
 A javascript client library is available at `@holo-host/holo-key-manager-js-client`. See client documentation [here](holo-key-manager-js-client/README.md)
 
 ## Architecture
