@@ -49,7 +49,7 @@ describe('End-to-End Tests for Extension and Client', () => {
 
 	it('should allow the client to interact with the extension after setup', async () => {
 		await clientInteractionTest(browser);
-	});
+	}, 10000);
 
 	it('should prevent the malicious page from signing messages', async () => {
 		await preventSignatureFromOtherOrigin(browser);

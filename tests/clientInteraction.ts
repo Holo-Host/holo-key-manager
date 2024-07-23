@@ -83,8 +83,6 @@ export default async function clientInteractionTest(browser: Browser) {
 
 	await signMessageBtn.click();
 
-	await new Promise((resolve) => setTimeout(resolve, 2000));
-
 	const signedMessage = await extractUint8ArrayFromResult(
 		appPage,
 		'signMessageBtnResult',

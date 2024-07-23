@@ -4,9 +4,13 @@ on:
     branches: [main]
     paths:
       - 'holo-key-manager-extension/**'
+  merge_group:
+    branches: [main]
+    types: [checks_requested]
 
 jobs:
   build:
+    name: 'PR Extension Build and Test'
     runs-on: ubuntu-latest
 
     environment:

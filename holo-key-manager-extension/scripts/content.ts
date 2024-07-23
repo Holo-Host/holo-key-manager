@@ -9,6 +9,14 @@ const parseAndHandleMessage = async (event: MessageEvent) => {
 	try {
 		const response = await sendMessage({ ...parsedResult.data, origin: event.origin });
 		const parsedMessageSchema = parseMessageSchema(response);
+
+		// Using '*' as the target origin is necessary for cross-browser extension compatibility.
+		// This allows communication between the content script and the webpage across different browsers.
+		// Security note: We have a dedicated test in @preventSignatureFromOtherOrigin.ts that verifies
+		// the security of this communication. Additionally, we check the origin in the background script
+		// to ensure that only authenticated origins can sign messages.
+		// TODO: Consider alternatives to postMessage(..., '*') in the future, as discussed in:
+		// https://github.com/w3c/webextensions/issues/78
 		window.postMessage(responseToMessage(parsedMessageSchema.data, parsedResult.data.id), '*');
 	} catch (error) {
 		window.postMessage(

@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { AppParagraph, Button, Input } from '$components';
+	import { AppParagraph, Button, Input, Loading } from '$components';
 	import { dismissWindow, isValidEmail } from '$helpers';
 	import { extractDetailsFromUrl } from '$helpers';
 	import { appQueries } from '$queries';
@@ -27,56 +27,60 @@
 	};
 </script>
 
-<div class="flex flex-col items-center justify-center">
-	<img src="/img/holo_logo.svg" alt="Holo Logo" />
-	<h1 class="mt-4 text-2xl font-bold">Sign up</h1>
-	<AppParagraph
-		extraProps="my-4 max-w-48 text-center"
-		text="This app is requesting the following details"
-	/>
-</div>
-
-{#if $extractDetailsFromUrl.requireEmail}
-	<Input label="Email:" bind:value={email} extraProps="mb-4" error={errors.email} />
-{/if}
-{#if $extractDetailsFromUrl.requireRegistrationCode}
-	<Input
-		label="Registration code:"
-		bind:value={registrationCode}
-		extraProps="mb-4"
-		error={errors.registrationCode}
-	/>
-{/if}
-<Input label="Name this key:" bind:value={keyName} extraProps="mb-4" error={errors.keyName} />
-
-{#if $applicationKeyMutation.error}
-	<div class="mutation-error">
-		<p>Error: {$applicationKeyMutation.error.message}</p>
+{#if $applicationKeyMutation.isPending}
+	<Loading />
+{:else}
+	<div class="flex flex-col items-center justify-center">
+		<img src="/img/holo_logo.svg" alt="Holo Logo" />
+		<h1 class="mt-4 text-2xl font-bold">Sign up</h1>
+		<AppParagraph
+			extraProps="my-4 max-w-48 text-center"
+			text="This app is requesting the following details"
+		/>
 	</div>
-{/if}
 
-<Button
-	label="Create keys"
-	onClick={() => {
-		if (validateAllFields()) {
-			$applicationKeyMutation.mutate(
-				{
-					app_key_name: keyName,
-					happId: $extractDetailsFromUrl.happId,
-					happName: $extractDetailsFromUrl.happName,
-					happLogo: $extractDetailsFromUrl.happLogo,
-					happUiUrl: $extractDetailsFromUrl.happUiUrl,
-					messageId: $extractDetailsFromUrl.messageId,
-					origin: $extractDetailsFromUrl.origin,
-					email,
-					registrationCode,
-					currentAppsList: $applicationsListQuery.data || []
-				},
-				{
-					onSuccess: dismissWindow
-				}
-			);
-		}
-	}}
-	extraBottomMargin
-/>
+	{#if $extractDetailsFromUrl.requireEmail}
+		<Input label="Email:" bind:value={email} extraProps="mb-4" error={errors.email} />
+	{/if}
+	{#if $extractDetailsFromUrl.requireRegistrationCode}
+		<Input
+			label="Registration code:"
+			bind:value={registrationCode}
+			extraProps="mb-4"
+			error={errors.registrationCode}
+		/>
+	{/if}
+	<Input label="Name this key:" bind:value={keyName} extraProps="mb-4" error={errors.keyName} />
+
+	{#if $applicationKeyMutation.error}
+		<div class="mutation-error">
+			<p>Error: {$applicationKeyMutation.error.message}</p>
+		</div>
+	{/if}
+
+	<Button
+		label="Create keys"
+		onClick={() => {
+			if (validateAllFields()) {
+				$applicationKeyMutation.mutate(
+					{
+						app_key_name: keyName,
+						happId: $extractDetailsFromUrl.happId,
+						happName: $extractDetailsFromUrl.happName,
+						happLogo: $extractDetailsFromUrl.happLogo,
+						happUiUrl: $extractDetailsFromUrl.happUiUrl,
+						messageId: $extractDetailsFromUrl.messageId,
+						origin: $extractDetailsFromUrl.origin,
+						email,
+						registrationCode,
+						currentAppsList: $applicationsListQuery.data || []
+					},
+					{
+						onSuccess: dismissWindow
+					}
+				);
+			}
+		}}
+		extraBottomMargin
+	/>
+{/if}

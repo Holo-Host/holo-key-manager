@@ -140,3 +140,47 @@ class HoloKeyManagerExtensionClient {
 
 type UnsubscribeFunction = () => void;
 ```
+
+## Working on holo-key-manager-js-client
+
+If you want to work on the interaction between the extension and the client, you need to run the `buildPack` script inside the `holo-key-manager-js-client` directory. This will create a `.tgz` file that you can link to your new web app.
+
+1. **Build the client package:**
+
+   ```sh
+   cd holo-key-manager-js-client
+   pnpm buildPack
+   ```
+
+2. **Create a new web app:**
+
+   You can use any framework of your choice. Here are examples for Create React App and a new Svelte project.
+
+   **Create React App:**
+
+   ```sh
+   npx create-react-app my-holo-app
+   cd my-holo-app
+   ```
+
+   **New Svelte Project:**
+
+   ```sh
+   npx degit sveltejs/template my-holo-app
+   cd my-holo-app
+   pnpm install
+   ```
+
+3. **Link the `.tgz` file:**
+
+   After building the client package, link the generated `.tgz` file to your new web app.
+
+   ```sh
+   pnpm add ../holo-key-manager-js-client/holo-key-manager-js-client-1.0.0.tgz
+   ```
+
+4. **Call API functions:**
+
+   You can now call the API functions defined in the `README` of `holo-key-manager-js-client`. Here is an example of how to use the API in your new web app.
+
+By following these steps, you can set up a new web app and interact with the Holo Key Manager extension using the `holo-key-manager-js-client` API.

@@ -6,6 +6,7 @@ import {
 	createSignInWithKeyMutation
 } from './applicationQueries';
 import {
+	createGenerateKeys,
 	createRecoverDeviceKeyMutation,
 	createSetupDeviceKeyQuery,
 	createStoreDeviceKey
@@ -32,6 +33,7 @@ export function appQueries() {
 	const applicationsListQuery = createApplicationsListQuery();
 	const storeDeviceKey = createStoreDeviceKey(queryClient);
 	const recoverDeviceKeyMutation = createRecoverDeviceKeyMutation();
+	const generateKeysMutation = createGenerateKeys();
 	const applicationKeyMutation = createApplicationKeyMutation(queryClient);
 	const passwordAndStoreDeviceKeyMutation = createPasswordAndStoreDeviceKeyMutation(queryClient);
 
@@ -47,6 +49,7 @@ export function appQueries() {
 		applicationKeyMutation,
 		recoverDeviceKeyMutation,
 		passwordAndStoreDeviceKeyMutation,
-		signInWithKeyMutation
+		signInWithKeyMutation,
+		generateKeysMutation
 	};
 }

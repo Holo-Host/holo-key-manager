@@ -1,11 +1,11 @@
 import { createMutation, createQuery, QueryClient } from '@tanstack/svelte-query';
 
 import { handleSuccess } from '$helpers';
-import { unlockKey } from '$services';
+import { generateKeys, unlockKey } from '$services';
 import { DEVICE_KEY, LOCAL, PASSWORD, SETUP_KEY } from '$shared/const';
 import { isSetupComplete, storageService } from '$shared/services';
 import { EncryptedDeviceKeySchema, HashSaltSchema } from '$shared/types';
-import { deviceKeyContentStore, passphraseStore } from '$stores';
+import { deviceKeyContentStore, keysStore, passphraseStore } from '$stores';
 
 export function createSetupDeviceKeyQuery() {
 	return createQuery({
@@ -34,6 +34,17 @@ export function createStoreDeviceKey(queryClient: QueryClient) {
 			});
 		},
 		onSuccess: handleSuccess(queryClient, [SETUP_KEY])
+	});
+}
+
+export function createGenerateKeys() {
+	return createMutation({
+		mutationFn: async (mutationData: { passphrase: string; password: string }) => {
+			// Promise that resolves automatically to prevent the window from freezing before the mutation enters the loading state
+			await new Promise((resolve) => setTimeout(resolve, 100));
+			const keys = await generateKeys(mutationData.passphrase, mutationData.password);
+			keysStore.set(keys);
+		}
 	});
 }
 
