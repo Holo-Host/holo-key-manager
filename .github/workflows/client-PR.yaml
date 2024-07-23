@@ -11,6 +11,7 @@ on:
 
 jobs:
   build:
+    name: 'PR Client Build and Test'
     runs-on: ubuntu-latest
 
     environment:
