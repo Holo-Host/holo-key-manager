@@ -2,8 +2,6 @@ name: 'extension-pr'
 on:
   pull_request:
     branches: [main]
-    paths:
-      - 'holo-key-manager-extension/**'
   merge_group:
     branches: [main]
     types: [checks_requested]
