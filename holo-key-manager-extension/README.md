@@ -45,3 +45,4 @@ After building the extension, you need to load it into your Chrome browser to te
    You should see the Holo Key Manager extension listed on the Extensions page. Ensure there are no errors and the extension is enabled.
 
 By following these steps, you can load and test the Holo Key Manager extension in your Chrome browser. If you encounter any issues, check the console for error messages and ensure that the build process completed successfully.
+
