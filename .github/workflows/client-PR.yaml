@@ -5,6 +5,9 @@ on:
     paths:
       - 'holo-key-manager-js-client/package.json'
       - '.github/workflows/client-PR.yaml'
+  merge_group:
+    branches: [main]
+    types: [checks_requested]
 
 jobs:
   build:
